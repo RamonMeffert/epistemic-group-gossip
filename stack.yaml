@@ -1,0 +1,7 @@
+resolver: lts-17.12
+
+packages:
+- .
+
+extra-deps:
+- HasCacBDD-0.1.0.3
