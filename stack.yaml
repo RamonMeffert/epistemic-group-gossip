@@ -6,3 +6,4 @@ packages:
 
 extra-deps:
 - HasCacBDD-0.1.0.3
+- smcdel-1.1.0

@@ -34,6 +34,8 @@ library
       HasCacBDD >=0.1.0.3 && <0.2
     , base >=4.7 && <5
     , containers >=0.6
+    , cudd ==0.1.0.0
+    , smcdel >=1.1.0
   default-language: Haskell2010
 
 executable tryouts-exe
@@ -47,6 +49,8 @@ executable tryouts-exe
       HasCacBDD >=0.1.0.3 && <0.2
     , base >=4.7 && <5
     , containers >=0.6
+    , cudd ==0.1.0.0
+    , smcdel >=1.1.0
     , tryouts
   default-language: Haskell2010
 
@@ -62,5 +66,7 @@ test-suite tryouts-test
       HasCacBDD >=0.1.0.3 && <0.2
     , base >=4.7 && <5
     , containers >=0.6
+    , cudd ==0.1.0.0
+    , smcdel >=1.1.0
     , tryouts
   default-language: Haskell2010

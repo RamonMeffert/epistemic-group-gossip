@@ -11,6 +11,13 @@ packages:
       sha256: a0b38a75520f1d9a019b6966d167c1f451f030fd04fa79b67114c45f416fcd19
   original:
     hackage: HasCacBDD-0.1.0.3
+- completed:
+    hackage: smcdel-1.1.0@sha256:d6701be640afdae1cd46b88b22cebd3b4bf3ec807c65563e3e32f2b5f47aba77,4713
+    pantry-tree:
+      size: 3956
+      sha256: 317905396f2d2c85e1ed3ebb594363d5bda934a051c0fde20b28a7e21b0c6f99
+  original:
+    hackage: smcdel-1.1.0
 snapshots:
 - completed:
     size: 567669
