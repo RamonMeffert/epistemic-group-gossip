@@ -23,6 +23,8 @@ dependencies:
 - base >= 4.7 && < 5
 - containers >= 0.6
 - HasCacBDD >= 0.1.0.3 && < 0.2
+- cudd == 0.1.0.0
+- smcdel >= 1.1.0
 
 library:
   source-dirs: src
