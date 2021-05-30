@@ -5,11 +5,14 @@ module GossipGraph where
 import qualified Data.Text as Text
 import qualified Data.Char as Char
 import qualified Data.Set  as Set
-import Data.List
-import Data.Maybe
-import Data.Graph.Inductive.Graph (Graph(mkGraph), DynGraph, prettify)
+import Data.List ( find )
+import Data.Maybe ()
+import Data.Graph.Inductive.Graph (Graph(mkGraph), prettify)
 import Data.Graph.Inductive (Gr)
 
+{-|
+    This module is a simplified Haskell translation of <https://github.com/RamonMeffert/elm-gossip/blob/master/src/elm/GossipGraph/Parser.elm>
+-}
 
 -- | Phantom type for agents.
 newtype AgentName = AgentName Char
@@ -51,7 +54,7 @@ findAgentByName agents (AgentName name) =
 data LexToken
     = Token Kind AgentName AgentId
     | Separator
-    deriving (Show)
+    deriving (Eq, Show)
 
 -- Lexing for gossip graph input
 lexer :: String -> Maybe [LexToken]
@@ -89,7 +92,34 @@ lexer input =
 parseAgents :: [LexToken] -> Maybe [Agent]
 parseAgents tokens =
     parser tokens Set.empty Set.empty (-1) 1 1
+        >>= validateNumberOfAgents
     where
+        maybeAddName el acc =
+            case el of
+                Token _ (AgentName n) _ ->
+                    Set.insert (Char.toUpper n) acc
+
+                _ ->
+                    acc
+
+        agentNames = foldr maybeAddName Set.empty tokens
+
+        numberOfSegments = (+ 1) $ length $ filter (/= Separator) tokens
+
+        validateNumberOfAgents :: [Agent] -> Maybe [Agent]
+        validateNumberOfAgents agents
+            -- No secrets, so ???
+            | numberOfNames == 0 = Nothing
+            -- More segments than agents
+            | numberOfAgents < numberOfSegments = Nothing
+            -- Different number of agents than names ???
+            | numberOfAgents /= numberOfNames = Nothing
+            -- All above is false, so input is correct
+            | otherwise = Just agents
+            where
+                numberOfNames = Set.size agentNames
+                numberOfAgents = length agents
+
         parser :: [LexToken] 
             -> Set.Set AgentName
             -> Set.Set AgentName
