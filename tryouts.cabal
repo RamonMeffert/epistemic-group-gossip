@@ -1,0 +1,79 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           tryouts
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/tryouts#readme>
+homepage:       https://github.com/githubuser/tryouts#readme
+bug-reports:    https://github.com/githubuser/tryouts/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2021 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/tryouts
+
+library
+  exposed-modules:
+      GossipGraph
+      Lib
+  other-modules:
+      Paths_tryouts
+  hs-source-dirs:
+      src
+  build-depends:
+      HasCacBDD >=0.1.0.3 && <0.2
+    , base >=4.7 && <5
+    , containers >=0.6
+    , cudd ==0.1.0.0
+    , fgl >=5.7.0.3
+    , smcdel >=1.1.0
+    , text >=1.2.4.1
+  default-language: Haskell2010
+
+executable tryouts-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_tryouts
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      HasCacBDD >=0.1.0.3 && <0.2
+    , base >=4.7 && <5
+    , containers >=0.6
+    , cudd ==0.1.0.0
+    , fgl >=5.7.0.3
+    , smcdel >=1.1.0
+    , text >=1.2.4.1
+    , tryouts
+  default-language: Haskell2010
+
+test-suite tryouts-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_tryouts
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      HasCacBDD >=0.1.0.3 && <0.2
+    , base >=4.7 && <5
+    , containers >=0.6
+    , cudd ==0.1.0.0
+    , fgl >=5.7.0.3
+    , smcdel >=1.1.0
+    , text >=1.2.4.1
+    , tryouts
+  default-language: Haskell2010

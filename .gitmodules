@@ -1,0 +1,3 @@
+[submodule "cudd"]
+	path = cudd
+	url = https://github.com/m4lvin/cudd.git
