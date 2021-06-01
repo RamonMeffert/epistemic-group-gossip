@@ -18,7 +18,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: EGGC
+title: Epistemic Gossip with Group Calls
 # email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
   A project for the University of Groningen course “Logical Aspects of
@@ -26,13 +26,13 @@ description: >- # this means to ignore newlines until "baseurl:"
   semi-public announcements.
 baseurl: "/lamas-tryouts" # the subpath of your site, e.g. /blog
 url: "https://ramonmeffert.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-github_username:  ramonmeffert
 
 # Build settings
-theme: "just-the-docs"
+theme: "minima"
 plugins:
   - jekyll-feed
 
-aux_links:
-  "This project on GitHub":
-    - "https://github.com/RamonMeffert/lamas-tryouts"
+header_pages:
+  - about.markdown
+
+github_username: RamonMeffert
