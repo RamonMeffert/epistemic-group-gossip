@@ -12,16 +12,38 @@ module GossipGraph
   )
 where
 
+import Control.Monad (join)
+import Control.Arrow ((***))
 import qualified Data.Char as Char
 import Data.Graph.Inductive (Gr)
 import Data.Graph.Inductive.Graph (Graph (mkGraph), prettify)
 import Data.List (find)
+import Data.Map (Map, (!))
 import Data.Maybe ()
+import Data.Set (Set)
+import Data.Tuple (swap)
 import qualified Data.Set as Set
 import qualified Data.Text as Text
+import qualified Data.Map as Map
+
+type GossipGraph = Gr Char Kind
+
+initialGraph :: [Char] -> Map Char [Char] -> GossipGraph
+initialGraph agents numberLists = 
+  let
+    nodes = zip [0..] agents
+
+    agIds = [0..length agents]
+    secrets = zip3 agIds agIds $ repeat Secret
+
+    mapTuple = join (***) (charmap !)
+    charmap = Map.fromList $ map swap nodes
+    -- TODO: convert number list to [Node, Node, Number]
+    numbers = []
+  in mkGraph nodes (secrets++numbers)
 
 -- |
---    This module is a simplified Haskell translation of <https://github.com/RamonMeffert/elm-gossip/blob/master/src/elm/GossipGraph/Parser.elm>
+--    This part of the module is a simplified Haskell translation of <https://github.com/RamonMeffert/elm-gossip/blob/master/src/elm/GossipGraph/Parser.elm>
 
 -- | Agent names
 newtype AgentName = AgentName Char

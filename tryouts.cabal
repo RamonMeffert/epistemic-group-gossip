@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       GossipGraph
+      GossipKnowledgeStructure
       Lib
   other-modules:
       Paths_tryouts
