@@ -36,3 +36,7 @@ header_pages:
   - about.markdown
 
 github_username: RamonMeffert
+
+markdown: kramdown
+kramdown:
+   math_engine: mathjax
