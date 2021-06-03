@@ -1,90 +1,101 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module GossipGraph
-  ( AgentName,
-    AgentId,
-    Agent,
-    GossipGraph,
-    Relation,
-    Kind,
-    fromString,
-    fromAgentsAndRelations,
-    initialGraph
-  )
-where
+module GossipGraph where
 
-import Control.Monad (join)
+-- ( AgentName,
+--   AgentId,
+--   Agent,
+--   GossipGraph,
+--   Relation,
+--   Kind,
+--   fromString,
+--   fromAgentsAndRelations,
+--   initialGraph
+-- )
+
 import Control.Arrow ((***))
+import Control.Monad (join)
 import qualified Data.Char as Char
-import Data.Graph.Inductive (Gr)
+import Data.Graph.Inductive (Gr, LEdge, LNode)
 import Data.Graph.Inductive.Graph (Graph (mkGraph), prettify)
 import Data.List (find)
 import Data.Map (Map, (!))
+import qualified Data.Map as Map
 import Data.Maybe ()
 import Data.Set (Set)
-import Data.Tuple (swap)
 import qualified Data.Set as Set
 import qualified Data.Text as Text
-import qualified Data.Map as Map
+import Data.Tuple (swap)
 
 type GossipGraph = Gr Char Kind
 
 -- | Generate an initial gossip graph (with no initial shared secrets), based on a list of agents and their known phone numbers.
 initialGraph :: [Char] -> Map Char [Char] -> GossipGraph
 initialGraph agents numberLists =
-  let
-    nodes = zip [0..] agents
+  let nodes = zip [0 ..] agents
 
-    agIds = [0..length agents]
+      agIds = [0 .. length agents]
 
-    secrets :: [(Int, Int, Kind)]
-    secrets = zip3 agIds agIds $ repeat Secret
+      secrets :: [(Int, Int, Kind)]
+      secrets = zip3 agIds agIds $ repeat Secret
 
-    charmap :: Map Char Int
-    charmap = Map.fromList $ map swap nodes
+      charmap :: Map Char Int
+      charmap = Map.fromList $ map swap nodes
 
-    flatten :: [(Char, [Char])] -> [(Char, Char)]
-    flatten = foldr fun []
-      where fun tup =  (++) [(fst tup, x) | x <- snd tup]
+      flatten :: [(Char, [Char])] -> [(Char, Char)]
+      flatten = foldr fun []
+        where
+          fun tup = (++) [(fst tup, x) | x <- snd tup]
 
-    tupCharToInt :: (Char, Char) -> (Int, Int)
-    tupCharToInt = join (***) (charmap !)
+      tupCharToInt :: (Char, Char) -> (Int, Int)
+      tupCharToInt = join (***) (charmap !)
 
-    withKind :: (Int, Int) -> (Int, Int, Kind)
-    withKind tup = (fst tup, snd tup, Number)
+      withKind :: (Int, Int) -> (Int, Int, Kind)
+      withKind tup = (fst tup, snd tup, Number)
 
-    numbers :: [(Int, Int, Kind)]
-    numbers = (map (withKind . tupCharToInt) . flatten) (Map.assocs numberLists)
-    
-  in mkGraph nodes (secrets++numbers)
-
+      numbers :: [(Int, Int, Kind)]
+      numbers = (map (withKind . tupCharToInt) . flatten) (Map.assocs numberLists)
+   in mkGraph nodes (secrets ++ numbers)
 
 -- |
 --    This part of the module is a simplified Haskell translation of <https://github.com/RamonMeffert/elm-gossip/blob/master/src/elm/GossipGraph/Parser.elm>
 
--- | Agent names
-newtype AgentName = AgentName Char
-  deriving (Eq, Ord, Show)
+-- -- | Agent names
+-- newtype AgentName = AgentName Char
+--   deriving (Eq, Ord, Show)
 
--- | Agent Ids
-newtype AgentId = AgentId Int
-  deriving (Num, Eq, Ord, Show)
+-- -- | Agent Ids
+-- newtype AgentId = AgentId Int
+--   deriving (Num, Eq, Ord, Show)
 
 -- | Agent
-data Agent = Agent
-  { a_name :: AgentName,
-    a_id :: AgentId
-  }
-  deriving (Show, Ord, Eq)
+-- data Agent = Agent
+--   { a_name :: AgentName,
+--     a_id :: AgentId
+--   }
+--   deriving (Show, Ord, Eq)
+type Agent = LNode Char
+
+type AgentId = Int
+
+type AgentName = Char
+
+type Relation = LEdge Kind
+
+agent :: Int -> Char -> Agent
+agent _id name = (_id, name)
+
+relation :: Agent -> Agent -> Kind -> Relation
+relation (from, _) (to, _) kind = (from, to, kind)
 
 -- | Gossip relation
-data Relation = Relation
-  { r_from :: AgentId,
-    r_to :: AgentId,
-    r_kind :: Kind
-  }
-  deriving (Show)
+-- data Relation = Relation
+--   { r_from :: AgentId,
+--     r_to :: AgentId,
+--     r_kind :: Kind
+--   }
+--   deriving (Show)
 
 -- | Edge label indicating whether an agent knows the number or secret of
 -- another agent
@@ -95,10 +106,10 @@ data Kind
 
 -- | Given a list of agents and a name, try to find a matching agent
 findAgentByName :: [Agent] -> AgentName -> Maybe Agent
-findAgentByName agents (AgentName name) =
+findAgentByName agents name =
   find (\a -> getCharName a == Char.toUpper name) agents
   where
-    getCharName (Agent (AgentName n) _) = Char.toUpper n
+    getCharName (_, n) = Char.toUpper n
 
 -- Parsing stuff below --
 
@@ -123,8 +134,8 @@ lexer input =
             then case charLexer _id cs of
               Just tokens ->
                 if Char.isUpper c
-                  then Just $ Token Secret (AgentName c) _id : tokens
-                  else Just $ Token Number (AgentName c) _id : tokens
+                  then Just $ Token Secret c _id : tokens
+                  else Just $ Token Number c _id : tokens
               Nothing ->
                 Nothing
             else
@@ -144,14 +155,14 @@ parseAgents tokens =
   where
     maybeAddName el acc =
       case el of
-        Token _ (AgentName n) _ ->
+        Token _ n _ ->
           Set.insert (Char.toUpper n) acc
         _ ->
           acc
 
     agentNames = foldr maybeAddName Set.empty tokens
 
-    numberOfSegments = (+ 1) $ length $ filter (/= Separator) tokens
+    numberOfSegments = (+ 1) $ length $ filter (== Separator) tokens
 
     validateNumberOfAgents :: [Agent] -> Maybe [Agent]
     validateNumberOfAgents agents
@@ -187,23 +198,23 @@ parseAgents tokens =
                   Nothing
                 else
                   if kind == Number
-                    then -- lowercase character, so just add it to the list of segment names and continue
+                    then -- number relation, so just add it to the list of segment names and continue
 
                       parser rest (Set.insert ucName segmentNames) allNames highestIdAdded segmentStart (pos + 1)
                         >>= Just
-                    else
+                    else -- secret relation
                       if _id > highestIdAdded && not (Set.member ucName allNames)
                         then -- an agent name we haven't seen before! add it to the list.
 
                           parser rest (Set.insert ucName segmentNames) (Set.insert ucName allNames) _id segmentStart (pos + 1)
-                            >>= (\list -> Just (Agent ucName _id : list))
+                            >>= (\list -> Just (agent _id ucName : list))
                         else -- an agent name we have seen before. BORING! just continue.
 
                           parser rest (Set.insert ucName segmentNames) allNames highestIdAdded segmentStart (pos + 1)
                             >>= Just
               where
                 ucName :: AgentName
-                ucName = (\(AgentName n) -> AgentName (Char.toUpper n)) _name
+                ucName = Char.toUpper _name
             Separator ->
               case head rest of
                 Separator ->
@@ -224,14 +235,14 @@ parseRelations agents tokens =
         Just relations ->
           case findAgentByName agents name of
             Just ag ->
-              Just $ Relation _id (a_id ag) kind : relations
+              Just $ relation (agent _id name) ag kind : relations
             Nothing ->
               Nothing
         Nothing ->
           Nothing
 
 -- | Try to parse a string representation of a gossip graph into a gossip graph
-fromString :: String -> Maybe (Gr Agent Relation)
+fromString :: String -> Maybe (Gr AgentName Kind)
 fromString input =
   case (agents, relations) of
     (Just ag, Just rel) ->
@@ -249,15 +260,8 @@ fromString input =
           Nothing
 
 -- | Given a set of agents and corresponding relations, construct a gossip graph
-fromAgentsAndRelations :: [Agent] -> [Relation] -> Gr Agent Relation
-fromAgentsAndRelations agents relations =
-  mkGraph agentNodes relationEdges
-  where
-    agentNodes = map agToTup agents
-    relationEdges = map relToTup relations
-
-    agToTup (Agent n (AgentId i)) = (i, Agent n (AgentId i))
-    relToTup (Relation (AgentId f) (AgentId t) k) = (f, t, Relation (AgentId f) (AgentId t) k)
+fromAgentsAndRelations :: [Agent] -> [Relation] -> Gr AgentName Kind
+fromAgentsAndRelations = mkGraph
 
 -- | Debugging function to check if parsing was successful
 toStringIfSuccessful :: Maybe (Gr Agent Relation) -> String
