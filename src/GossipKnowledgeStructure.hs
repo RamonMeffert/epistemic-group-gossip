@@ -1,22 +1,26 @@
 module GossipKnowledgeStructure
-    (
-    )
+
 where
 import Data.Map (Map)
 import Data.Set (Set)
+import qualified Data.Graph.Inductive.Graph as Graph
+import qualified Data.Set as Set
+import qualified Data.Map as Map
 
-import GossipGraph
+import GossipGraph ( GossipGraph )
+
+type Agent = Char
 
 data GossipAtom
     = Top                           -- ^ Always true
     | N Agent Agent                 -- ^ Agent x knows the number of agent y
     | S Agent Agent                 -- ^ Agent x knows the secret of agent y
     | C Agent Agent                 -- ^ Agent x has called agent y
-    deriving (Show) -- TODO derive Eq and/or Ord?
+    | Neg GossipAtom                -- ^ Negation
+    deriving (Show, Ord, Eq) -- TODO derive Eq?
 
 data GossipForm
     = Atom GossipAtom               -- ^ Atom
-    | Neg GossipForm                -- ^ Negation
     | Conj [GossipForm]             -- ^ Conjunction
     | Disj [GossipForm]             -- ^ Disjunction   
     | Impl GossipForm GossipForm    -- ^ Implication
@@ -33,4 +37,8 @@ data GossipKnowledgeStructure = GKS
     observables :: Map Agent (Set GossipAtom)
   }
 
-
+fromGossipGraph :: GossipGraph -> GossipKnowledgeStructure
+fromGossipGraph graph = 
+  let 
+    agents = Graph.labNodes graph
+  in undefined

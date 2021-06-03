@@ -5,10 +5,12 @@ module GossipGraph
   ( AgentName,
     AgentId,
     Agent,
+    GossipGraph,
     Relation,
     Kind,
     fromString,
     fromAgentsAndRelations,
+    initialGraph
   )
 where
 
@@ -28,19 +30,35 @@ import qualified Data.Map as Map
 
 type GossipGraph = Gr Char Kind
 
+-- | Generate an initial gossip graph (with no initial shared secrets), based on a list of agents and their known phone numbers.
 initialGraph :: [Char] -> Map Char [Char] -> GossipGraph
-initialGraph agents numberLists = 
+initialGraph agents numberLists =
   let
     nodes = zip [0..] agents
 
     agIds = [0..length agents]
+
+    secrets :: [(Int, Int, Kind)]
     secrets = zip3 agIds agIds $ repeat Secret
 
-    mapTuple = join (***) (charmap !)
+    charmap :: Map Char Int
     charmap = Map.fromList $ map swap nodes
-    -- TODO: convert number list to [Node, Node, Number]
-    numbers = []
+
+    flatten :: [(Char, [Char])] -> [(Char, Char)]
+    flatten = foldr fun []
+      where fun tup =  (++) [(fst tup, x) | x <- snd tup]
+
+    tupCharToInt :: (Char, Char) -> (Int, Int)
+    tupCharToInt = join (***) (charmap !)
+
+    withKind :: (Int, Int) -> (Int, Int, Kind)
+    withKind tup = (fst tup, snd tup, Number)
+
+    numbers :: [(Int, Int, Kind)]
+    numbers = (map (withKind . tupCharToInt) . flatten) (Map.assocs numberLists)
+    
   in mkGraph nodes (secrets++numbers)
+
 
 -- |
 --    This part of the module is a simplified Haskell translation of <https://github.com/RamonMeffert/elm-gossip/blob/master/src/elm/GossipGraph/Parser.elm>
@@ -58,7 +76,7 @@ data Agent = Agent
   { a_name :: AgentName,
     a_id :: AgentId
   }
-  deriving (Show)
+  deriving (Show, Ord, Eq)
 
 -- | Gossip relation
 data Relation = Relation
