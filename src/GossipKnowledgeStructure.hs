@@ -2,24 +2,40 @@ module GossipKnowledgeStructure
 
 where
 import Data.Graph.Inductive.Graph
+import Data.HasCacBDD
 import Data.Map (Map)
 import Data.Set (Set)
 import Data.List
 import qualified Data.Set as Set
 import qualified Data.Map as Map
 
-import GossipGraph ( GossipGraph )
+import GossipGraph
 
--- Todo: weghalen als in GossipGraph staat
-type Agent = LNode Char
+data Rel = N | S | C deriving (Show, Ord, Eq, Enum)
 
-data GossipAtom
-    = Top                           -- ^ Always true
-    | N Agent Agent                 -- ^ Agent x knows the number of agent y
-    | S Agent Agent                 -- ^ Agent x knows the secret of agent y
-    | C Agent Agent                 -- ^ Agent x has called agent y
-    deriving (Show, Ord, Eq) -- TODO derive Eq?
+data GossipAtom = GAt Rel Agent Agent deriving (Show, Ord, Eq)
 
+-- | Converts Bdd variable to a GossipAtom
+toGAt :: Int -> Bdd -> [GossipAtom]
+toGAt n bdd = 
+  let convert prp = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
+        where rel =  prp        `div` (n^2)
+              a1  = (prp - rel) `div`  n
+              a2  = (prp - a1)
+   in map convert (allVarsOf bdd)
+      
+
+-- | Convert a GossipAtom to a Bdd variable
+fromGAt :: Int -> GossipAtom -> Bdd
+fromGAt n (GAt rel (a1,_) (a2,_)) = var $ (n^2) * fromEnum rel + n * a1 + a2
+
+-- data GossipAtom
+--     = N Agent Agent                 -- ^ Agent x knows the number of agent y
+--     | S Agent Agent                 -- ^ Agent x knows the secret of agent y
+--     | C Agent Agent                 -- ^ Agent x has called agent y
+--     deriving (Show, Ord, Eq) -- TODO derive Eq?
+
+-- TODO: Is this necessary?
 data GossipForm
     = Atom GossipAtom               -- ^ Atom
     | Neg GossipAtom                -- ^ Negation
@@ -33,7 +49,7 @@ data GossipKnowledgeStructure = GKS
     vocabulary :: Set GossipAtom,
 
     -- | A boolean formula representing the law that every state needs to adhere to
-    stateLaw :: GossipForm,
+    stateLaw :: Bdd,
 
     -- | The set of atoms seen by some agent
     observables :: Map Agent (Set GossipAtom)
@@ -41,14 +57,28 @@ data GossipKnowledgeStructure = GKS
 
 fromGossipGraph :: GossipGraph -> GossipKnowledgeStructure
 fromGossipGraph graph =
-  let
-    agents = labNodes graph
+  let agents = labNodes graph
+      n = length agents
 
-    -- vocabulary
-    combinations = (. subsequences) . filter . (. length) . (==)
-    agentCombs = combinations 2 agents
-    vocab = Top : foldr (\[x,y] -> (++) [N x y, S x y, C x y]) [] agentCombs
+      -- vocabulary
+      agentCombs = [(x,y) | x <- agents, y <- agents]
+      vocab = foldr (\(x,y) -> (++) [GAt N x y, GAt S x y, GAt C x y]) [] agentCombs
 
-    -- 
+      -- state law
+      gvar = fromGAt n
+      stateLaw = conSet 
+        [ conSet [gvar (GAt S a a) | a <- agents] -- agents know their own secret
+        , conSet [gvar (GAt N a a) | a <- agents] -- agents know their own number
+        , conSet [gvar (GAt C x y) `imp` conSet   -- if x has called y...
+            [ gvar (GAt N x y)                    --  then x knows y's number...
+            , gvar (GAt S x y)                    --  and x knows y's secret...
+            , gvar (GAt S y x)                    --  and y knows x's secret
+            ]                                     --  TODO: Does y knows x's number?
+          | x <- agents
+          , y <- agents
+          ]
+        ]
 
-  in undefined
+      -- observables
+
+   in undefined

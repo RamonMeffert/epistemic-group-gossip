@@ -28,14 +28,16 @@ import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Data.Tuple (swap)
 
-type GossipGraph = Gr Char Kind
+type GossipGraph = Gr AgentName Kind
 
 -- | Generate an initial gossip graph (with no initial shared secrets), based on a list of agents and their known phone numbers.
-initialGraph :: [Char] -> Map Char [Char] -> GossipGraph
-initialGraph agents numberLists =
-  let nodes = zip [0 ..] agents
+initialGraph :: Int -> [(Char, [Char])] -> GossipGraph
+initialGraph nAgents numberLists =
+  let agIds = [0 .. nAgents - 1]
+      agLabs = map idToLab agIds
 
-      agIds = [0 .. length agents]
+      nodes :: [Agent]
+      nodes = zip agIds agLabs
 
       secrets :: [(Int, Int, Kind)]
       secrets = zip3 agIds agIds $ repeat Secret
@@ -45,8 +47,7 @@ initialGraph agents numberLists =
 
       flatten :: [(Char, [Char])] -> [(Char, Char)]
       flatten = foldr fun []
-        where
-          fun tup = (++) [(fst tup, x) | x <- snd tup]
+        where fun tup = (++) [(fst tup, x) | x <- snd tup]
 
       tupCharToInt :: (Char, Char) -> (Int, Int)
       tupCharToInt = join (***) (charmap !)
@@ -55,8 +56,16 @@ initialGraph agents numberLists =
       withKind tup = (fst tup, snd tup, Number)
 
       numbers :: [(Int, Int, Kind)]
-      numbers = (map (withKind . tupCharToInt) . flatten) (Map.assocs numberLists)
+      numbers = (map (withKind . tupCharToInt) . flatten) numberLists
    in mkGraph nodes (secrets ++ numbers)
+
+-- | Convert an agent ID to an agent label
+idToLab :: Int -> Char
+idToLab = toEnum . (97 +)
+
+-- | Convert an agent label to an agnet ID
+labToId :: Char -> Int
+labToId = flip (-) 97 . fromEnum
 
 -- |
 --    This part of the module is a simplified Haskell translation of <https://github.com/RamonMeffert/elm-gossip/blob/master/src/elm/GossipGraph/Parser.elm>
