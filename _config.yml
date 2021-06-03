@@ -35,6 +35,7 @@ plugins:
 header_pages:
   - about.markdown
   - theory/index.markdown
+  - license.markdown
 
 github_username: RamonMeffert
 
