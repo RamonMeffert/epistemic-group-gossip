@@ -9,7 +9,7 @@ import qualified Data.Map as Map
 
 import GossipGraph ( GossipGraph )
 
-type Agent = Char
+type Agent = Graph.LNode Char
 
 data GossipAtom
     = Top                           -- ^ Always true
@@ -40,5 +40,5 @@ data GossipKnowledgeStructure = GKS
 fromGossipGraph :: GossipGraph -> GossipKnowledgeStructure
 fromGossipGraph graph = 
   let 
-    agents = Graph.labNodes graph
+    agents = map snd $ Graph.labNodes graph
   in undefined
