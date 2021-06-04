@@ -1,1 +1,3 @@
-# tryouts
+# Epistemic Group Gossip
+
+TODO
