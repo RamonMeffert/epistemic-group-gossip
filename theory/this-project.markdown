@@ -3,9 +3,11 @@ title: This project
 permalink: /theory/this-project/
 ---
 
-We extend previous definitions of epistemic gossip (e.g. Herzig & Maffre, 2017;
-Ramezanian et al., 2021; van Ditmarsch et al., 2017) with the notion of group
-calls. We base our notation off of van Ditmarsch et al. (2017):
+## Dynamic epistemic gossip with group calls
+
+We extend previous definitions of dynamic epistemic gossip (e.g. Herzig &
+Maffre, 2017; Ramezanian et al., 2021; van Ditmarsch et al., 2017) with the
+notion of group calls. We base our notation off of van Ditmarsch et al. (2017):
 
 > Given a finite set of agents (or nodes) $$A = \{a,b,\dots\}$$, we represent a
 > gossip graph G with telephone numbers and secrets as a triple $$(A, N, S)$$
@@ -62,7 +64,29 @@ $$
 
 For both of the scenarios above, the call-induced gossip graph is written as $$G^{x \mid y_1 \dots y_k \mid}$$, e.g., when agent $$a$$ calls agents b, c, and d, we write $$G^{a \mid bcd \mid}$$
 
+## Knowledge structures and action models
+
+We intend to make use of action models (van Ditmarsch et al., 2008) to represent
+the update to the knowledge structures (Gattinger, 2018) that represent the
+knowledge in the gossip graph. We define the knowledge structure of an initial
+gossip graph $$\mathcal{F} = \langle V, \theta, O_{a \in A} \rangle$$:
+
+\begin{align\*}
+    V &= \\{ N(x, y) \mid x, y \in A \\} \cup  
+        \\{ S(x, y) \mid x, y \in A \\} \cup  
+        \\{ C(x, y) \mid x, y \in A \\},\\\\\
+    \theta &= \bigwedge_{a \in A} ( S(a, a) \land N(a, a) ) 
+             \land \bigwedge_{x, y \in A} C(x, y) \to ( N(x,y) \land S(x, y) \land S(y, x)),\\\\\
+    O_{a \in A} &= \\{ S(a,a) \\} \cup \\{ N(a, b) \mid b \in N_a^{\varepsilon} \\}
+\end{align\*}
+
+Where we take our definition of $$C(x,y)$$ from Ramezanian et al. (2021), replacing the definition given in van Ditmarsch et al. (2017).
+
+We are still working on our definition of action models.
+
 ## References
+
+van Ditmarsch, H., Kooi, B., & van der Hoek, W. (2008). 6. Action Models. In Dynamic epistemic logic. Springer.
 
 van Ditmarsch, H., van Eijck, J., Pardo, P., Ramezanian, R., & Schwarzentruber,
 F. (2017). Epistemic protocols for dynamic gossip. _Journal of Applied Logic_, _20_,
@@ -70,6 +94,9 @@ F. (2017). Epistemic protocols for dynamic gossip. _Journal of Applied Logic_, _
 
 Herzig, A., & Maffre, F. (2017). How to share knowledge by gossiping. _AI
 Communications_, _30_(1), 1–17. DOI: [10/f94qxh](https://doi.org/10/f94qxh)
+
+Gattinger, M. (2018). New Directions in Model Checking Dynamic Epistemic Logic
+[PhD Thesis]. Universiteit van Amsterdam.
 
 Ramezanian, R., Ramezanian, R., van Ditmarsch, H., & Gattinger, M. (2021).
 Everyone Knows that Everyone Knows. In M. Mojtahedi, S. Rahman, & M. S. Zarepour
