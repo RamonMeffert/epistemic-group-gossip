@@ -8,8 +8,8 @@ Ramezanian et al., 2021; van Ditmarsch et al., 2017) with the notion of group
 calls. We base our notation off of van Ditmarsch et al. (2017):
 
 > Given a finite set of agents (or nodes) $$A = \{a,b,\dots\}$$, we represent a
-> gossip graph G with telephone numbers and secrets as a triple $$(A, N, S)$$
-> with $$N, S \subseteq A \times A$$. That is, the agents A are the vertices and
+> gossip graph $$G$$ with telephone numbers and secrets as a triple $$(A, N, S)$$
+> with $$N, S \subseteq A \times A$$. That is, the agents $$A$$ are the vertices and
 > $$N,S$$ are binary relations on $$A$$, with $$Nxy$$ (for $$(x,y) \in N$$)
 > expressing that $$x$$ knows the (telephone) number of $$y$$, and $$Sxy$$
 > expressing that $$x$$ knows the secret of $$y$$.
@@ -61,6 +61,15 @@ $$
 $$
 
 For both of the scenarios above, the call-induced gossip graph is written as $$G^{x \mid y_1 \dots y_k \mid}$$, e.g., when agent $$a$$ calls agents b, c, and d, we write $$G^{a \mid bcd \mid}$$
+
+## Modelling epistemic relations
+
+Instead of the Kripke-like gossip model that is used to model agents' knowledge about a gossip process such as i.a. (van Ditmarsch et al., 2017), we model this using Knowledge Structures. As introducted by (Gattinger, 2018), a knowledge structure is represented by $$\mathcal{F}=(V,\theta,O_a,O_b,\ldots)$$, where $$V$$ is the vocabulary set of atoms, $$\theta$$ is the state law, a binary formula that every state (i.e. a valuation of the atoms in $$V$$) needs to satisfy. The sets $$(O_x)_{x\in A}$$ are the observable atoms of agent $$x$$. An atom is observable for agent $$x$$ if they are certain of whether this atom is true or false. 
+
+We define these sets as follows:
+$$
+    V = {\texttt{N}(x,y), \texttt{S}(x,y), \texttt{C}(x,y)\ |\ x,y\in A}
+$$
 
 ## References
 

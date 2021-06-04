@@ -12,7 +12,7 @@ permalink: /theory/background
 
 Dynamic gossip (van Ditmarsch et al., 2018) is a process in which agents
 communicate (telephone) “numbers”and“secrets”. This is modelled using a gossip
-graph $$G = (A,N,S)$$ with \(A\) a set of agents and $$N \subseteq S \subseteq
+graph $$G = (A,N,S)$$ with $$A$$ a set of agents and $$N \subseteq S \subseteq
 A^2$$ binary relations representing which agents knows whose number and/or
 secrets. This process is called _dynamic_ because the graph changes on runtime.
 It has been proven (by Tijdeman (1971) and others) that for a gossip graph with $$n \geq 4$$ agents, the number
