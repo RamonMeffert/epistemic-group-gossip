@@ -24,7 +24,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   A project for the University of Groningen course “Logical Aspects of
   Multi-Agent Systems” exploring agent knowledge in distributed systems with
   semi-public announcements.
-baseurl: "/lamas-tryouts" # the subpath of your site, e.g. /blog
+baseurl: "/epistemic-group-gossip" # the subpath of your site, e.g. /blog
 url: "https://ramonmeffert.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Build settings
