@@ -8,7 +8,7 @@ A project for the University of Groningen course “Logical Aspects of
 Multi-Agent Systems” exploring agent knowledge in distributed systems with
 semi-public announcements.
 
-## To Do
+## Planning
 At this point the project is far from finished. Here are a couple of points that we intend to add before the final deadline:
  - (Report) Full definitions and natationary conventions of (dynamic epistemic) gossip. We are aware that the graders are not proficient in this field;
  - The update pipeline, including the updating of the gossip graph given a new (group) call, and the updating of the underlying knowledge structure. For the latter, we intend to use ```SMCDEL``` and action models;
