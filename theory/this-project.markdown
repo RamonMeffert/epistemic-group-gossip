@@ -76,7 +76,7 @@ satisfy. The sets $$(O_x)_{x\in A}$$ are the observable atoms of agent $$x$$. An
 atom is observable for agent $$x$$ if they are certain of whether this atom is
 true or false. 
 
-A knowledge structure should reflect the knowledge of all agents given a gossip state $$(G,\sigma)$$. For an _initial_ gossip state $$(G=(A,S,N), \varepsilon)$$ where $$S=I_A\subseteq N$$, We define these sets as follows:
+In this context, a knowledge structure should reflect the knowledge of all agents given a gossip state $$(G,\sigma)$$. For an _initial_ gossip state $$(G=(A,N,S),\ \varepsilon)$$ where $$S=I_A\subseteq N$$, We define these sets as follows:
 
 \begin{align\*}
     V &= \\{ \texttt{N}(x, y) \mid x, y \in A \\} \cup  
