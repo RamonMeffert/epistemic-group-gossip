@@ -11,15 +11,20 @@ import qualified Data.Map as Map
 
 import GossipGraph
 
-data Rel = N | S | C deriving (Show, Ord, Eq, Enum)
+-- | The relation type of a GossipAtom. 
+data Rel = N  -- ^ x knows the number of y
+         | S  -- ^ x knows the secret of y
+         | C  -- ^ x has called y
+         deriving (Show, Ord, Eq, Enum)
 
+-- | An atomic proposition in a gossip state: Rel(Agent, Agent)
 data GossipAtom = GAt Rel Agent Agent deriving (Show, Ord, Eq)
 
--- | Converts Bdd variable to a GossipAtom
+-- | Converts Bdd formula to a list of GossipAtoms for all variables in the formula
 toGAt :: Int -> Bdd -> [GossipAtom]
 toGAt n bdd = map (toGAt' n) (allVarsOf bdd)
       
-
+-- | Converts a Bbd variable index to a GossipAtom
 toGAt' :: Int -> Int -> GossipAtom
 toGAt' n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
   where rel =  v        `div` (n^2)
@@ -30,13 +35,8 @@ toGAt' n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
 fromGAt :: Int -> GossipAtom -> Bdd
 fromGAt n (GAt rel (a1,_) (a2,_)) = var $ (n^2) * fromEnum rel + n * a1 + a2
 
--- data GossipAtom
---     = N Agent Agent                 -- ^ Agent x knows the number of agent y
---     | S Agent Agent                 -- ^ Agent x knows the secret of agent y
---     | C Agent Agent                 -- ^ Agent x has called agent y
---     deriving (Show, Ord, Eq) -- TODO derive Eq?
-
--- TODO: Is this necessary?
+-- | A formula build op of GossipAtoms, using the language of (van Ditmarsch et al., 2017).
+--   We're not certain we need this, we might fully stich with Bdd formulae instead.
 data GossipForm
     = Atom GossipAtom               -- ^ Atom
     | Neg GossipAtom                -- ^ Negation
@@ -45,6 +45,7 @@ data GossipForm
     | Impl GossipForm GossipForm    -- ^ Implication
     deriving (Show)
 
+-- | A knowledge structure (Gattinger, 2018) which represents the knowledge of a Gossip State
 data GossipKnowledgeStructure = GKS
   { -- | The set of atoms available in the model
     vocabulary :: Set GossipAtom,
@@ -56,6 +57,10 @@ data GossipKnowledgeStructure = GKS
     observables :: Map Agent (Set GossipAtom)
   }
 
+-- | Converts a gossip graph to its corresponding knowledge structure. 
+--   Note that this doesn't convert a gossip state, i.e. no call sequence is encoded.
+--   This is meant for the conversion of the _initial_ gossip state, (G, ε) 
+--   (van Ditmarsch et al., 2017)
 fromGossipGraph :: GossipGraph -> GossipKnowledgeStructure
 fromGossipGraph graph =
   let agents = labNodes graph
