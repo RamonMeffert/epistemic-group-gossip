@@ -71,4 +71,4 @@ Ramezanian, R., Ramezanian, R., van Ditmarsch, H., & Gattinger, M. (2021).
 Everyone Knows that Everyone Knows. In M. Mojtahedi, S. Rahman, & M. S. Zarepour
 (Eds.), _Mathematics, Logic, and their Philosophies: Essays in Honour of Mohammad
 Ardeshir_ (pp. 117–133). Springer International Publishing.
-[ggf6](https://doi.org/ggf6)
+DOI: [ggf6](https://doi.org/ggf6)
