@@ -76,18 +76,18 @@ satisfy. The sets $$(O_x)_{x\in A}$$ are the observable atoms of agent $$x$$. An
 atom is observable for agent $$x$$ if they are certain of whether this atom is
 true or false. 
 
-We define these sets as follows:
+A knowledge structure should reflect the knowledge of all agents given a gossip state $$(G,\sigma)$$. For an _initial_ gossip state $$(G=(A,S,N), \varepsilon)$$ where $$S=I_A\subseteq N$$, We define these sets as follows:
 
 \begin{align\*}
-    V &= \\{ N(x, y) \mid x, y \in A \\} \cup  
-        \\{ S(x, y) \mid x, y \in A \\} \cup  
-        \\{ C(x, y) \mid x, y \in A \\},\\\\\
-    \theta &= \bigwedge_{a \in A} ( S(a, a) \land N(a, a) ) 
-             \land \bigwedge_{x, y \in A} C(x, y) \to ( N(x,y) \land S(x, y) \land S(y, x)),\\\\\
-    O_{a \in A} &= \\{ S(a,a) \\} \cup \\{ N(a, b) \mid b \in N_a^{\varepsilon} \\}
+    V &= \\{ \texttt{N}(x, y) \mid x, y \in A \\} \cup  
+        \\{ \texttt{S}(x, y) \mid x, y \in A \\} \cup  
+        \\{ \texttt{C}(x, y) \mid x, y \in A \\},\\\\\
+    \theta &= \bigwedge_{x \in A} ( \texttt{S}(x, x) \land \texttt{N}(x, x) ) 
+             \land \bigwedge_{x, y \in A} \texttt{C}(x, y) \to ( \texttt{N}(x,y) \land \texttt{S}(x, y) \land \texttt{S}(y, x)),\\\\\
+    O_{x \in A} &= \\{ \texttt{S}(x,x) \\} \cup \\{ \texttt{N}(x, y) \mid y \in N_x^{\varepsilon} \\}
 \end{align\*}
 
-Where we take our definition of $$C(x,y)$$ from Ramezanian et al. (2021),
+Where we take our definition of $$\texttt{C}(x,y)$$ from Ramezanian et al. (2021),
 replacing the definition given in van Ditmarsch et al. (2017).
 
 ### Updating knowledge
