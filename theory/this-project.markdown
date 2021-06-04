@@ -10,8 +10,8 @@ Maffre, 2017; Ramezanian et al., 2021; van Ditmarsch et al., 2017) with the
 notion of group calls. We base our notation off of van Ditmarsch et al. (2017):
 
 > Given a finite set of agents (or nodes) $$A = \{a,b,\dots\}$$, we represent a
-> gossip graph G with telephone numbers and secrets as a triple $$(A, N, S)$$
-> with $$N, S \subseteq A \times A$$. That is, the agents A are the vertices and
+> gossip graph $$G$$ with telephone numbers and secrets as a triple $$(A, N, S)$$
+> with $$N, S \subseteq A \times A$$. That is, the agents $$A$$ are the vertices and
 > $$N,S$$ are binary relations on $$A$$, with $$Nxy$$ (for $$(x,y) \in N$$)
 > expressing that $$x$$ knows the (telephone) number of $$y$$, and $$Sxy$$
 > expressing that $$x$$ knows the secret of $$y$$.
@@ -64,12 +64,19 @@ $$
 
 For both of the scenarios above, the call-induced gossip graph is written as $$G^{x \mid y_1 \dots y_k \mid}$$, e.g., when agent $$a$$ calls agents b, c, and d, we write $$G^{a \mid bcd \mid}$$
 
-## Knowledge structures and action models
+## Modelling epistemic relations
 
-We intend to make use of action models (van Ditmarsch et al., 2008) to represent
-the update to the knowledge structures (Gattinger, 2018) that represent the
-knowledge in the gossip graph. We define the knowledge structure of an initial
-gossip graph $$\mathcal{F} = \langle V, \theta, O_{a \in A} \rangle$$:
+Instead of the Kripke-like gossip model that is used to model agents' knowledge
+about a gossip process such as i.a. (van Ditmarsch et al., 2017), we model this
+using Knowledge Structures. As introducted by (Gattinger, 2018), a knowledge
+structure is represented by $$\mathcal{F}=(V,\theta,O_a,O_b,\ldots)$$, where
+$$V$$ is the vocabulary set of atoms, $$\theta$$ is the state law, a binary
+formula that every state (i.e. a valuation of the atoms in $$V$$) needs to
+satisfy. The sets $$(O_x)_{x\in A}$$ are the observable atoms of agent $$x$$. An
+atom is observable for agent $$x$$ if they are certain of whether this atom is
+true or false. 
+
+We define these sets as follows:
 
 \begin{align\*}
     V &= \\{ N(x, y) \mid x, y \in A \\} \cup  
@@ -80,13 +87,20 @@ gossip graph $$\mathcal{F} = \langle V, \theta, O_{a \in A} \rangle$$:
     O_{a \in A} &= \\{ S(a,a) \\} \cup \\{ N(a, b) \mid b \in N_a^{\varepsilon} \\}
 \end{align\*}
 
-Where we take our definition of $$C(x,y)$$ from Ramezanian et al. (2021), replacing the definition given in van Ditmarsch et al. (2017).
+Where we take our definition of $$C(x,y)$$ from Ramezanian et al. (2021),
+replacing the definition given in van Ditmarsch et al. (2017).
 
-We are still working on our definition of action models.
+### Updating knowledge
+
+We intend to use action models (van Ditmarsch et al., 2008) to update our
+knowledge structures when a group call occurs. At this point, we have not yet
+defined how this will work. (Note that the library we use for knowledge
+structures, `SMCDEL`, allows using action models on knowledge structures.)
 
 ## References
 
-van Ditmarsch, H., Kooi, B., & van der Hoek, W. (2008). 6. Action Models. In Dynamic epistemic logic. Springer.
+van Ditmarsch, H., Kooi, B., & van der Hoek, W. (2008). 6. Action Models. In
+Dynamic epistemic logic. Springer.
 
 van Ditmarsch, H., van Eijck, J., Pardo, P., Ramezanian, R., & Schwarzentruber,
 F. (2017). Epistemic protocols for dynamic gossip. _Journal of Applied Logic_, _20_,
