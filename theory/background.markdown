@@ -20,6 +20,8 @@ of calls needed before all agents know all secrets is $$2n - 4$$.
 
 #### Dynamic Epistemic Gossip
 
+In Dynamic Epistemic Gossip, the gossip process is modelled through the knowledge that agents have at any given point. A Kripke-like model is established, where every world gepresents a gossip state, represented by an inital gossip graph and a sequence of calls that is valid for this graph. The accissibility relations for any agent are established between gossip states that are ``indistinguishable'' for them, given their known secrets and numbers and their (individual) call history. Through these accessibility relations, a notion of agent knowledge is made that can be used to create epistemic protocols: Only allow a call if it satisfies a certain epistemic formula in the gossip model. 
+
 (Herzig & Maffre, 2017; Ramezanian et al., 2021; van Ditmarsch et al., 2017)
 
 #### Group calls
