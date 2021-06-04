@@ -88,7 +88,7 @@ In this context, a knowledge structure should reflect the knowledge of all agent
 \end{align\*}
 
 Where we take our definition of $$\texttt{C}(x,y)$$ from Ramezanian et al. (2021),
-replacing the definition given in van Ditmarsch et al. (2017).
+replacing the definition given in van Ditmarsch et al. (2017). Note that, as we intend to update this structure as specified below, it isn't necessary to define a conversion from an _arbitrary_ (i.e. not initial) gossip state to a corresponding knowledge structure. 
 
 ### Updating knowledge
 
