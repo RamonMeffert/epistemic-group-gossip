@@ -17,13 +17,14 @@ data GossipAtom = GAt Rel Agent Agent deriving (Show, Ord, Eq)
 
 -- | Converts Bdd variable to a GossipAtom
 toGAt :: Int -> Bdd -> [GossipAtom]
-toGAt n bdd = 
-  let convert prp = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
-        where rel =  prp        `div` (n^2)
-              a1  = (prp - rel) `div`  n
-              a2  = (prp - a1)
-   in map convert (allVarsOf bdd)
+toGAt n bdd = map (toGAt' n) (allVarsOf bdd)
       
+
+toGAt' :: Int -> Int -> GossipAtom
+toGAt' n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
+  where rel =  v        `div` (n^2)
+        a1  = (v - rel) `div`  n
+        a2  =  v - a1
 
 -- | Convert a GossipAtom to a Bdd variable
 fromGAt :: Int -> GossipAtom -> Bdd
