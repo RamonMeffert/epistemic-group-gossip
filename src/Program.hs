@@ -26,12 +26,13 @@ userActions graph = do
   putStrLn "What action would you like to perform?"
   action <- getLine
   putStrLn ("You want to " ++ action ++ "!?")
-  let newGraph = performUserAction graph action
-  _ <- printGraph newGraph
-  userActions newGraph
+  let graph = performUserAction graph action
+  putStrLn "Updated graph:"
+  _ <- printGraph graph
+  userActions graph      -- Recursive call
   where
     performUserAction :: GossipGraph -> String -> GossipGraph
-    performUserAction g a = do
+    performUserAction g a =
       -- Execute action against GossipGraph
         -- Update GossipGraph
         -- Present user with new state (i.e. valuation of observables, current knowledge)
@@ -42,6 +43,9 @@ protocolActions :: GossipProtocol -> GossipGraph -> IO ()
 protocolActions prot graph = do
   -- Perform protocol tick
     -- Explain the to be performed actions
-    -- Update GossipGraph
+    -- performProtocolTick
     -- Present user with new state (i.e. valuation of observables, current knowledge)
-  protocolActions prot $ performProtocolTick prot graph
+  let graph = performProtocolTick prot graph
+  putStrLn "updateed graph:"
+  _ <- printGraph graph
+  protocolActions prot graph  -- Recursive call
