@@ -29,7 +29,7 @@ dependencies:
 - text >= 1.2.4.1
 
 library:
-  source-dirs: src
+  source-dirs: src/
 
 executables:
   egg:

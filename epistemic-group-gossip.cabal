@@ -27,11 +27,12 @@ library
   exposed-modules:
       GossipGraph
       GossipKnowledgeStructure
-      Lib
+      GossipProtocol
+      Program
   other-modules:
       Paths_epistemic_group_gossip
   hs-source-dirs:
-      src
+      src/
   build-depends:
       HasCacBDD >=0.1.0.3 && <0.2
     , base >=4.7 && <5
