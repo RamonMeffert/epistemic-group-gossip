@@ -75,11 +75,12 @@ fromGossipGraph graph =
       stateLaw = conSet 
         [ conSet [gvar (GAt S a a) | a <- agents] -- agents know their own secret
         , conSet [gvar (GAt N a a) | a <- agents] -- agents know their own number
-        , conSet [gvar (GAt C x y) `imp` conSet   -- if x has called y...
-            [ gvar (GAt N x y)                    --  then x knows y's number...
-            , gvar (GAt S x y)                    --  and x knows y's secret...
-            , gvar (GAt S y x)                    --  and y knows x's secret
-            ]                                     --  TODO: Does y knows x's number?
+        , conSet [gvar (GAt C x y) `imp` conSet   -- if x has called y;
+            [ gvar (GAt N x y)                    --  then x knows y's number;
+            , gvar (GAt N y x)                    --  and y knows x's number;
+            , gvar (GAt S x y)                    --  and x knows y's secret;
+            , gvar (GAt S y x)                    --  and y knows x's secret.
+            ]
           | x <- agents
           , y <- agents
           ]

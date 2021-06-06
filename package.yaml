@@ -34,7 +34,7 @@ library:
 executables:
   egg:
     main:                Main.hs
-    source-dirs:         app
+    source-dirs:         app/
     ghc-options:
     - -threaded
     - -rtsopts
