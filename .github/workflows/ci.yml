@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04, windows-2019]
+        os: [ubuntu-18.04]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -46,10 +46,10 @@ jobs:
           path: 'C:\Users\runneradmin\AppData\Local\Programs\stack'
           key: ghc-${{ hashFiles('./stack.yaml.lock') }}
 
-      - name: Build generator
+      - name: Build egg
         run: stack build
 
-      - name: Package generator
+      - name: Package egg
         shell: bash
         run: |
           mkdir package
