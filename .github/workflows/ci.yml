@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       - name: Install stack (MacOS)
         run: curl -sSL https://get.haskellstack.org/ | sh
