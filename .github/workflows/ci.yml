@@ -54,7 +54,7 @@ jobs:
         run: |
           mkdir package
           dir=$(stack path --dist-dir)/build/egg
-          [[ -e "$dir/egg" ]] && cp "$dir/egg" /package/Egg
+          [[ -e "$dir/egg" ]] && cp "$dir/egg" package/Egg
           cd ..
           cp -r static template package/
 
