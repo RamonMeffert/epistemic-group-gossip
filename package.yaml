@@ -24,7 +24,7 @@ dependencies:
 - containers >= 0.6
 - HasCacBDD >= 0.1.0.3 && < 0.2
 - cudd == 0.1.0.0
-- smcdel >= 1.1.0
+# - smcdel >= 1.1.0
 - fgl >=5.7.0.3
 - text >= 1.2.4.1
 
