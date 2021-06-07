@@ -52,11 +52,11 @@ jobs:
       - name: Package egg
         shell: bash
         run: |
-          mkdir package
+          sudo mkdir package
           dir=$(stack path --dist-dir)/build/egg
-          [[ -e "$dir/egg" ]] && cp "$dir/egg" ../package/Egg
+          [[ -e "$dir/egg" ]] && sudo cp "$dir/egg" ../package/Egg
           cd ..
-          cp -r static template package/
+          sudo cp -r static template package/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v1
