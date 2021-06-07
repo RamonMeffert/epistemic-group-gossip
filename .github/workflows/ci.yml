@@ -55,11 +55,9 @@ jobs:
           mkdir package
           dir=$(stack path --dist-dir)/build/egg
           [[ -e "$dir/egg" ]] && cp "$dir/egg" package/Egg
-          cd ..
-          cp -r static template package/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v1
         with:
-          name: generator-${{ runner.os }}
+          name: egg-${{ runner.os }}
           path: package
