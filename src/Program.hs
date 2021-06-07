@@ -7,53 +7,68 @@ where
 
 import GossipGraph
 import GossipProtocol
+import GossipKnowledgeStructure
 
 -- | Main entry point to the program.
 -- Parses the gossipgraph and allows user to select what 
 runProgram :: IO ()
 runProgram = do
-  -- Parse Gossip graph
+  -- parse GossipGraph from input (cli or txt)
   -- during testing, uncomment line below:
-  let graph = testGraph 
-  putStrLn "Gossip graph parsed"
+  let initState = State testGraph (fromGossipGraph testGraph) []
+  putStrLn "State parsed"
   putStrLn "Useractions (u), Protocol (p) or Hybrid (h)?"
   action <- getLine 
-  runActions graph action 
+  runActions initState action 
   where 
-    runActions graph action | action == "u" = userActions graph
-                            | action == "p" = protocolActions 1 graph
-                            | action == "h" = hybridActions 1 graph
+    obtainProtocol :: IO GossipProtocol
+    obtainProtocol = do
+      putStrLn "What protocol would like to use?"
+      putStrLn "(a)ny, (l)earn new secrets"
+      prot <- getLine
+      return $ case prot of
+        "a" -> (\ _ _ -> True)
+        "l" -> (\ _ _ -> False)
+    runActions state action =
+      case action of 
+        "u" -> userActions state
+        "p" -> do
+          prot <- obtainProtocol
+          protocolActions prot state
+        "h" -> do
+          prot <- obtainProtocol
+          hybridActions prot state
 
 -- | Combines both user and protocol actions into one function.
 -- Each tick the user may choose to perform a custom action, protocol action or first custom and then protocol action.
-hybridActions :: GossipProtocol -> GossipGraph -> IO ()
-hybridActions prot graph = do
+hybridActions :: GossipProtocol -> State -> IO ()
+hybridActions prot state = do
   putStrLn "Actiontype? (u)ser, (p)rotocol or (b)oth"
   action <- getLine 
-  newGraph <- executeAction action
-  hybridActions prot newGraph
+  newState <- executeAction action
+  hybridActions prot newState
   where 
-    executeAction a=
+    executeAction a =
       case a of 
-        "u" -> performUserAction graph
-        "p" -> performProtocolAction prot graph
+        "u" -> performUserAction state
+        "p" -> performProtocolAction prot state
         "b" -> do
-          newGraph <- performUserAction graph
-          performProtocolAction prot newGraph
+          newState <- performUserAction state
+          performProtocolAction prot newState
   
 -- | Continuous execution of user-action.
-userActions :: GossipGraph -> IO ()
-userActions graph = do 
-  newGraph <- performUserAction graph
-  userActions newGraph  -- Recursive call
+userActions :: State -> IO ()
+userActions state = do 
+  newState <- performUserAction state
+  userActions newState  -- Recursive call
 
 -- | Execute action against GossipGraph:
   -- Update GossipGraph
   -- -> Present user with new state (i.e. valuation of observables, current knowledge)
   -- -> Display implications of the performed action (i.e. what would be rational actions by the agents).
-performUserAction :: GossipGraph -> IO GossipGraph 
-performUserAction graph =
-  executeUserAction graph obtainUserAction
+performUserAction :: State -> IO State 
+performUserAction state =
+  executeUserAction state obtainUserAction
   where
     obtainUserAction :: IO String
     obtainUserAction = do
@@ -62,26 +77,28 @@ performUserAction graph =
       putStrLn ("You want to " ++ action ++ "!?")
       return action
 
-    executeUserAction :: GossipGraph -> IO String -> IO GossipGraph
+    executeUserAction :: State -> IO String -> IO State
     executeUserAction g a = do
       action <- a
-      let newGraph = g  -- Do something with action
-      return newGraph
+      let newState = makeCall (agent 1 'a', agent 2 'b') g  -- Do something with action
+      putStrLn "Updated state:"
+      printGraph $ stateGraph newState
+      return newState
 
 -- | Continuous execution of protocol-actions.
-protocolActions :: GossipProtocol -> GossipGraph -> IO ()
-protocolActions prot graph = do
-  newGraph <- performProtocolAction prot graph
-  protocolActions prot newGraph  -- Recursive call
+protocolActions :: GossipProtocol -> State -> IO ()
+protocolActions prot state = do
+  newState <- performProtocolAction prot state
+  protocolActions prot newState  -- Recursive call
 
 -- | Perform protocol tick:
   -- Explain the to be performed actions
   -- -> performProtocolTick
   -- -> Present user with new state (i.e. valuation of observables, current knowledge).
-performProtocolAction :: GossipProtocol -> GossipGraph -> IO GossipGraph 
-performProtocolAction prot graph = do
-  let graph = performProtocolTick prot graph
-  putStrLn "Updated graph:"
-  printGraph graph
-  return graph
+performProtocolAction :: GossipProtocol -> State -> IO State 
+performProtocolAction prot state = do
+  let state = performProtocolTick prot state
+  putStrLn "Updated state:"
+  printGraph $ stateGraph state
+  return state
       
