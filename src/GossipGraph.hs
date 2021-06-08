@@ -18,8 +18,8 @@ import Control.Arrow ((***))
 import Control.Monad (join)
 import qualified Data.Char as Char
 import Data.Graph.Inductive (Gr, LEdge, LNode, prettyPrint)
-import Data.Graph.Inductive.Graph (Graph (mkGraph), prettify)
-import Data.List (find)
+import Data.Graph.Inductive.Graph (Graph (mkGraph), prettify, labNodes, hasLEdge)
+import Data.List (find, filter)
 import Data.Map (Map, (!))
 import qualified Data.Map as Map
 import Data.Maybe ()
@@ -76,6 +76,15 @@ idToLab = toEnum . (97 +)
 -- | Convert an agent label to an agnet ID
 labToId :: Char -> Int
 labToId = flip (-) 97 . fromEnum
+
+hasRelationWith :: GossipGraph -> Agent -> Kind -> Agent -> Bool
+hasRelationWith g (ag1, _) kind (ag2, _) = hasLEdge g (ag1, ag2, kind)
+
+numbersKnownBy :: GossipGraph -> Agent -> [Agent]
+numbersKnownBy graph agent = filter (hasRelationWith graph agent Number) (labNodes graph)
+
+secretsKnownBy :: GossipGraph -> Agent -> [Agent]
+secretsKnownBy graph agent = filter (hasRelationWith graph agent Secret) (labNodes graph)
 
 -- |
 --    This part of the module is a simplified Haskell translation of <https://github.com/RamonMeffert/elm-gossip/blob/master/src/elm/GossipGraph/Parser.elm>

@@ -1,11 +1,10 @@
-module GossipKnowledgeStructure
+module GossipKnowledgeStructure where
 
-where
 import Data.Graph.Inductive.Graph
 import Data.HasCacBDD
 import Data.Map (Map)
-import Data.Set (Set)
-import Data.List
+import Data.Set (Set, union)
+
 import qualified Data.Set as Set
 import qualified Data.Map as Map
 
@@ -71,7 +70,10 @@ fromGossipGraph graph =
       vocab = foldr (\(x,y) -> (++) [GAt N x y, GAt S x y, GAt C x y]) [] agentCombs
 
       -- state law
+      gvar :: GossipAtom -> Bdd
       gvar = fromGAt n
+
+      stateLaw :: Bdd
       stateLaw = conSet 
         [ conSet [gvar (GAt S a a) | a <- agents] -- agents know their own secret
         , conSet [gvar (GAt N a a) | a <- agents] -- agents know their own number
@@ -87,5 +89,13 @@ fromGossipGraph graph =
         ]
 
       -- observables
+      initialSecrets :: Set GossipAtom
+      initialSecrets = Set.fromList [GAt S a a | a <- agents]
 
-   in undefined
+      numbersOf :: Agent -> Set GossipAtom
+      numbersOf ag = Set.fromList [GAt N ag x | x <- numbersKnownBy graph ag]
+
+      observables :: Map Agent (Set GossipAtom)
+      observables = Map.fromList [(a, initialSecrets `union` numbersOf a) | a <- agents]
+
+   in GKS (Set.fromList vocab) stateLaw observables
