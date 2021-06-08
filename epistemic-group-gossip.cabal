@@ -39,7 +39,6 @@ library
     , containers >=0.6
     , cudd ==0.1.0.0
     , fgl >=5.7.0.3
-    , smcdel >=1.1.0
     , text >=1.2.4.1
   default-language: Haskell2010
 
@@ -57,7 +56,6 @@ executable egg
     , cudd ==0.1.0.0
     , epistemic-group-gossip
     , fgl >=5.7.0.3
-    , smcdel >=1.1.0
     , text >=1.2.4.1
   default-language: Haskell2010
 
@@ -76,6 +74,5 @@ test-suite egg-test
     , cudd ==0.1.0.0
     , epistemic-group-gossip
     , fgl >=5.7.0.3
-    , smcdel >=1.1.0
     , text >=1.2.4.1
   default-language: Haskell2010

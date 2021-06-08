@@ -30,9 +30,15 @@ import Data.Tuple (swap)
 
 type GossipGraph = Gr AgentName Kind
 
+printGraph :: GossipGraph -> IO ()
+printGraph = prettyPrint
+
 -- | Simple graph to be used for testing
 testGraph :: GossipGraph
 testGraph = initialGraph 3 [('a', ['a', 'b']), ('b', ['b', 'c']), ('c', ['c'])]
+
+testGraph2 :: GossipGraph
+testGraph2 = initialGraph 3 [('a',['a','b','c']), ('b',['b']), ('c',['c'])]
 
 -- | Generate an initial gossip graph (with no initial shared secrets), based on a list of agents and their known phone numbers.
 initialGraph :: Int -> [(Char, [Char])] -> GossipGraph
@@ -284,6 +290,3 @@ toStringIfSuccessful graph =
       prettify g
     _ ->
       "Failed to generate a gossip graph"
-
-printGraph :: GossipGraph -> IO ()
-printGraph = prettyPrint
