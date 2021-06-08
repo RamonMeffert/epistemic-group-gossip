@@ -1,0 +1,16 @@
+cradle:
+  stack:
+    - path: "./src/"
+      component: "epistemic-group-gossip:lib"
+
+    - path: "./app/Main.hs"
+      component: "epistemic-group-gossip:exe:egg"
+
+    - path: "./app/Paths_epistemic_group_gossip.hs"
+      component: "epistemic-group-gossip:exe:egg"
+
+    - path: "./test"
+      component: "epistemic-group-gossip:test:egg-test"
+
+    - path: "cudd/./"
+      component: "cudd:lib"
