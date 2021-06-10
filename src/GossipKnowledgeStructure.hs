@@ -37,11 +37,13 @@ fromGAt n (GAt rel (a1,_) (a2,_)) = var $ (n^2) * fromEnum rel + n * a1 + a2
 -- | A formula build op of GossipAtoms, using the language of (van Ditmarsch et al., 2017).
 --   We're not certain we need this, we might fully stich with Bdd formulae instead.
 data GossipForm
-    = Atom GossipAtom               -- ^ Atom
-    | Neg GossipAtom                -- ^ Negation
+    = Top                           -- ^ Always true
+    | Atom GossipAtom               -- ^ Atom
+    | Neg GossipForm                -- ^ Negation
     | Conj [GossipForm]             -- ^ Conjunction
     | Disj [GossipForm]             -- ^ Disjunction   
     | Impl GossipForm GossipForm    -- ^ Implication
+    | K Agent GossipAtom            -- ^ Knowledge
     deriving (Show)
 
 -- | A knowledge structure (Gattinger, 2018) which represents the knowledge of a Gossip State
@@ -99,3 +101,11 @@ fromGossipGraph graph =
       observables = Map.fromList [(a, initialSecrets `union` numbersOf a) | a <- agents]
 
    in GKS (Set.fromList vocab) stateLaw observables
+
+synchronousUpdate :: GossipKnowledgeStructure -> (Agent, Agent) -> GossipKnowledgeStructure
+synchronousUpdate gks call = gks { observables = newObs } 
+  where
+    newObs = undefined
+    
+    agentUpdate :: Set GossipAtom -> Set GossipAtom
+    agentUpdate = undefined 

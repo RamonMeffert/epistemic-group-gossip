@@ -8,6 +8,7 @@ import GossipGraph
 import GossipKnowledgeStructure
 
 
+
 data State = State {
     stateGraph :: GossipGraph,
     stateKnowledgeStruct :: GossipKnowledgeStructure,

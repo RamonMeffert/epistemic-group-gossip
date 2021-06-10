@@ -28,6 +28,7 @@ library
       GossipGraph
       GossipKnowledgeStructure
       GossipProtocol
+      GossipState
       Program
   other-modules:
       Paths_epistemic_group_gossip

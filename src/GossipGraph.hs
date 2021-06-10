@@ -17,7 +17,7 @@ module GossipGraph where
 import Control.Arrow ((***))
 import Control.Monad (join)
 import qualified Data.Char as Char
-import Data.Graph.Inductive (Gr, LEdge, LNode, prettyPrint)
+import Data.Graph.Inductive (Gr, LEdge, LNode, prettyPrint, Graph (noNodes))
 import Data.Graph.Inductive.Graph (Graph (mkGraph), prettify, labNodes, hasLEdge)
 import Data.List (find, filter)
 import Data.Map (Map, (!))
@@ -85,6 +85,9 @@ numbersKnownBy graph agent = filter (hasRelationWith graph agent Number) (labNod
 
 secretsKnownBy :: GossipGraph -> Agent -> [Agent]
 secretsKnownBy graph agent = filter (hasRelationWith graph agent Secret) (labNodes graph)
+
+noAgents :: GossipGraph -> Int
+noAgents = noNodes
 
 -- |
 --    This part of the module is a simplified Haskell translation of <https://github.com/RamonMeffert/elm-gossip/blob/master/src/elm/GossipGraph/Parser.elm>
