@@ -28,6 +28,16 @@ import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Data.Tuple (swap)
 
+import GossipTypes
+
+-- | Edge label indicating whether an agent knows the number or secret of
+-- another agent
+data Kind
+  = Number
+  | Secret
+  deriving (Eq, Show)
+
+type Relation = LEdge Kind
 type GossipGraph = Gr AgentName Kind
 
 printGraph :: GossipGraph -> IO ()
@@ -89,51 +99,11 @@ secretsKnownBy graph agent = filter (hasRelationWith graph agent Secret) (labNod
 noAgents :: GossipGraph -> Int
 noAgents = noNodes
 
--- |
---    This part of the module is a simplified Haskell translation of <https://github.com/RamonMeffert/elm-gossip/blob/master/src/elm/GossipGraph/Parser.elm>
-
--- -- | Agent names
--- newtype AgentName = AgentName Char
---   deriving (Eq, Ord, Show)
-
--- -- | Agent Ids
--- newtype AgentId = AgentId Int
---   deriving (Num, Eq, Ord, Show)
-
--- | Agent
--- data Agent = Agent
---   { a_name :: AgentName,
---     a_id :: AgentId
---   }
---   deriving (Show, Ord, Eq)
-type Agent = LNode Char
-
-type AgentId = Int
-
-type AgentName = Char
-
-type Relation = LEdge Kind
-
 agent :: Int -> Char -> Agent
 agent _id name = (_id, name)
 
 relation :: Agent -> Agent -> Kind -> Relation
 relation (from, _) (to, _) kind = (from, to, kind)
-
--- | Gossip relation
--- data Relation = Relation
---   { r_from :: AgentId,
---     r_to :: AgentId,
---     r_kind :: Kind
---   }
---   deriving (Show)
-
--- | Edge label indicating whether an agent knows the number or secret of
--- another agent
-data Kind
-  = Number
-  | Secret
-  deriving (Eq, Show)
 
 -- | Given a list of agents and a name, try to find a matching agent
 findAgentByName :: [Agent] -> AgentName -> Maybe Agent

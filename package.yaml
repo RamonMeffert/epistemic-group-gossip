@@ -27,6 +27,7 @@ dependencies:
 # - smcdel >= 1.1.0
 - fgl >=5.7.0.3
 - text >= 1.2.4.1
+- ansi-terminal >= 0.10.3
 
 library:
   source-dirs: src/
