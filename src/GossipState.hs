@@ -29,26 +29,28 @@ printState (State g k c) = do
   printCalls c
 
 -- | Evaluate a gossip atom (N(x,y), S(x,y) or C(x,y)), given the current state
-evaluateGossipAtom :: State -> GossipAtom -> Bool 
+evaluateGossipAtom :: State -> GossipAtom -> Bool
 evaluateGossipAtom (State g _ _) (GAt N x y) = hasRelationWith g x Number y
 evaluateGossipAtom (State g _ _) (GAt S x y) = hasRelationWith g x Secret y
 evaluateGossipAtom (State _ _ s) (GAt C x y) = (x, y) `elem` s
 
 -- | Evaluate a Bdd variable as Int, given the current state
-evaluateBddVar :: State -> Int -> Bool 
+evaluateBddVar :: State -> Int -> Bool
 evaluateBddVar s@(State g _ _) = evaluateGossipAtom s . bddToGAt' (noAgents g)
 
 -- | Convert a knowledge formula (Ka φ) to a Bdd formula, given the current state
 knowledgeToBdd :: State -> Agent -> Form -> Bdd
-knowledgeToBdd s@(State _ k _) ag form = 
+knowledgeToBdd s@(State _ k _) ag form =
   let universe = vocabulary k \\ (observables k ! ag)
       formula = case form of
         Fact bdd   -> stateLaw k `imp` bdd
         K ag2 form -> stateLaw k `imp` knowledgeToBdd s ag2 form
-   in forallSet universe formula
+
+      boolQuant x = [restrict formula (x, True), restrict formula (x,False)]
+   in conSet $ concatMap boolQuant universe
 
 -- | Evaluate a formula, given the current state
-evaluate :: State -> Form -> Bool 
+evaluate :: State -> Form -> Bool
 evaluate s (Fact bdd)  = evaluateFun  bdd                       (evaluateBddVar s)
 evaluate s (K ag form) = evaluateFun (knowledgeToBdd s ag form) (evaluateBddVar s)
 
