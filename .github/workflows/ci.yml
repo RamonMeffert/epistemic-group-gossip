@@ -12,16 +12,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-18.04, macos-10.15]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
           submodules: recursive
-
-      - name: Install stack (MacOS)
-        run: curl -sSL https://get.haskellstack.org/ | sh -s - -f
-        if: matrix.os == 'macos-10.15'
 
       - name: Install stack (Windows)
         run: choco install haskell-stack
@@ -57,12 +53,6 @@ jobs:
           mkdir package
           dir=$(stack path --dist-dir)/build/egg
           [[ -e "$dir/egg" ]] && cp "$dir/egg" package/Egg
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: egg-${{ runner.os }}
-          path: package
     
       - name: Create Release
         id: create_release
