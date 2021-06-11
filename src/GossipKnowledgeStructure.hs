@@ -3,9 +3,8 @@ module GossipKnowledgeStructure where
 import Data.Graph.Inductive.Graph
 import Data.HasCacBDD
 import Data.Map (Map)
-import Data.Set (Set, union)
+import Data.List
 
-import qualified Data.Set as Set
 import qualified Data.Map as Map
 
 import GossipGraph
@@ -20,22 +19,26 @@ data Rel = N  -- ^ x knows the number of y
 data GossipAtom = GAt Rel Agent Agent deriving (Show, Ord, Eq)
 
 -- | Converts Bdd formula to a list of GossipAtoms for all variables in the formula
-toGAt :: Int -> Bdd -> [GossipAtom]
-toGAt n bdd = map (toGAt' n) (allVarsOf bdd)
+bddToGAt :: Int -> Bdd -> [GossipAtom]
+bddToGAt n bdd = map (bddToGAt' n) (allVarsOf bdd)
       
 -- | Converts a Bbd variable index to a GossipAtom
-toGAt' :: Int -> Int -> GossipAtom
-toGAt' n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
+bddToGAt' :: Int -> Int -> GossipAtom
+bddToGAt' n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
   where rel =  v        `div` (n^2)
         a1  = (v - rel) `div`  n
         a2  =  v - a1
 
 -- | Convert a GossipAtom to a Bdd variable
-fromGAt :: Int -> GossipAtom -> Bdd
-fromGAt n (GAt rel (a1,_) (a2,_)) = var $ (n^2) * fromEnum rel + n * a1 + a2
+gAtToBdd :: Int -> GossipAtom -> Bdd
+gAtToBdd n gat = var $ gAtToInt n gat
+
+-- | Convert a GossipAtom to a unique integer
+gAtToInt :: Int -> GossipAtom -> Int 
+gAtToInt n (GAt rel (a1,_) (a2,_)) = (n^2) * fromEnum rel + n * a1 + a2
 
 -- | A formula build op of GossipAtoms, using the language of (van Ditmarsch et al., 2017).
---   We're not certain we need this, we might fully stich with Bdd formulae instead.
+--   We're not certain we need this, we might fully stick with Bdd formulae instead.
 data GossipForm
     = Top                           -- ^ Always true
     | Atom GossipAtom               -- ^ Atom
@@ -43,19 +46,22 @@ data GossipForm
     | Conj [GossipForm]             -- ^ Conjunction
     | Disj [GossipForm]             -- ^ Disjunction   
     | Impl GossipForm GossipForm    -- ^ Implication
-    | K Agent GossipAtom            -- ^ Knowledge
     deriving (Show)
+
+-- | An epistemic formula, defined in terms of Bdd's 
+data Form = Fact Bdd 
+          | K Agent Form
 
 -- | A knowledge structure (Gattinger, 2018) which represents the knowledge of a Gossip State
 data GossipKnowledgeStructure = GKS
   { -- | The set of atoms available in the model
-    vocabulary :: Set GossipAtom,
+    vocabulary :: [Int],
 
     -- | A boolean formula representing the law that every state needs to adhere to
     stateLaw :: Bdd,
 
     -- | The set of atoms seen by some agent
-    observables :: Map Agent (Set GossipAtom)
+    observables :: Map Agent [Int]
   }
 
 -- | Converts a gossip graph to its corresponding knowledge structure. 
@@ -67,15 +73,15 @@ fromGossipGraph graph =
   let agents = labNodes graph
       n = length agents
 
+      gvar = gAtToBdd n
+      gint = gAtToInt n
+
       -- vocabulary
       agentCombs = [(x,y) | x <- agents, y <- agents]
-      vocab = foldr (\(x,y) -> (++) [GAt N x y, GAt S x y, GAt C x y]) [] agentCombs
+      vocabAtoms = foldr (\(x,y) -> (++) [GAt N x y, GAt S x y, GAt C x y]) [] agentCombs
+      vocabulary = map gint vocabAtoms
 
       -- state law
-      gvar :: GossipAtom -> Bdd
-      gvar = fromGAt n
-
-      stateLaw :: Bdd
       stateLaw = conSet 
         [ conSet [gvar (GAt S a a) | a <- agents] -- agents know their own secret
         , conSet [gvar (GAt N a a) | a <- agents] -- agents know their own number
@@ -91,21 +97,15 @@ fromGossipGraph graph =
         ]
 
       -- observables
-      initialSecrets :: Set GossipAtom
-      initialSecrets = Set.fromList [GAt S a a | a <- agents]
+      initialSecrets = [GAt S a a | a <- agents]
+      numbersOf ag = [GAt N ag x | x <- numbersKnownBy graph ag]
 
-      numbersOf :: Agent -> Set GossipAtom
-      numbersOf ag = Set.fromList [GAt N ag x | x <- numbersKnownBy graph ag]
+      observablesOf ag = map gint $ initialSecrets ++ numbersOf ag
+      observables = Map.fromList [(a, observablesOf a) | a <- agents]
 
-      observables :: Map Agent (Set GossipAtom)
-      observables = Map.fromList [(a, initialSecrets `union` numbersOf a) | a <- agents]
-
-   in GKS (Set.fromList vocab) stateLaw observables
+   in GKS vocabulary stateLaw observables
 
 synchronousUpdate :: GossipKnowledgeStructure -> (Agent, Agent) -> GossipKnowledgeStructure
 synchronousUpdate gks call = gks { observables = newObs } 
   where
     newObs = undefined
-    
-    agentUpdate :: Set GossipAtom -> Set GossipAtom
-    agentUpdate = undefined 
