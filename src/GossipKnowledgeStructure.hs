@@ -8,6 +8,7 @@ import Data.List
 import qualified Data.Map as Map
 
 import GossipGraph
+import GossipTypes
 
 -- | The relation type of a GossipAtom. 
 data Rel = N  -- ^ x knows the number of y
