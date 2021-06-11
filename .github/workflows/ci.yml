@@ -52,7 +52,7 @@ jobs:
         run: |
           mkdir package
           dir=$(stack path --dist-dir)/build/egg
-          [[ -e "$dir/egg" ]] && cp "$dir/egg" package/Egg
+          [[ -e "$dir/egg" ]] && cp "$dir/egg" package/Egg-${{ runner.os }}
           
       - name: Upload artifact
         uses: actions/upload-artifact@v1
@@ -83,7 +83,7 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
-          title: Latest release ${{ runner.os }}
+          title: Latest release
           prerelease: false
           draft: false
           files: |
