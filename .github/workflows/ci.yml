@@ -68,7 +68,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: egg-${{ runner.os }}
-          path: ./
+          path: egg-${{ runner.os }}
     
       - name: Create Release
         id: create_release
