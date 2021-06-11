@@ -73,7 +73,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           #upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          upload_url: ${{ steps.automatic_release.upload_url }}
+          upload_url: ${{ steps.automatic_release.outputs.upload_url }}
           asset_path: package/Egg
           asset_name: egg-${{ runner.os }}
           asset_content_type: application/zip
