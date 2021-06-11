@@ -12,16 +12,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-18.04, macos-10.15]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
           submodules: recursive
-
-      - name: Install stack (MacOS)
-        run: curl -sSL https://get.haskellstack.org/ | sh -s - -f
-        if: matrix.os == 'macos-10.15'
 
       - name: Install stack (Windows)
         run: choco install haskell-stack
@@ -57,37 +53,29 @@ jobs:
           mkdir package
           dir=$(stack path --dist-dir)/build/egg
           [[ -e "$dir/egg" ]] && cp "$dir/egg" package/Egg
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: egg-${{ runner.os }}
-          path: package
-          
-      - name: Download artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: egg-${{ runner.os }}
-          path: ./
     
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create automatic release
+        id: automatic_release
+        uses: marvinpinto/action-automatic-releases@latest
         with:
-          tag_name: "latest"
-          release_name: "Latest release"
-          draft: false
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          title: Latest release ${{ runner.os }}
           prerelease: false
-          
+          draft: false
+          files: |
+            LICENSE
+            
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: egg-${{ runner.os }}
+          #upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.automatic_release.outputs.upload_url }}
+          asset_path: package/Egg
           asset_name: egg-${{ runner.os }}
           asset_content_type: application/zip
+          
+      
