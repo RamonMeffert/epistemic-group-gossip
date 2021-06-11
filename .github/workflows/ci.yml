@@ -53,6 +53,28 @@ jobs:
           mkdir package
           dir=$(stack path --dist-dir)/build/egg
           [[ -e "$dir/egg" ]] && cp "$dir/egg" package/Egg
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: egg-${{ runner.os }}
+          path: package
+          
+  release:
+    name: Create release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: egg-Linux
+          path: artifacts/egg-Linux
+      
+      - name: Download MacOS artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: egg-macOS
+          path: artifacts/egg-macOS
     
       - name: Create automatic release
         id: automatic_release
@@ -65,17 +87,7 @@ jobs:
           draft: false
           files: |
             LICENSE
-            
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          #upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          upload_url: ${{ steps.automatic_release.outputs.upload_url }}
-          asset_path: package/Egg
-          asset_name: egg-${{ runner.os }}
-          asset_content_type: application/zip
-          
+            artifacts/egg-Linux
+            artifacts/egg-macOS
+      
       
