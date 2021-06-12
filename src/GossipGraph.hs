@@ -18,7 +18,7 @@ import Control.Arrow ((***))
 import Control.Monad (join)
 import qualified Data.Char as Char
 import Data.Graph.Inductive (Gr, LEdge, LNode, prettyPrint, Graph (noNodes))
-import Data.Graph.Inductive.Graph (Graph (mkGraph), prettify, labNodes, hasLEdge)
+import Data.Graph.Inductive.Graph --(Graph (mkGraph), prettify, labNodes, hasLEdge)
 import Data.List (find, filter)
 import Data.Map (Map, (!))
 import qualified Data.Map as Map
@@ -91,16 +91,24 @@ hasRelationWith :: GossipGraph -> Agent -> Kind -> Agent -> Bool
 hasRelationWith g (ag1, _) kind (ag2, _) = hasLEdge g (ag1, ag2, kind)
 
 numbersKnownBy :: GossipGraph -> Agent -> [Agent]
-numbersKnownBy graph agent = filter (hasRelationWith graph agent Number) (labNodes graph)
+--numbersKnownBy graph agent = filter (hasRelationWith graph agent Number) (labNodes graph)
+numbersKnownBy graph agent = map (agentFromId . fst) $ filter ((==) Number . snd) (lsuc graph $ fst agent)
 
 secretsKnownBy :: GossipGraph -> Agent -> [Agent]
-secretsKnownBy graph agent = filter (hasRelationWith graph agent Secret) (labNodes graph)
+secretsKnownBy graph agent = map (agentFromId . fst) $ filter ((==) Secret . snd) (lsuc graph $ fst agent)
 
 noAgents :: GossipGraph -> Int
 noAgents = noNodes
 
+-- | Warning, ignores the Char argument! Remains for legacy purposes. 
 agent :: Int -> Char -> Agent
-agent _id name = (_id, name)
+agent _id _ = agentFromId _id
+
+agentFromId :: Int -> Agent
+agentFromId id = (id, idToLab id)
+
+agentFromLab :: Char -> Agent
+agentFromLab lab = (labToId lab, lab)
 
 relation :: Agent -> Agent -> Kind -> Relation
 relation (from, _) (to, _) kind = (from, to, kind)

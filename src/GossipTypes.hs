@@ -12,6 +12,9 @@ type AgentName = Char
 -- Optionally we could add a direction component to allow singe directional broadcasting calls.
 type Call = (Agent, Agent)
 
+showAgent :: Agent -> String 
+showAgent (_, lab) = [lab]
+
 printCall :: Call -> IO ()
 printCall ((_, i), (_, j)) = do
     putStr $ " (" ++ show i ++ "," ++ show j ++ ") "

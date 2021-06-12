@@ -14,7 +14,7 @@ import GossipTypes
 import GossipGraph
 import GossipState
 import GossipProtocol
-import GossipKnowledgeStructure
+import GossipKnowledge
 import Util
 import ToDo
 
@@ -172,7 +172,7 @@ performUserAction = executeUserAction
       mapM_ (uncurry printCallNotAllowed) [c | c@((i, _), (j, _)) <- calls, not (hasLEdge (stateGraph state) (i, j, Number))]
 
     createCall :: State -> Char -> Char -> Call
-    createCall state f t =  (flip agent f $ labToId f , flip agent t $ labToId t)
+    createCall state f t = (agentFromLab f, agentFromLab t)
 
     callsAllowed :: State -> [Call] -> Bool
     callsAllowed state calls = all (\ ((i,_), (j, _)) -> hasLEdge (stateGraph state) (i, j, Number)) calls

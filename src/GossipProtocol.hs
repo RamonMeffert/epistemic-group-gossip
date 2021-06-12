@@ -5,7 +5,7 @@ import System.Console.ANSI
 import GossipTypes
 import GossipGraph
 import GossipState
-import GossipKnowledgeStructure
+import GossipKnowledge
 
 -- | Placeholder (definitely needs updating!)
 type GossipProtocol = GossipKnowledgeStructure -> Call -> Bool

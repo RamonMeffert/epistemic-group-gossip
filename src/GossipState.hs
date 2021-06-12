@@ -2,9 +2,10 @@
 module GossipState where
 
 import Data.HasCacBDD hiding ( evaluate, Top )
-import Data.Map ( (!) )
-import Data.List ( (\\) )
+import Data.Map.Strict ( (!) )
+import Data.Set ( (\\) )
 
+import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import System.Console.ANSI
 
@@ -13,7 +14,7 @@ import Data.Graph.Inductive.Graph
 
 import GossipTypes
 import GossipGraph
-import GossipKnowledgeStructure
+import GossipKnowledge
 
 data State = State {
   stateGraph :: GossipGraph,
