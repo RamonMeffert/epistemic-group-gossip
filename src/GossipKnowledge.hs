@@ -2,8 +2,8 @@ module GossipKnowledge where
 
 import Data.Graph.Inductive.Graph
 import Data.HasCacBDD
-import Data.Map.Strict (Map, unionWith)
-import Data.Set (Set, union, isSubsetOf)
+import Data.Map.Strict ( Map, unionWith, (!) )
+import Data.Set ( Set, union, isSubsetOf, (\\) )
 
 import qualified Data.List as List
 import qualified Data.Map.Strict as Map
@@ -11,6 +11,11 @@ import qualified Data.Set as Set
 
 import GossipGraph
 import GossipTypes
+
+
+{- 
+    Atomic propositions for gossip 
+-}
 
 -- | The relation type of a GossipAtom. 
 data Rel = N  -- ^ x knows the number of y
@@ -47,6 +52,11 @@ gAtToInt n (GAt rel (a1,_) (a2,_)) = n^2 * fromEnum rel + n * a1 + a2
 showBddVar :: Int -> Int -> String
 showBddVar n = show . bddToGAt' n
 
+
+{- 
+    Epistemic formulae for gossip
+-}
+
 -- | A formula build o' of GossipAtoms, using the language of (van Ditmarsch et al., 2017).
 --   We're not certain we need this, we might fully stick with Bdd formulae instead.
 data GossipForm
@@ -61,6 +71,15 @@ data GossipForm
 -- | An epistemic formula, defined in terms of Bdd's 
 data Form = Fact Bdd
           | K Agent Form
+
+instance Show Form where
+  show (Fact bdd) = show bdd
+  show (K ag form) = "K" ++ showAgent ag ++ " (" ++ show form ++ ")"
+
+
+{- 
+    Knowledge Structures for gossip
+-}
 
 -- | A knowledge structure (Gattinger, 2018) which represents the knowledge of a Gossip State
 data GossipKnowledgeStructure = GKS
@@ -121,6 +140,32 @@ fromGossipGraph graph =
 
    in GKS (Set.fromList vocabulary) stateLaw observables
 
+-- | Convert an epistemic formula to a boolean formula, given a knowledge structure
+--   in Gattinger (2018), this is denoted by ||ϕ||_F
+formToBdd :: GossipKnowledgeStructure -> Form -> Bdd
+formToBdd _ (Fact bdd)  = bdd
+formToBdd k (K ag form) = knowledgeToBdd k ag form
+  where 
+    -- | Convert a knowledge formula (Ka ϕ) to a Bdd formula, given the current state
+    knowledgeToBdd :: GossipKnowledgeStructure -> Agent -> Form -> Bdd
+    knowledgeToBdd k ag form =
+      let universe = vocabulary k \\ (observables k ! ag)
+          formula = case form of
+            Fact bdd   -> stateLaw k `imp` bdd
+            K ag2 form -> stateLaw k `imp` knowledgeToBdd k ag2 form
+
+          boolQuant x = [restrict formula (x, True), restrict formula (x,False)]
+      in conSet $ concatMap boolQuant universe
+
+(<|>) :: GossipKnowledgeStructure -> Form -> Bdd
+k <|> ϕ = formToBdd k ϕ
+infix 9 <|>
+
+
+{- 
+    Knowledge transformer for gossip 
+-}
+
 data KnowledgeTransformer = KT
   { -- | Additional vocabulary
     addVocab :: Set Int,
@@ -152,6 +197,11 @@ update (GKS v l o) (KT v' l' o') = GKS
 (|+|) :: GossipKnowledgeStructure -> KnowledgeTransformer -> GossipKnowledgeStructure
 f |+| x = update f x
 infixl 9 |+|
+
+
+{- 
+    Update schemes for gossip calls
+-}
 
 synchronousUpdate :: GossipKnowledgeStructure -> (Agent, Agent) -> GossipKnowledgeStructure
 synchronousUpdate gks (ag1, ag2) = gks |+| transformer

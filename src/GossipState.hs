@@ -79,25 +79,14 @@ evaluateGossipAtom (State _ _ s) (GAt C x y) = (x, y) `elem` s
 evaluateBddVar :: State -> Int -> Bool
 evaluateBddVar s@(State g _ _) = evaluateGossipAtom s . bddToGAt' (noAgents g)
 
--- | Convert a knowledge formula (Ka φ) to a Bdd formula, given the current state
-knowledgeToBdd :: State -> Agent -> Form -> Bdd
-knowledgeToBdd s@(State _ k _) ag form =
-  let universe = vocabulary k \\ (observables k ! ag)
-      formula = case form of
-        Fact bdd   -> stateLaw k `imp` bdd
-        K ag2 form -> stateLaw k `imp` knowledgeToBdd s ag2 form
-
-      boolQuant x = [restrict formula (x, True), restrict formula (x,False)]
-   in conSet $ concatMap boolQuant universe
-
--- | Evaluate a formula, given the current state
-evaluate :: State -> Form -> Bool
-evaluate s (Fact bdd)  = evaluateFun  bdd                       (evaluateBddVar s)
-evaluate s (K ag form) = evaluateFun (knowledgeToBdd s ag form) (evaluateBddVar s)
+-- | Evaluate an epistemic formula, given the current state
+evaluate :: State -> Form -> Bool 
+evaluate state@(State _ k _) ϕ = evaluateFun (k <|> ϕ) (evaluateBddVar state)
 
 -- | Evaluate a formula, given the current state
 (|=) :: State -> Form -> Bool
 state |= form = evaluate state form
+infix 9 |= 
 
 -- | Legacy method, evalute a GossipFormula (note, without knowledge) by naive recursion
 evaluate' :: State -> GossipForm -> Bool
