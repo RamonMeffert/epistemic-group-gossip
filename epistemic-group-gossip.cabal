@@ -25,12 +25,12 @@ source-repository head
 
 library
   exposed-modules:
-      BddPrinter
       GossipGraph
       GossipKnowledge
       GossipProtocol
       GossipState
       GossipTypes
+      PrintableBdd
       Program
       ToDo
       Util

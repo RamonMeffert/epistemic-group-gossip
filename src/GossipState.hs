@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-overlapping-patterns #-}
 module GossipState where
 
-import Data.HasCacBDD hiding ( evaluate, Top )
+--import Data.HasCacBDD hiding ( evaluate, Top )
 import Data.Map.Strict ( (!) )
 import Data.Set ( (\\) )
 
@@ -12,6 +12,7 @@ import System.Console.ANSI
 import Data.Graph.Inductive
 import Data.Graph.Inductive.Graph
 
+import PrintableBdd hiding ( evaluate )
 import GossipTypes
 import GossipGraph
 import GossipKnowledge
@@ -35,7 +36,7 @@ printState (State g k c) n = do
   setSGR [SetColor Foreground Vivid Cyan]
   putStrLn "\n= Knowledgestructure ="
   setSGR [Reset]
-  putStrLn "THIS HAS NOT BEEN IMPLEMENTED YET :("
+  print k
   setSGR [SetColor Foreground Vivid Cyan]
   putStrLn "\n= Callsequence ="
   setSGR [Reset]

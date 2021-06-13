@@ -1,9 +1,10 @@
 module GossipKnowledge where
 
 import Data.Graph.Inductive.Graph
-import Data.HasCacBDD
+--import Data.HasCacBDD
 import Data.Map.Strict ( Map, unionWith, (!) )
 import Data.Set ( Set, union, isSubsetOf, (\\) )
+import System.IO
 
 import qualified Data.List as List
 import qualified Data.Map.Strict as Map
@@ -11,6 +12,8 @@ import qualified Data.Set as Set
 
 import GossipGraph
 import GossipTypes
+import PrintableBdd hiding (var, substitSimul)
+import Util
 
 
 {- 
@@ -27,7 +30,7 @@ data Rel = N  -- ^ x knows the number of y
 data GossipAtom = GAt Rel Agent Agent deriving (Ord, Eq)
 
 instance Show GossipAtom where
-  show (GAt rel a1 a2) = concat [show rel, "(", showAgent a1, ", ", showAgent a2, ")"]
+  show (GAt rel a1 a2) = concat [show rel, showAgent a1, showAgent a2]
 
 -- | Converts Bdd formula to a list of GossipAtoms for all variables in the formula
 bddToGAt :: Int -> Bdd -> [GossipAtom]
@@ -38,20 +41,22 @@ bddToGAt' :: Int -> Int -> GossipAtom
 bddToGAt' n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
   where rel =  v                   `div` n^2
         a1  =  v `mod` n^2         `div` n
-        a2  =  v `mod` n^2 `mod` n 
-
--- | Convert a GossipAtom to a Bdd variable
-gAtToBdd :: Int -> GossipAtom -> Bdd
-gAtToBdd n gat = var $ gAtToInt n gat
-
--- | Convert a GossipAtom to a unique integer
-gAtToInt :: Int -> GossipAtom -> Int
-gAtToInt n (GAt rel (a1,_) (a2,_)) = n^2 * fromEnum rel + n * a1 + a2
+        a2  =  v `mod` n^2 `mod` n
 
 -- | Convert a bdd variable index to a GossipAtom string
 showBddVar :: Int -> Int -> String
 showBddVar n = show . bddToGAt' n
 
+var :: Int -> Int -> Bdd
+var n = varl (showBddVar n)
+
+-- | Convert a GossipAtom to a Bdd variable
+gAtToBdd :: Int -> GossipAtom -> Bdd
+gAtToBdd n gat = var n $ gAtToInt n gat
+
+-- | Convert a GossipAtom to a unique integer
+gAtToInt :: Int -> GossipAtom -> Int
+gAtToInt n (GAt rel (a1,_) (a2,_)) = n^2 * fromEnum rel + n * a1 + a2
 
 {- 
     Epistemic formulae for gossip
@@ -93,6 +98,36 @@ data GossipKnowledgeStructure = GKS
     observables :: Map Agent (Set Int)
   }
 
+instance Show GossipKnowledgeStructure where
+  show (GKS v l o) = concat
+    [ "vocabulary: { ", List.intercalate ",\n              "  vocab, " }"
+    , "\nstate law:   " ++ show l
+    , "\nobservables: ", List.intercalate "\n             " $ map shObs (Map.assocs o)
+    ] where
+
+      vocab = map (List.intercalate ", ") $ chunksOf 9 $ map gat (Set.toList v)
+
+      gat :: Int -> String
+      gat = show . bddToGAt' (Map.size o)
+
+      shObs :: (Agent, Set Int) -> String
+      shObs (a, s) =  concat
+        [ showAgent a, " -> "
+        , "{ ", List.intercalate ", " $ map gat (Set.toList s), " }"
+        ]
+
+      -- The following two functions were taken from the source code of Data.List.Split, so that we don't have to 
+      -- import the entiremodule. 
+      -- Source: https://hackage.haskell.org/package/split-0.2.3.4/docs/src/Data.List.Split.Internals.html#build
+      build :: ((a -> [a] -> [a]) -> [a] -> [a]) -> [a]
+      build g = g (:) []
+
+      chunksOf :: Int -> [e] -> [[e]]
+      chunksOf i ls = map (take i) (build (splitter ls)) where
+        splitter :: [e] -> ([e] -> a -> a) -> a -> a
+        splitter [] _ n = n
+        splitter l c n  = l `c` splitter (drop i l) c n
+
 validKS :: GossipKnowledgeStructure -> Bool
 validKS (GKS vocab law obs) =
   let lawCheck = Set.fromList (allVarsOf law) `isSubsetOf` vocab
@@ -117,10 +152,9 @@ fromGossipGraph graph =
       vocabulary = map gint vocabAtoms
 
       -- state law
-      stateLaw = conSet
-        [ conSet [gvar (GAt S a a) | a <- agents] -- agents know their own secret
-        , conSet [gvar (GAt N a a) | a <- agents] -- agents know their own number
-        , conSet [gvar (GAt C x y) `imp` conSet   -- if x has called y;
+      stateLaw = con
+        (conSet $ foldr (\ x -> (++) [gvar (GAt N x x), gvar (GAt S x x)]) [] agents)
+        (conSet [gvar (GAt C x y) `imp` conSet   -- if x has called y;
             [ gvar (GAt N x y)                    --  then x knows y's number;
             , gvar (GAt N y x)                    --  and y knows x's number;
             , gvar (GAt S x y)                    --  and x knows y's secret;
@@ -128,8 +162,9 @@ fromGossipGraph graph =
             ]
           | x <- agents
           , y <- agents
+          , x /= y
           ]
-        ]
+        )
 
       -- observables
       initialSecrets = [GAt S a a | a <- agents]
@@ -145,7 +180,7 @@ fromGossipGraph graph =
 formToBdd :: GossipKnowledgeStructure -> Form -> Bdd
 formToBdd _ (Fact bdd)  = bdd
 formToBdd k (K ag form) = knowledgeToBdd k ag form
-  where 
+  where
     -- | Convert a knowledge formula (Ka ϕ) to a Bdd formula, given the current state
     knowledgeToBdd :: GossipKnowledgeStructure -> Agent -> Form -> Bdd
     knowledgeToBdd k ag form =
@@ -154,8 +189,10 @@ formToBdd k (K ag form) = knowledgeToBdd k ag form
             Fact bdd   -> stateLaw k `imp` bdd
             K ag2 form -> stateLaw k `imp` knowledgeToBdd k ag2 form
 
-          boolQuant x = [restrict formula (x, True), restrict formula (x,False)]
-      in conSet $ concatMap boolQuant universe
+          boolQuant x = [restrict formula (x, True), restrict formula (x, False)]
+
+          p = concatMap boolQuant universe
+      in conSet p 
 
 (<|>) :: GossipKnowledgeStructure -> Form -> Bdd
 k <|> ϕ = formToBdd k ϕ
