@@ -101,7 +101,7 @@ data GossipKnowledgeStructure = GKS
 instance Show GossipKnowledgeStructure where
   show (GKS v l o) = concat
     [ "vocabulary: { ", List.intercalate ",\n              "  vocab, " }"
-    , "\nstate law:   " ++ show l
+    , "\nstate law: " ++ show l
     , "\nobservables: ", List.intercalate "\n             " $ map shObs (Map.assocs o)
     ] where
 
@@ -117,7 +117,7 @@ instance Show GossipKnowledgeStructure where
         ]
 
       -- The following two functions were taken from the source code of Data.List.Split, so that we don't have to 
-      -- import the entiremodule. 
+      -- import the entire module. 
       -- Source: https://hackage.haskell.org/package/split-0.2.3.4/docs/src/Data.List.Split.Internals.html#build
       build :: ((a -> [a] -> [a]) -> [a] -> [a]) -> [a]
       build g = g (:) []
@@ -167,7 +167,7 @@ fromGossipGraph graph =
         )
 
       -- observables
-      initialSecrets = [GAt S a a | a <- agents]
+      initialSecrets = foldr (\ x -> (++) [GAt N x x, GAt S x x]) [] agents
       numbersOf ag = [GAt N ag x | x <- numbersKnownBy graph ag]
 
       observablesOf ag = map gint $ initialSecrets ++ numbersOf ag
