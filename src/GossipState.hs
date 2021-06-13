@@ -1,19 +1,21 @@
 {-# OPTIONS_GHC -Wno-overlapping-patterns #-}
 module GossipState where
 
-import Data.HasCacBDD hiding ( evaluate, Top )
-import Data.Map ( (!) )
-import Data.List ( (\\) )
+--import Data.HasCacBDD hiding ( evaluate, Top )
+import Data.Map.Strict ( (!) )
+import Data.Set ( (\\) )
 
+import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import System.Console.ANSI
 
 import Data.Graph.Inductive
 import Data.Graph.Inductive.Graph
 
+import PrintableBdd hiding ( evaluate )
 import GossipTypes
 import GossipGraph
-import GossipKnowledgeStructure
+import GossipKnowledge
 
 data State = State {
   stateGraph :: GossipGraph,
@@ -34,7 +36,7 @@ printState (State g k c) n = do
   setSGR [SetColor Foreground Vivid Cyan]
   putStrLn "\n= Knowledgestructure ="
   setSGR [Reset]
-  putStrLn "THIS HAS NOT BEEN IMPLEMENTED YET :("
+  print k
   setSGR [SetColor Foreground Vivid Cyan]
   putStrLn "\n= Callsequence ="
   setSGR [Reset]
@@ -78,25 +80,14 @@ evaluateGossipAtom (State _ _ s) (GAt C x y) = (x, y) `elem` s
 evaluateBddVar :: State -> Int -> Bool
 evaluateBddVar s@(State g _ _) = evaluateGossipAtom s . bddToGAt' (noAgents g)
 
--- | Convert a knowledge formula (Ka φ) to a Bdd formula, given the current state
-knowledgeToBdd :: State -> Agent -> Form -> Bdd
-knowledgeToBdd s@(State _ k _) ag form =
-  let universe = vocabulary k \\ (observables k ! ag)
-      formula = case form of
-        Fact bdd   -> stateLaw k `imp` bdd
-        K ag2 form -> stateLaw k `imp` knowledgeToBdd s ag2 form
-
-      boolQuant x = [restrict formula (x, True), restrict formula (x,False)]
-   in conSet $ concatMap boolQuant universe
-
--- | Evaluate a formula, given the current state
-evaluate :: State -> Form -> Bool
-evaluate s (Fact bdd)  = evaluateFun  bdd                       (evaluateBddVar s)
-evaluate s (K ag form) = evaluateFun (knowledgeToBdd s ag form) (evaluateBddVar s)
+-- | Evaluate an epistemic formula, given the current state
+evaluate :: State -> Form -> Bool 
+evaluate state@(State _ k _) ϕ = evaluateFun (k <|> ϕ) (evaluateBddVar state)
 
 -- | Evaluate a formula, given the current state
 (|=) :: State -> Form -> Bool
 state |= form = evaluate state form
+infix 9 |= 
 
 -- | Legacy method, evalute a GossipFormula (note, without knowledge) by naive recursion
 evaluate' :: State -> GossipForm -> Bool
