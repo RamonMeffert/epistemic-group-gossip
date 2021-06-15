@@ -98,6 +98,9 @@ data GossipKnowledgeStructure = GKS
     observables :: Map Agent (Set Int)
   }
 
+nag :: GossipKnowledgeStructure -> Int
+nag (GKS _ _ o) = Map.size o
+
 instance Show GossipKnowledgeStructure where
   show (GKS v l o) = concat
     [ "vocabulary: { ", List.intercalate ",\n              "  vocab, " }"
@@ -167,10 +170,10 @@ fromGossipGraph graph =
         )
 
       -- observables
-      initialSecrets = foldr (\ x -> (++) [GAt N x x, GAt S x x]) [] agents
+      initials = foldr (\ x -> (++) [GAt N x x, GAt S x x]) [] agents
       numbersOf ag = [GAt N ag x | x <- numbersKnownBy graph ag]
 
-      observablesOf ag = map gint $ initialSecrets ++ numbersOf ag
+      observablesOf ag = map gint $ initials ++ numbersOf ag
       observables = Map.fromList [(a, Set.fromList $ observablesOf a) | a <- agents]
 
    in GKS (Set.fromList vocabulary) stateLaw observables
@@ -188,11 +191,7 @@ formToBdd k (K ag form) = knowledgeToBdd k ag form
           formula = case form of
             Fact bdd   -> stateLaw k `imp` bdd
             K ag2 form -> stateLaw k `imp` knowledgeToBdd k ag2 form
-
-          boolQuant x = [restrict formula (x, True), restrict formula (x, False)]
-
-          p = concatMap boolQuant universe
-      in conSet p 
+      in boolQuant universe formula 
 
 (<|>) :: GossipKnowledgeStructure -> Form -> Bdd
 k <|> ϕ = formToBdd k ϕ
@@ -241,8 +240,21 @@ infixl 9 |+|
 -}
 
 synchronousUpdate :: GossipKnowledgeStructure -> (Agent, Agent) -> GossipKnowledgeStructure
-synchronousUpdate gks (ag1, ag2) = gks |+| transformer
+synchronousUpdate gks (a, b) = gks |+| transformer
   where
         transformer = baseTransformer
-          { addObs = undefined
+          {  addObs = (Map.insert a oa . Map.insert b ob) Map.empty
           }
+        
+        oa = Set.fromList $ map (gAtToInt $ nag gks)
+          [ GAt S a b
+          , GAt S b a 
+          , GAt N b a
+          ]
+
+        ob = Set.fromList $ map (gAtToInt $ nag gks)
+          [ GAt S a b
+          , GAt S b a
+          , GAt N a b
+          , GAt N b a
+          ]

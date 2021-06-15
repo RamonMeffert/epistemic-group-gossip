@@ -4,6 +4,8 @@ import qualified Data.HasCacBDD as B
 import Data.Bifunctor
 import Data.List
 
+import Data.Set (Set)
+
 data Bdd = Bdd
   { str :: String
   , tex :: String
@@ -102,3 +104,6 @@ evaluate = directly B.evaluate
 
 evaluateFun :: Bdd -> (Int -> Bool) -> Bool
 evaluateFun = directly B.evaluateFun
+
+boolQuant :: Set Int -> Bdd -> Bdd
+boolQuant v f = conSet $ concatMap (\var -> [substit var top f `con` substit var bot f]) v
