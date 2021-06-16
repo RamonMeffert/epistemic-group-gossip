@@ -1,8 +1,33 @@
-module PrintableBdd where
+module PrintableBdd
+( Bdd(bdd, str, tex)
+, VarLabeller
+, varl
+, var
+, top
+, bot
+, neg
+, con
+, dis
+, imp
+, equ
+, foralll
+, forall
+, existsl
+, exists
+, forallSetl
+, forallSet
+, existsSetl
+, existsSet
+, conSet
+, disSet
+, allVarsOf
+, evaluate
+, evaluateFun
+) where
 
 import qualified Data.HasCacBDD as B
-import Data.Bifunctor
-import Data.List
+import Data.Bifunctor ( Bifunctor(second) )
+import Data.List ( intercalate )
 
 import Data.Set (Set)
 
@@ -14,6 +39,8 @@ data Bdd = Bdd
 
 instance Show Bdd where
   show = str
+
+type VarLabeller = (Int -> String)
 
 directly :: (B.Bdd -> a) -> (Bdd -> a)
 directly = flip (.) bdd
@@ -27,51 +54,88 @@ unary s t f b = Bdd (s ++ str b) (" " ++ t ++ " " ++ tex b) (f $ bdd b)
 binary :: String -> String -> (B.Bdd -> B.Bdd -> B.Bdd) -> (Bdd -> Bdd -> Bdd)
 binary s t f b1 b2 = Bdd
   (concat ["(", str b1, " ", s, " ", str b2, ")"])
-  (concat ["(", tex b1, " ", s, " ", tex b2, ")"])
+  (unwords ["(", tex b1, t, tex b2, ")"])
   (f (bdd b1) (bdd b2))
+
+quant :: VarLabeller -> VarLabeller -> String -> String -> (Int -> B.Bdd -> B.Bdd) -> (Int -> Bdd -> Bdd)
+quant ls lt s t f v b = Bdd
+  (concat [s, ls v, "(", str b, ")"])
+  (unwords [t, lt v, "\\left( ", tex b, "\\right)"])
+  (f v (bdd b))
+
+quantSet :: VarLabeller -> VarLabeller -> String -> String -> ([Int] -> B.Bdd -> B.Bdd) -> ([Int] -> Bdd -> Bdd)
+quantSet ls lt s t f v b = Bdd
+  (concat [s, "{", intercalate ", " (map ls v), "}", "(", str b, ")"])
+  (unwords [t, "\\left{", intercalate " , " (map lt v), "\\right}", "(", str b, ")"]) 
+  (f v (bdd b))
 
 nary :: String -> String -> ([B.Bdd] -> B.Bdd) -> ([Bdd] -> Bdd)
 nary s t f list = Bdd
-  (s ++ "(" ++ intercalate ", " (map str list) ++ ")")
-  (t ++ " (" ++ intercalate ", " (map tex list) ++ ")")
+  ("(" ++ intercalate (" " ++ s ++ " ") (map str list) ++ ")")
+  (" (" ++ intercalate (" " ++ t ++ " ") (map tex list) ++ ") ")
   (f $ map bdd list)
 
 -- Nullary operators
-varl :: (Int -> String) -> Int -> Bdd
-varl l i = nullary (l i) (l i) (B.var i)
+varl :: VarLabeller -> VarLabeller -> Int -> Bdd
+varl ls lt i = nullary (ls i) (lt i) (B.var i)
 
 var :: Int -> Bdd
-var = varl show
+var = varl show show
 
 top :: Bdd
-top = nullary "top" "\\top " B.top
+top = nullary "⊤" "\\top " B.top
 
 bot :: Bdd
-bot = nullary "bot" "\\bot " B.bot
+bot = nullary "⊥" "\\bot " B.bot
 
 -- Unary operators
 neg :: Bdd -> Bdd
-neg = unary "-" "\\neg" B.neg
+neg = unary "¬" "\\neg" B.neg
 
 -- Binary operators
 con :: Bdd -> Bdd -> Bdd
-con = binary "&&" "\\wedge" B.con
+con = binary "∧" "\\wedge" B.con
 
 dis :: Bdd -> Bdd -> Bdd
-dis = binary "||" "\\vee" B.dis
+dis = binary "∨" "\\vee" B.dis
 
 imp :: Bdd -> Bdd -> Bdd
-imp = binary "->" "\\rightarrow" B.imp
+imp = binary "⟶" "\\rightarrow" B.imp
 
 equ :: Bdd -> Bdd -> Bdd
-equ = binary "<->" "\\leftrightarrow" B.equ
+equ = binary "⟷" "\\leftrightarrow" B.equ
+
+-- Quantification operators
+foralll :: VarLabeller -> VarLabeller -> Int -> Bdd -> Bdd
+foralll ls lt = quant ls lt "∀" "\\forall" B.forall
+
+forall :: Int -> Bdd -> Bdd
+forall = foralll show show
+
+forallSetl :: VarLabeller -> VarLabeller -> [Int] -> Bdd -> Bdd
+forallSetl ls lt = quantSet ls lt "∀" "\\forall" B.forallSet
+
+forallSet :: [Int] -> Bdd -> Bdd
+forallSet = forallSetl show show
+
+existsl :: VarLabeller -> VarLabeller -> Int -> Bdd -> Bdd
+existsl ls lt = quant ls lt "∃" "\\exists" B.exists
+
+exists :: Int -> Bdd -> Bdd
+exists = existsl show show
+
+existsSetl :: VarLabeller -> VarLabeller -> [Int] -> Bdd -> Bdd
+existsSetl ls lt = quantSet ls lt "∃" "\\exists" B.existsSet
+
+existsSet :: [Int] -> Bdd -> Bdd
+existsSet = existsSetl show show
 
 -- N-ary operators
 conSet :: [Bdd] -> Bdd
-conSet = nary "CON" "\\bigwedge" B.conSet
+conSet = nary "∧" "\\wedge" B.conSet
 
 disSet :: [Bdd] -> Bdd
-disSet = nary "DIS" "\\bigvee" B.disSet
+disSet = nary "∨" "\\vee" B.disSet
 
 -- Special operators
 substitl :: (Int -> String) -> Int -> Bdd -> Bdd -> Bdd

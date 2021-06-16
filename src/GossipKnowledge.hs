@@ -12,7 +12,7 @@ import qualified Data.Set as Set
 
 import GossipGraph
 import GossipTypes
-import PrintableBdd hiding (var, substitSimul)
+import PrintableBdd hiding ( var, forall, exists, forallSet, existsSet )
 import Util
 
 
@@ -32,31 +32,44 @@ data GossipAtom = GAt Rel Agent Agent deriving (Ord, Eq)
 instance Show GossipAtom where
   show (GAt rel a1 a2) = concat [show rel, showAgent a1, showAgent a2]
 
+texify :: GossipAtom -> String
+texify (GAt rel a1 a2) = List.concat ["\\texttt{", show rel, showAgent a1, showAgent a2, "}"]
+
 -- | Converts Bdd formula to a list of GossipAtoms for all variables in the formula
 bddToGAt :: Int -> Bdd -> [GossipAtom]
-bddToGAt n bdd = map (bddToGAt' n) (allVarsOf bdd)
+bddToGAt n bdd = map (varToGAt n) (allVarsOf bdd)
 
 -- | Converts a Bbd variable index to a GossipAtom
-bddToGAt' :: Int -> Int -> GossipAtom
-bddToGAt' n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
+varToGAt :: Int -> Int -> GossipAtom
+varToGAt n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
   where rel =  v                   `div` n^2
         a1  =  v `mod` n^2         `div` n
         a2  =  v `mod` n^2 `mod` n
 
 -- | Convert a bdd variable index to a GossipAtom string
 showBddVar :: Int -> Int -> String
-showBddVar n = show . bddToGAt' n
+showBddVar n = show . varToGAt n
 
-var :: Int -> Int -> Bdd
-var n = varl (showBddVar n)
+texifyBddVar :: Int -> Int -> String
+texifyBddVar n = texify . varToGAt n
+
+strLabel :: Int -> VarLabeller
+strLabel = showBddVar
+
+texLabel :: Int -> VarLabeller
+texLabel = texifyBddVar
+
+gvar :: Int -> Int -> Bdd
+gvar n = varl (showBddVar n) (texifyBddVar n)
 
 -- | Convert a GossipAtom to a Bdd variable
 gAtToBdd :: Int -> GossipAtom -> Bdd
-gAtToBdd n gat = var n $ gAtToInt n gat
+gAtToBdd n gat = gvar n $ gAtToInt n gat
 
 -- | Convert a GossipAtom to a unique integer
 gAtToInt :: Int -> GossipAtom -> Int
 gAtToInt n (GAt rel (a1,_) (a2,_)) = n^2 * fromEnum rel + n * a1 + a2
+
 
 {- 
     Epistemic formulae for gossip
@@ -111,7 +124,7 @@ instance Show GossipKnowledgeStructure where
       vocab = map (List.intercalate ", ") $ chunksOf 9 $ map gat (Set.toList v)
 
       gat :: Int -> String
-      gat = show . bddToGAt' (Map.size o)
+      gat = show . varToGAt (Map.size o)
 
       shObs :: (Agent, Set Int) -> String
       shObs (a, s) =  concat
@@ -136,6 +149,18 @@ validKS (GKS vocab law obs) =
   let lawCheck = Set.fromList (allVarsOf law) `isSubsetOf` vocab
       obsCheck = Map.foldr ((&&) . (`isSubsetOf` vocab)) True obs
    in lawCheck && obsCheck
+
+gforall :: GossipKnowledgeStructure -> Int -> Bdd -> Bdd
+gforall k = foralll (strLabel $ nag k) (texLabel $ nag k)
+
+gexists :: GossipKnowledgeStructure -> Int -> Bdd -> Bdd
+gexists k = existsl (strLabel $ nag k) (texLabel $ nag k)
+
+gforallSet :: GossipKnowledgeStructure -> [Int] -> Bdd -> Bdd
+gforallSet k = forallSetl (strLabel $ nag k) (texLabel $ nag k)
+
+gexistsSet :: GossipKnowledgeStructure -> [Int] -> Bdd -> Bdd
+gexistsSet k = existsSetl (strLabel $ nag k) (texLabel $ nag k)
 
 -- | Converts a gossip graph to its corresponding knowledge structure. 
 --   Note that this doesn't convert a gossip state, i.e. no call sequence is encoded.
@@ -187,11 +212,11 @@ formToBdd k (K ag form) = knowledgeToBdd k ag form
     -- | Convert a knowledge formula (Ka ϕ) to a Bdd formula, given the current state
     knowledgeToBdd :: GossipKnowledgeStructure -> Agent -> Form -> Bdd
     knowledgeToBdd k ag form =
-      let universe = vocabulary k \\ (observables k ! ag)
+      let universe = Set.toList $ vocabulary k \\ (observables k ! ag)
           formula = case form of
             Fact bdd   -> stateLaw k `imp` bdd
             K ag2 form -> stateLaw k `imp` knowledgeToBdd k ag2 form
-      in boolQuant universe formula 
+      in gforallSet k universe formula
 
 (<|>) :: GossipKnowledgeStructure -> Form -> Bdd
 k <|> ϕ = formToBdd k ϕ
@@ -239,21 +264,28 @@ infixl 9 |+|
     Update schemes for gossip calls
 -}
 
-synchronousUpdate :: GossipKnowledgeStructure -> (Agent, Agent) -> GossipKnowledgeStructure
-synchronousUpdate gks (a, b) = gks |+| transformer
+synchronousUpdate :: GossipKnowledgeStructure -> Int -> Call -> GossipKnowledgeStructure
+synchronousUpdate gks ticks (a, b) = gks |+| transformer
   where
         transformer = baseTransformer
-          {  addObs = (Map.insert a oa . Map.insert b ob) Map.empty
+          { addObs = (Map.insert a oa . Map.insert b ob) Map.empty
+          , eventLaw = disSet $ map conSet allCallCombinations 
           }
-        
+
+        agents = Map.keys $ observables gks
+        combinations = (. List.subsequences) . filter . (. length) . (==)
+        allCallCombinations = combinations ticks [gAtToBdd (nag gks) (GAt C x y) | x <- agents, y <- agents]
+
         oa = Set.fromList $ map (gAtToInt $ nag gks)
-          [ GAt S a b
-          , GAt S b a 
+          [ GAt C a b 
+          , GAt S a b
+          , GAt S b a
           , GAt N b a
           ]
 
         ob = Set.fromList $ map (gAtToInt $ nag gks)
-          [ GAt S a b
+          [ GAt C a b
+          , GAt S a b
           , GAt S b a
           , GAt N a b
           , GAt N b a
