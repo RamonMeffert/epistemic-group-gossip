@@ -4,6 +4,10 @@ title: Theory
 permalink: /theory/
 ---
 
+## [Introduction]({{ site.baseurl }}{% link theory/introduction.markdown %})
+
+_short explanation about what is on the introduction page_
+
 ## [Theoretical background]({{ site.baseurl }}{% link theory/background.markdown %})
 
 _short explanation about what is on the background page_
