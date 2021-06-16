@@ -92,7 +92,7 @@ data Form = Fact Bdd
 
 instance Show Form where
   show (Fact bdd) = show bdd
-  show (K ag form) = "K" ++ showAgent ag ++ " (" ++ show form ++ ")"
+  show (K ag form) = "K" ++ showAgent ag ++ show form
 
 
 {- 
@@ -180,19 +180,19 @@ fromGossipGraph graph =
       vocabulary = map gint vocabAtoms
 
       -- state law
-      stateLaw = con
-        (conSet $ foldr (\ x -> (++) [gvar (GAt N x x), gvar (GAt S x x)]) [] agents)
-        (conSet [gvar (GAt C x y) `imp` conSet   -- if x has called y;
-            [ gvar (GAt N x y)                    --  then x knows y's number;
-            , gvar (GAt N y x)                    --  and y knows x's number;
-            , gvar (GAt S x y)                    --  and x knows y's secret;
-            , gvar (GAt S y x)                    --  and y knows x's secret.
+      stateLaw = conSet (foldr (\ x -> (++) [gvar (GAt N x x), gvar (GAt S x x)]) [] agents)
+        `con` conSet 
+          [gvar (GAt C x y) `imp` conSet              --  if x has called y;
+            [ gvar (GAt N x y)                        --  then x knows y's number;
+            , gvar (GAt N y x)                        --  and y knows x's number;
+            , gvar (GAt S x y)                        --  and x knows y's secret;
+            , gvar (GAt S y x)                        --  and y knows x's secret;
+            , gvar (GAt N x z) `imp` gvar (GAt N y z) --  and if x knows the number of z, then y also knows the number of z;
+            , gvar (GAt N y z) `imp` gvar (GAt N x z) --  and if y knows the number of z, then x also knows the number of z;
+            , gvar (GAt S x z) `imp` gvar (GAt S y z) --  and if x knows the secret of z, then y also knows the secret of z;
+            , gvar (GAt S y z) `imp` gvar (GAt S x z) --  and if y knows the secret of z, then x also knows the secret of z.
             ]
-          | x <- agents
-          , y <- agents
-          , x /= y
-          ]
-        )
+          | x <- agents, y <- agents, x /= y, z <- agents, y /= z, x /= z] -- for all distinct x,y,z in A
 
       -- observables
       initials = foldr (\ x -> (++) [GAt N x x, GAt S x x]) [] agents
@@ -269,7 +269,7 @@ synchronousUpdate gks ticks (a, b) = gks |+| transformer
   where
         transformer = baseTransformer
           { addObs = (Map.insert a oa . Map.insert b ob) Map.empty
-          , eventLaw = disSet $ map conSet allCallCombinations 
+          , eventLaw = xorSet $ map conSet allCallCombinations
           }
 
         agents = Map.keys $ observables gks
@@ -277,7 +277,7 @@ synchronousUpdate gks ticks (a, b) = gks |+| transformer
         allCallCombinations = combinations ticks [gAtToBdd (nag gks) (GAt C x y) | x <- agents, y <- agents]
 
         oa = Set.fromList $ map (gAtToInt $ nag gks)
-          [ GAt C a b 
+          [ GAt C a b
           , GAt S a b
           , GAt S b a
           , GAt N b a

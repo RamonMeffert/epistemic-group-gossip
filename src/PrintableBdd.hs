@@ -10,6 +10,7 @@ module PrintableBdd
 , dis
 , imp
 , equ
+, xor
 , foralll
 , forall
 , existsl
@@ -20,6 +21,7 @@ module PrintableBdd
 , existsSet
 , conSet
 , disSet
+, xorSet
 , allVarsOf
 , evaluate
 , evaluateFun
@@ -105,6 +107,9 @@ imp = binary "⟶" "\\rightarrow" B.imp
 equ :: Bdd -> Bdd -> Bdd
 equ = binary "⟷" "\\leftrightarrow" B.equ
 
+xor :: Bdd -> Bdd -> Bdd
+xor = binary "⊻" "\\oplus" B.xor
+
 -- Quantification operators
 foralll :: VarLabeller -> VarLabeller -> Int -> Bdd -> Bdd
 foralll ls lt = quant ls lt "∀" "\\forall" B.forall
@@ -136,6 +141,9 @@ conSet = nary "∧" "\\wedge" B.conSet
 
 disSet :: [Bdd] -> Bdd
 disSet = nary "∨" "\\vee" B.disSet
+
+xorSet :: [Bdd] -> Bdd
+xorSet = nary "⊻" "\\oplus" B.xorSet
 
 -- Special operators
 substitl :: (Int -> String) -> Int -> Bdd -> Bdd -> Bdd

@@ -50,6 +50,12 @@ testGraph = initialGraph 3 [('a', ['a', 'b']), ('b', ['b', 'c']), ('c', ['c'])]
 testGraph2 :: GossipGraph
 testGraph2 = initialGraph 3 [('a',['a','b','c']), ('b',['b']), ('c',['c'])]
 
+biggerGraph :: GossipGraph
+biggerGraph = initialGraph 5 [('a', "abc"), ('b', "be"), ('c', "acd"), ('d', "ce"), ('e', "e")]
+
+defaultGraph :: Int -> GossipGraph
+defaultGraph n = initialGraph n $ map (\ x -> (idToLab x, [idToLab x])) [0..(n-1)]
+
 -- | Generate an initial gossip graph (with no initial shared secrets), based on a list of agents and their known phone numbers.
 initialGraph :: Int -> [(Char, [Char])] -> GossipGraph
 initialGraph nAgents numberLists =
