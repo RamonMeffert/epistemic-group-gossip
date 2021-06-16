@@ -6,6 +6,9 @@ permalink: /theory/background
 
 {% include wip-notice.html %}
 
+1. Table of contents
+{:toc}
+
 ## Background
 
 ### Dynamic gossip

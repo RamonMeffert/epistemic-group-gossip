@@ -3,6 +3,9 @@ title: This project
 permalink: /theory/this-project/
 ---
 
+1. Table of contents
+{:toc}
+
 ## Dynamic epistemic gossip with group calls
 
 We extend previous definitions of dynamic epistemic gossip (e.g. Herzig &
@@ -64,7 +67,17 @@ $$
 
 For both of the scenarios above, the call-induced gossip graph is written as $$G^{x \mid y_1 \dots y_k \mid}$$, e.g., when agent $$a$$ calls agents b, c, and d, we write $$G^{a \mid bcd \mid}$$
 
+### Synchronicity
+
+(WIP)
+
 ## Modelling epistemic relations
+
+### Why Kripke models are a bit awkward
+
+(An explanation showing that Kripke models for dynamic gossip get huge)
+
+### Knowledge structures
 
 Instead of the Kripke-like gossip model that is used to model agents' knowledge
 about a gossip process such as i.a. (van Ditmarsch et al., 2017), we model this

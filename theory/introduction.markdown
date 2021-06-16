@@ -40,6 +40,10 @@ gossip include the management of distributed databases (e.g. by
 [Amazon][aws-gossip]) or creating privacy-friendly social networks such as
 [Scuttlebutt][scuttle].
 
+The end goal of a gossip problem is that every agent is an expert, that is,
+every agent knows every other agent's secret. This state of the gossip graph is
+called a _complete gossip graph_.
+
 ### Group calls
 
 The “traditional” definition of (dynamic) gossip assumes calls happen between
@@ -50,11 +54,45 @@ _multiple_ recipients, and all participants exchange numbers and secrets.
 
 ## Epistemic logic
 
-
+Epistemic logic is used to model agent knowledge in multi-agent systems. We can
+use epistemic logic to model gossip. This means we can talk about more than
+“Agent A knows the secret of agent B”, for example, we can say “Agent A knows
+that agent B knows the secret of C”. This allows us to formulate communication
+protocols that use this knowledge to reach a complete gossip graph. We can also
+define a more ambitious goal, namely that every agent knows that everyone knows
+each other's secrets.
 
 ### Knowledge structures
 
+A standard tool for working with epistemic models are Kripke models. These allow
+us to intuitively show indistinguishability relations. However, these models get
+[very large very quickly][awkward-kripke] in the case of dynamic gossip.
+Therefore, we use [_knowledge structures_][k-structs] to represent the gossip
+state. These are both smaller and computationally more efficient.
+
 ### Knowledge transformers
+
+An important aspect of gossip is updating the gossip graph. Therefore, we also
+need a way to update the Kripke model and/or knowledge structure. From Dynamic
+Epistemic Logic (DEL) we know that [Action Models][action-models] can be used to
+succinctly represent changes to a Kripke model. Their equivalent for knowledge
+structures is called a [_knowledge transformer_][k-transformers].
+
+### Knowledge of time
+
+Since we are working with [synchronous][synchronicity] dynamic gossip, we are
+working with the assumption that there is some concept of global time. The way
+this works in our model is by keeping track of a global tick count. This is
+necessary because at every tick, one call is made.
+
+This introduces a temporal aspect into the model: it is common knowledge how
+many ticks have happened. Based on this knowledge, agents can reason about what
+calls (must) have been made without the calls themselves being common knowledge.
+This means that an agent considers it possible that any of the calls that are
+legal under the current protocol have been made at tick $$t$$. When they have
+higher-order knowledge, e.g., agent A knows that agent B knows the secret of
+agent C, they also know that a call must have happened in which B received this
+secret, i.e., some sequence of calls happened that involved agents B and C[^1].
 
 ## Putting it all together
 
@@ -66,7 +104,20 @@ _multiple_ recipients, and all participants exchange numbers and secrets.
 
 ## References
 
-[aws-gossip]: https://status.aws.amazon.com/s3-20080720.html
-[scuttle]: https://scuttlebutt.nz/
-[dyngossip]: {{ site.baseurl }}{% link theory/background.markdown %}#dynamic-gossip
-[groupcalls]: {{ site.baseurl }}{% link theory/this-project.markdown %}
+## Footnotes
+
+[^1]: Note that this requires the assumption that all gossip graphs start from
+    an initial model where all agents _only_ know their own secret. In practice,
+    it is possible that the initial model _does_ contain secrets. This does not
+    matter for our definition: we simply say that this initial model is actually
+    a state of another, “true” initial model in which our assumption holds.
+
+[aws-gossip]:      https://status.aws.amazon.com/s3-20080720.html
+[scuttle]:         https://scuttlebutt.nz/
+[dyngossip]:       {{ site.baseurl }}{% link theory/background.markdown %}#dynamic-gossip
+[groupcalls]:      {{ site.baseurl }}{% link theory/this-project.markdown %}
+[awkward-kripke]:  {{ site.baseurl }}{% link theory/this-project.markdown %}#why-kripke-models-are-a-bit-awkward
+[action-models]:   {{ site.baseurl }}{% link theory/background.markdown %}#action-models
+[k-structs]:       {{ site.baseurl }}{% link theory/background.markdown %}#knowledge-structures
+[k-transformers]:  {{ site.baseurl }}{% link theory/background.markdown %}#knowledge-structures
+[synchronicity]:  {{ site.baseurl }}{% link theory/this-project.markdown %}#synchronicity
