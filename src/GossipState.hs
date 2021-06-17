@@ -42,7 +42,7 @@ printState (State g k c) n = do
   setSGR [Reset]
   printCalls c
   setSGR [SetColor Foreground Vivid Magenta]
-  putStrLn "\n==="
+  putStrLn "\n====================="
   setSGR [Reset]
 
 -- | Determines based on the current GossipGraph state which calls are actually allowed to be made.
@@ -57,15 +57,15 @@ makeCall c s@(State g k cs) =
     allEdges ((a, _), (b, _)) =
       -- (a,x,Number) forall x s.t. N(b,x)
       [(a, x, Number) | (x, _) <- labNodes g, hasLEdge g (b, x, Number)]
-        ++
-        -- (a,x,Secret) forall x s.t. S(b,x)
-        [(a, x, Secret) | (x, _) <- labNodes g, hasLEdge g (b, x, Secret)]
-        ++
-        -- (b,x,Number) forall x s.t. N(a,x)
-        [(b, x, Number) | (x, _) <- labNodes g, hasLEdge g (a, x, Number)]
-        ++
-        -- (b,x,Secret) forall x s.t. S(a,x)
-        [(b, x, Secret) | (x, _) <- labNodes g, hasLEdge g (a, x, Secret)]
+      ++
+      -- (a,x,Secret) forall x s.t. S(b,x)
+      [(a, x, Secret) | (x, _) <- labNodes g, hasLEdge g (b, x, Secret)]
+      ++
+      -- (b,x,Number) forall x s.t. N(a,x)
+      [(b, x, Number) | (x, _) <- labNodes g, hasLEdge g (a, x, Number)]
+      ++
+      -- (b,x,Secret) forall x s.t. S(a,x)
+      [(b, x, Secret) | (x, _) <- labNodes g, hasLEdge g (a, x, Secret)]
 
     newState :: State -> [Relation] -> State
     newState (State g k cs) newEdges = State (insEdges newEdges g) k (cs ++ [c])

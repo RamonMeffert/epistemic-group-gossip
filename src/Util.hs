@@ -2,14 +2,20 @@ module Util where
 
 import System.Console.ANSI
 
-printInvalidAction :: String -> IO ()
-printInvalidAction action = do
-    setSGR [SetColor Foreground Vivid Red]
-    putStr "Invalid action: "
-    setSGR [SetColor Foreground Vivid Blue]
-    putStr action
-    setSGR [Reset]
-    putStr " is not a valid action in the current context.\n"
+printInvalidActionStr :: String -> IO ()
+printInvalidActionStr action = do
+    putStrFgc Red "Invalid action: "
+    putStrFgc Blue action
+    putStrLn " is not a valid action in the current context."
+
+printInvalidAction :: Char -> IO ()
+printInvalidAction action = printInvalidActionStr [action]
+    
+
+printGraphComplete :: IO ()
+printGraphComplete = do
+    putStrLnFgc Green "\n!!! Graph complete !!!"
+    putStrLn "Everybody is an expert (i.e. every agent knows the secrets of all other agents)."
 
 putStrFgc :: Color -> String -> IO ()
 putStrFgc c s = do
