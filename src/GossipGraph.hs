@@ -126,7 +126,14 @@ findAgentByName agents name =
   where
     getCharName (_, n) = Char.toUpper n
 
--- Parsing stuff below --
+-- | Check whether each agent is an expert; i.e. knows the secret of everyone.
+graphIsComplete :: GossipGraph -> Bool
+graphIsComplete g = length (edges g) == 2 * noAgents g ^ 2 --ufold ((&&) . isExpert (noAgents g)) True g
+
+    -- isExpert :: Int -> ([(Kind, Node)], Node, AgentName, [(Kind, Node)]) -> Bool
+    -- isExpert n c@(i, _, _, _) = length i == n * 2
+
+-- === Parsing stuff below === --
 
 -- | Possible tokens in the input string
 data LexToken
