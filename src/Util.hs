@@ -1,6 +1,9 @@
 module Util where
 
 import System.Console.ANSI
+import System.IO
+import PrintableBdd
+import Data.HasCacBDD.Visuals
 
 printInvalidActionStr :: String -> IO ()
 printInvalidActionStr action = do
@@ -19,12 +22,15 @@ printGraphComplete = do
 
 putStrFgc :: Color -> String -> IO ()
 putStrFgc c s = do
-    setSGR [SetColor Foreground Vivid c] 
+    setSGR [SetColor Foreground Vivid c]
     putStr s
     setSGR [Reset]
 
 putStrLnFgc :: Color -> String -> IO ()
 putStrLnFgc c s = do
-    setSGR [SetColor Foreground Vivid c] 
+    setSGR [SetColor Foreground Vivid c]
     putStrLn s
     setSGR [Reset]
+
+writeGraph :: String -> Bdd -> IO ()
+writeGraph s b = svgGraph (bdd b) >>= writeFile s

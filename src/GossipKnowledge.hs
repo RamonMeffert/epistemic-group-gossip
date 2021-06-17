@@ -12,7 +12,7 @@ import qualified Data.Set as Set
 
 import GossipGraph
 import GossipTypes
-import PrintableBdd hiding (var, substitSimul)
+import PrintableBdd hiding ( var, forall, exists, forallSet, existsSet )
 import Util
 
 
@@ -32,31 +32,44 @@ data GossipAtom = GAt Rel Agent Agent deriving (Ord, Eq)
 instance Show GossipAtom where
   show (GAt rel a1 a2) = concat [show rel, showAgent a1, showAgent a2]
 
+texify :: GossipAtom -> String
+texify (GAt rel a1 a2) = List.concat ["\\texttt{", show rel, showAgent a1, showAgent a2, "}"]
+
 -- | Converts Bdd formula to a list of GossipAtoms for all variables in the formula
 bddToGAt :: Int -> Bdd -> [GossipAtom]
-bddToGAt n bdd = map (bddToGAt' n) (allVarsOf bdd)
+bddToGAt n bdd = map (varToGAt n) (allVarsOf bdd)
 
 -- | Converts a Bbd variable index to a GossipAtom
-bddToGAt' :: Int -> Int -> GossipAtom
-bddToGAt' n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
+varToGAt :: Int -> Int -> GossipAtom
+varToGAt n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
   where rel =  v                   `div` n^2
         a1  =  v `mod` n^2         `div` n
         a2  =  v `mod` n^2 `mod` n
 
 -- | Convert a bdd variable index to a GossipAtom string
 showBddVar :: Int -> Int -> String
-showBddVar n = show . bddToGAt' n
+showBddVar n = show . varToGAt n
 
-var :: Int -> Int -> Bdd
-var n = varl (showBddVar n)
+texifyBddVar :: Int -> Int -> String
+texifyBddVar n = texify . varToGAt n
+
+strLabel :: Int -> VarLabeller
+strLabel = showBddVar
+
+texLabel :: Int -> VarLabeller
+texLabel = texifyBddVar
+
+gvar :: Int -> Int -> Bdd
+gvar n = varl (showBddVar n) (texifyBddVar n)
 
 -- | Convert a GossipAtom to a Bdd variable
 gAtToBdd :: Int -> GossipAtom -> Bdd
-gAtToBdd n gat = var n $ gAtToInt n gat
+gAtToBdd n gat = gvar n $ gAtToInt n gat
 
 -- | Convert a GossipAtom to a unique integer
 gAtToInt :: Int -> GossipAtom -> Int
 gAtToInt n (GAt rel (a1,_) (a2,_)) = n^2 * fromEnum rel + n * a1 + a2
+
 
 {- 
     Epistemic formulae for gossip
@@ -79,7 +92,7 @@ data Form = Fact Bdd
 
 instance Show Form where
   show (Fact bdd) = show bdd
-  show (K ag form) = "K" ++ showAgent ag ++ " (" ++ show form ++ ")"
+  show (K ag form) = "K" ++ showAgent ag ++ show form
 
 
 {- 
@@ -98,17 +111,20 @@ data GossipKnowledgeStructure = GKS
     observables :: Map Agent (Set Int)
   }
 
+nag :: GossipKnowledgeStructure -> Int
+nag (GKS _ _ o) = Map.size o
+
 instance Show GossipKnowledgeStructure where
   show (GKS v l o) = concat
     [ "vocabulary: { ", List.intercalate ",\n              "  vocab, " }"
-    , "\nstate law:   " ++ show l
+    , "\nstate law: " ++ show l
     , "\nobservables: ", List.intercalate "\n             " $ map shObs (Map.assocs o)
     ] where
 
       vocab = map (List.intercalate ", ") $ chunksOf 9 $ map gat (Set.toList v)
 
       gat :: Int -> String
-      gat = show . bddToGAt' (Map.size o)
+      gat = show . varToGAt (Map.size o)
 
       shObs :: (Agent, Set Int) -> String
       shObs (a, s) =  concat
@@ -117,7 +133,7 @@ instance Show GossipKnowledgeStructure where
         ]
 
       -- The following two functions were taken from the source code of Data.List.Split, so that we don't have to 
-      -- import the entiremodule. 
+      -- import the entire module. 
       -- Source: https://hackage.haskell.org/package/split-0.2.3.4/docs/src/Data.List.Split.Internals.html#build
       build :: ((a -> [a] -> [a]) -> [a] -> [a]) -> [a]
       build g = g (:) []
@@ -133,6 +149,18 @@ validKS (GKS vocab law obs) =
   let lawCheck = Set.fromList (allVarsOf law) `isSubsetOf` vocab
       obsCheck = Map.foldr ((&&) . (`isSubsetOf` vocab)) True obs
    in lawCheck && obsCheck
+
+gforall :: GossipKnowledgeStructure -> Int -> Bdd -> Bdd
+gforall k = foralll (strLabel $ nag k) (texLabel $ nag k)
+
+gexists :: GossipKnowledgeStructure -> Int -> Bdd -> Bdd
+gexists k = existsl (strLabel $ nag k) (texLabel $ nag k)
+
+gforallSet :: GossipKnowledgeStructure -> [Int] -> Bdd -> Bdd
+gforallSet k = forallSetl (strLabel $ nag k) (texLabel $ nag k)
+
+gexistsSet :: GossipKnowledgeStructure -> [Int] -> Bdd -> Bdd
+gexistsSet k = existsSetl (strLabel $ nag k) (texLabel $ nag k)
 
 -- | Converts a gossip graph to its corresponding knowledge structure. 
 --   Note that this doesn't convert a gossip state, i.e. no call sequence is encoded.
@@ -152,25 +180,25 @@ fromGossipGraph graph =
       vocabulary = map gint vocabAtoms
 
       -- state law
-      stateLaw = con
-        (conSet $ foldr (\ x -> (++) [gvar (GAt N x x), gvar (GAt S x x)]) [] agents)
-        (conSet [gvar (GAt C x y) `imp` conSet   -- if x has called y;
-            [ gvar (GAt N x y)                    --  then x knows y's number;
-            , gvar (GAt N y x)                    --  and y knows x's number;
-            , gvar (GAt S x y)                    --  and x knows y's secret;
-            , gvar (GAt S y x)                    --  and y knows x's secret.
+      stateLaw = conSet (foldr (\ x -> (++) [gvar (GAt N x x), gvar (GAt S x x)]) [] agents)
+        `con` conSet 
+          [gvar (GAt C x y) `imp` conSet              --  if x has called y;
+            [ gvar (GAt N x y)                        --  then x knows y's number;
+            , gvar (GAt N y x)                        --  and y knows x's number;
+            , gvar (GAt S x y)                        --  and x knows y's secret;
+            , gvar (GAt S y x)                        --  and y knows x's secret;
+            , gvar (GAt N x z) `imp` gvar (GAt N y z) --  and if x knows the number of z, then y also knows the number of z;
+            , gvar (GAt N y z) `imp` gvar (GAt N x z) --  and if y knows the number of z, then x also knows the number of z;
+            , gvar (GAt S x z) `imp` gvar (GAt S y z) --  and if x knows the secret of z, then y also knows the secret of z;
+            , gvar (GAt S y z) `imp` gvar (GAt S x z) --  and if y knows the secret of z, then x also knows the secret of z.
             ]
-          | x <- agents
-          , y <- agents
-          , x /= y
-          ]
-        )
+          | x <- agents, y <- agents, x /= y, z <- agents, y /= z, x /= z] -- for all distinct x,y,z in A
 
       -- observables
-      initialSecrets = [GAt S a a | a <- agents]
+      initials = foldr (\ x -> (++) [GAt N x x, GAt S x x]) [] agents
       numbersOf ag = [GAt N ag x | x <- numbersKnownBy graph ag]
 
-      observablesOf ag = map gint $ initialSecrets ++ numbersOf ag
+      observablesOf ag = map gint $ initials ++ numbersOf ag
       observables = Map.fromList [(a, Set.fromList $ observablesOf a) | a <- agents]
 
    in GKS (Set.fromList vocabulary) stateLaw observables
@@ -184,15 +212,11 @@ formToBdd k (K ag form) = knowledgeToBdd k ag form
     -- | Convert a knowledge formula (Ka ϕ) to a Bdd formula, given the current state
     knowledgeToBdd :: GossipKnowledgeStructure -> Agent -> Form -> Bdd
     knowledgeToBdd k ag form =
-      let universe = vocabulary k \\ (observables k ! ag)
+      let universe = Set.toList $ vocabulary k \\ (observables k ! ag)
           formula = case form of
             Fact bdd   -> stateLaw k `imp` bdd
             K ag2 form -> stateLaw k `imp` knowledgeToBdd k ag2 form
-
-          boolQuant x = [restrict formula (x, True), restrict formula (x, False)]
-
-          p = concatMap boolQuant universe
-      in conSet p 
+      in gforallSet k universe formula
 
 (<|>) :: GossipKnowledgeStructure -> Form -> Bdd
 k <|> ϕ = formToBdd k ϕ
@@ -240,9 +264,29 @@ infixl 9 |+|
     Update schemes for gossip calls
 -}
 
-synchronousUpdate :: GossipKnowledgeStructure -> (Agent, Agent) -> GossipKnowledgeStructure
-synchronousUpdate gks (ag1, ag2) = gks |+| transformer
+synchronousUpdate :: GossipKnowledgeStructure -> Int -> Call -> GossipKnowledgeStructure
+synchronousUpdate gks ticks (a, b) = gks |+| transformer
   where
         transformer = baseTransformer
-          { addObs = undefined
+          { addObs = (Map.insert a oa . Map.insert b ob) Map.empty
+          , eventLaw = xorSet $ map conSet allCallCombinations
           }
+
+        agents = Map.keys $ observables gks
+        combinations = (. List.subsequences) . filter . (. length) . (==)
+        allCallCombinations = combinations ticks [gAtToBdd (nag gks) (GAt C x y) | x <- agents, y <- agents]
+
+        oa = Set.fromList $ map (gAtToInt $ nag gks)
+          [ GAt C a b
+          , GAt S a b
+          , GAt S b a
+          , GAt N b a
+          ]
+
+        ob = Set.fromList $ map (gAtToInt $ nag gks)
+          [ GAt C a b
+          , GAt S a b
+          , GAt S b a
+          , GAt N a b
+          , GAt N b a
+          ]
