@@ -68,7 +68,10 @@ makeCall c s@(State g k cs) =
       [(b, x, Secret) | (x, _) <- labNodes g, hasLEdge g (a, x, Secret)]
 
     newState :: State -> [Relation] -> State
-    newState (State g k cs) newEdges = State (insEdges newEdges g) k (cs ++ [c])
+    newState (State g k cs) newEdges = State 
+      (insEdges newEdges g) 
+      (synchronousUpdate k (length cs + 1) c) 
+      (cs ++ [c])
 
 -- | Evaluate a gossip atom (N(x,y), S(x,y) or C(x,y)), given the current state
 evaluateGossipAtom :: State -> GossipAtom -> Bool
