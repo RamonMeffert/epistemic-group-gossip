@@ -85,14 +85,15 @@ working with the assumption that there is some concept of global time. The way
 this works in our model is by keeping track of a global tick count. This is
 necessary because at every tick, one call is made.
 
-This introduces a temporal aspect into the model: it is common knowledge how
-many ticks have happened. Based on this knowledge, agents can reason about what
-calls (must) have been made without the calls themselves being common knowledge.
-This means that an agent considers it possible that any of the calls that are
-legal under the current protocol have been made at tick $$t$$. When they have
-higher-order knowledge, e.g., agent A knows that agent B knows the secret of
-agent C, they also know that a call must have happened in which B received this
-secret, i.e., some sequence of calls happened that involved agents B and C[^1].
+This introduces a [temporal aspect][ticks] into the model: it is common
+knowledge how many ticks have happened. Based on this knowledge, agents can
+reason about what calls (must) have been made without the calls themselves being
+common knowledge. This means that an agent considers it possible that any of the
+calls that are legal under the current protocol have been made at tick $$t$$.
+When they have higher-order knowledge, e.g., agent A knows that agent B knows
+the secret of agent C, they also know that a call must have happened in which B
+received this secret, i.e., some sequence of calls happened that involved agents
+B and C[^1].
 
 ## Putting it all together
 
@@ -101,6 +102,8 @@ secret, i.e., some sequence of calls happened that involved agents B and C[^1].
 ### Reducing model size (and improving performance!)
 
 ### Transforming knowledge
+
+### Keeping track of time
 
 ## References
 
@@ -120,4 +123,5 @@ secret, i.e., some sequence of calls happened that involved agents B and C[^1].
 [action-models]:   {{ site.baseurl }}{% link theory/background.markdown %}#action-models
 [k-structs]:       {{ site.baseurl }}{% link theory/background.markdown %}#knowledge-structures
 [k-transformers]:  {{ site.baseurl }}{% link theory/background.markdown %}#knowledge-structures
-[synchronicity]:  {{ site.baseurl }}{% link theory/this-project.markdown %}#synchronicity
+[synchronicity]:   {{ site.baseurl }}{% link theory/this-project.markdown %}#synchronicity
+[ticks]:           {{ site.baseurl }}{% link theory/this-project.markdown %}#ticks
