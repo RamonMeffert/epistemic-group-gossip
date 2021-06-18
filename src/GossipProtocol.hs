@@ -6,7 +6,7 @@ import GossipTypes
 import GossipGraph
 import GossipState
 import GossipKnowledge
-import PrintableBdd
+import PrintableBdd ( top, neg )
 
 -- | Placeholder (definitely needs updating!)
 type GossipProtocol = Int -> Call -> Form
