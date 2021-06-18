@@ -269,12 +269,12 @@ synchronousUpdate gks ticks (a, b) = gks |+| transformer
   where
         transformer = baseTransformer
           { addObs = (Map.insert a oa . Map.insert b ob) Map.empty
-          , eventLaw = xorSet $ map conSet allCallCombinations
+          --, eventLaw = xorSet $ map conSet allCallCombinations
           }
 
         agents = Map.keys $ observables gks
-        combinations = (. List.subsequences) . filter . (. length) . (==)
-        allCallCombinations = combinations ticks [gAtToBdd (nag gks) (GAt C x y) | x <- agents, y <- agents]
+        --combinations = (. List.subsequences) . filter . (. length) . (==)
+        --allCallCombinations = combinations ticks [gAtToBdd (nag gks) (GAt C x y) | x <- agents, y <- agents]
 
         oa = Set.fromList $ map (gAtToInt $ nag gks)
           [ GAt C a b

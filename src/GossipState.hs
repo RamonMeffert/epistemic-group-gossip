@@ -85,9 +85,9 @@ makeCall c s@(State g k cs) =
       [(b, x, Secret) | (x, _) <- labNodes g, hasLEdge g (a, x, Secret)]
 
     newState :: State -> [Relation] -> State
-    newState (State g k cs) newEdges = State 
-      (insEdges newEdges g) 
-      (synchronousUpdate k (length cs + 1) c) 
+    newState (State g k cs) newEdges = State
+      (insEdges newEdges g)
+      (synchronousUpdate k (length cs + 1) c)
       (cs ++ [c])
 
 -- | Evaluate a gossip atom (N(x,y), S(x,y) or C(x,y)), given the current state
@@ -101,13 +101,13 @@ evaluateBddVar :: State -> Int -> Bool
 evaluateBddVar s@(State g _ _) = evaluateGossipAtom s . varToGAt (noAgents g)
 
 -- | Evaluate an epistemic formula, given the current state
-evaluate :: State -> Form -> Bool 
+evaluate :: State -> Form -> Bool
 evaluate state@(State _ k _) ϕ = evaluateFun (k <|> ϕ) (evaluateBddVar state)
 
 -- | Evaluate a formula, given the current state
 (|=) :: State -> Form -> Bool
 state |= form = evaluate state form
-infix 9 |= 
+infix 9 |=
 
 -- | Legacy method, evalute a GossipFormula (note, without knowledge) by naive recursion
 evaluate' :: State -> GossipForm -> Bool
@@ -119,3 +119,11 @@ evaluate' s (Neg form)                     = not $ evaluate' s form
 evaluate' s (Conj (form:rest))             = evaluate' s form && evaluate' s (Conj rest)
 evaluate' s (Disj (form:rest))             = evaluate' s form || evaluate' s (Disj rest)
 evaluate' s (Impl prem conc)               = not $ evaluate' s prem || evaluate' s conc
+
+
+tester :: Int -> Bool
+tester n =
+  let g = defaultGraph n
+      s = State g (fromGossipGraph g) []
+      f = K (0, 'a') $ Fact $ var 0 `imp` var 0
+   in s |= f
