@@ -46,8 +46,25 @@ printState (State g k c) n = do
   setSGR [Reset]
 
 -- | Determines based on the current GossipGraph state which calls are actually allowed to be made.
-validCalls :: GossipGraph -> [Call]
-validCalls g = [(x, y) | x@(i, _) <- labNodes g, y@(j, _) <- labNodes g, i /= j, hasLEdge g (i, j, Number)]
+validCalls :: GossipGraph -> ([Call], [GroupCall])
+validCalls g = (validDirectCalls, validGroupCalls)
+  where
+    validDirectCalls :: [Call]
+    validDirectCalls = [ f ☎ t | f@(i, _) <- labNodes g, t@(j, _) <- labNodes g, i /= j, hasLEdge g (i, j, Number)]
+    
+    validGroupCalls :: [GroupCall]
+    validGroupCalls = [(f, tos f) | f@(i, _) <- labNodes g]
+
+    tos :: Agent -> [Agent]
+    tos f@(i, _) = [t | t@(j, _) <- labNodes g, f /= t, hasLEdge g (i,j,Number)]
+
+executeCalls :: [Call] -> State -> IO State
+executeCalls [] s = return s
+executeCalls (c:cs) s = do
+  printMakeCall c
+  let newState = makeCall c s
+  printState newState True
+  executeCalls cs newState
 
 makeCall :: Call -> State -> State
 makeCall c s@(State g k cs) =
