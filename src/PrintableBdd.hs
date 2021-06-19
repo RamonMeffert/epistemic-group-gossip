@@ -1,3 +1,9 @@
+{-|
+Module      : PrintableBdd
+Description : A wrapper module implementing a Binary Decision Diagram system that can be 
+              printed in either text or latex. This module internally uses the Data.HasCacBDD module. 
+License     : BSD3
+-}
 module PrintableBdd
 ( Bdd(bdd, str, tex)
 , VarLabeller
@@ -33,6 +39,7 @@ import Data.List ( intercalate )
 
 import Data.Set (Set)
 
+-- | Printable data wrapper for the Data.HasCacBDD.Bdd record
 data Bdd = Bdd
   { str :: String
   , tex :: String
@@ -42,42 +49,55 @@ data Bdd = Bdd
 instance Show Bdd where
   show = str
 
+-- | The printable Bdd can label their variables, instead of using integers. A VarLabeller type is a function that encodes
+--   a variable integer to its corresponding name.
 type VarLabeller = (Int -> String)
 
+-- | Encodes an arbitrary function that takes a single Data.HasCacBDD.Bdd argument to its printable counterpart
 directly :: (B.Bdd -> a) -> (Bdd -> a)
 directly = flip (.) bdd
 
+-- | Encodes a nullary function of Data.HasCacBDD to its printable counterpart
 nullary :: String -> String -> B.Bdd -> Bdd
 nullary = Bdd
 
+-- | Encodes a unary function (taking one Data.HasCacBDD.Bdd argument) of Data.HasCacBDD to its printable counterpart
 unary :: String -> String -> (B.Bdd -> B.Bdd) -> (Bdd -> Bdd)
 unary s t f b = Bdd (s ++ str b) (" " ++ t ++ " " ++ tex b) (f $ bdd b)
 
+-- | Encodes a binary function (taking two Data.HasCacBDD.Bdd arguments) of Data.HasCacBDD to its printable counterpart
 binary :: String -> String -> (B.Bdd -> B.Bdd -> B.Bdd) -> (Bdd -> Bdd -> Bdd)
 binary s t f b1 b2 = Bdd
   (concat ["(", str b1, " ", s, " ", str b2, ")"])
   (unwords ["(", tex b1, t, tex b2, ")"])
   (f (bdd b1) (bdd b2))
 
-quant :: VarLabeller -> VarLabeller -> String -> String -> (Int -> B.Bdd -> B.Bdd) -> (Int -> Bdd -> Bdd)
-quant ls lt s t f v b = Bdd
-  (concat [s, ls v, "(", str b, ")"])
-  (unwords [t, lt v, "\\left( ", tex b, "\\right)"])
-  (f v (bdd b))
-
-quantSet :: VarLabeller -> VarLabeller -> String -> String -> ([Int] -> B.Bdd -> B.Bdd) -> ([Int] -> Bdd -> Bdd)
-quantSet ls lt s t f v b = Bdd
-  (concat [s, "{", intercalate ", " (map ls v), "}", "(", str b, ")"])
-  (unwords [t, "\\left{", intercalate " , " (map lt v), "\\right}", "(", str b, ")"]) 
-  (f v (bdd b))
-
+-- | Encodes an n-ary function of Data.HasCacBDD to its printable counterpart
 nary :: String -> String -> ([B.Bdd] -> B.Bdd) -> ([Bdd] -> Bdd)
 nary s t f list = Bdd
   ("(" ++ intercalate (" " ++ s ++ " ") (map str list) ++ ")")
   (" (" ++ intercalate (" " ++ t ++ " ") (map tex list) ++ ") ")
   (f $ map bdd list)
 
--- Nullary operators
+-- | Encodes a binary quantification function of Data.HasCacBDD to its printable counterpart
+quant :: VarLabeller -> VarLabeller -> String -> String -> (Int -> B.Bdd -> B.Bdd) -> (Int -> Bdd -> Bdd)
+quant ls lt s t f v b = Bdd
+  (concat [s, ls v, "(", str b, ")"])
+  (unwords [t, lt v, "\\left( ", tex b, "\\right)"])
+  (f v (bdd b))
+
+-- | Encodes an n-ary binary quantification function of Data.HasCacBDD to its printable counterpart
+quantSet :: VarLabeller -> VarLabeller -> String -> String -> ([Int] -> B.Bdd -> B.Bdd) -> ([Int] -> Bdd -> Bdd)
+quantSet ls lt s t f v b = Bdd
+  (concat [s, "{", intercalate ", " (map ls v), "}", "(", str b, ")"])
+  (unwords [t, "\\left{", intercalate " , " (map lt v), "\\right}", "(", str b, ")"]) 
+  (f v (bdd b))
+
+{-
+      Nullary operators
+-}
+
+-- | 
 varl :: VarLabeller -> VarLabeller -> Int -> Bdd
 varl ls lt i = nullary (ls i) (lt i) (B.var i)
 

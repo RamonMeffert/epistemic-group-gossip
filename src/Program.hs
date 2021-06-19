@@ -45,11 +45,12 @@ runProgram = do
   where
     obtainTestGraph :: IO GossipGraph
     obtainTestGraph = do
-      putStrLn "testGraph(1) or testGraph(2)?"
+      putStrLn "testGraph(1), testGraph(2) or biggerGraph(3)?"
       g <- getLine
       case toLower $ head g of
         '1' -> return testGraph
         '2' -> return testGraph2
+        '3' -> return biggerGraph
         other -> do
           printInvalidAction other
           obtainTestGraph
@@ -287,7 +288,7 @@ performProtocolAction prot state = do
       putStrFgc actionColor "d"
       putStr ")irect call or ("
       putStrFgc actionColor "g"
-      putStr ")roup call?"
+      putStrLn ")roup call?"
       getLine
 
     executeCall :: ([Call], [GroupCall]) -> State -> IO State
