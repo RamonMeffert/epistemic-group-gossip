@@ -1,4 +1,53 @@
-module GossipKnowledge where
+{-|
+Module      : GossipKnowledge
+Description : Implements Knowledge Structures and Knowledge Transformers as defined in (Gattinger, 2018).
+Copyright   : (c) Jesper Kuiper, 2021
+                  Leander van Boven, 2021
+                  Ramon Meffert, 2021
+License     : BSD3
+-}
+
+module GossipKnowledge 
+  ( -- * Atomic proposition for Dynamic Gossip
+    GossipAtom ( GAt )
+  , Rel( N, S, C )
+  -- ** Conversion to and from BDDs
+  , bddToGAt
+  , intToGAt
+  , gAtToBdd
+  , gAtToInt
+  -- ** Texification
+  , texifyGAt
+  , texifyBddVar
+  -- * Epistemic formulae for Dyamic Gossip
+  , Form ( Fact, K )
+  , GossipForm (Top, Atom, Neg, Conj, Disj, Impl )
+  -- * Knowledge Structures for Dynamic Gossip
+  , GossipKnowledgeStructure ( GKS )
+  -- ** Knowledge Structure fields
+  , vocabulary
+  , stateLaw
+  , observables
+  -- ** Generation and validation
+  , fromGossipGraph
+  , validKS
+  -- ** Transition from epistemic to boolean formulae
+  , formToBdd
+  , (<|>)
+  -- * Knowledge Transformers for Dyamic Gossip
+  , KnowledgeTransformer ( KT )
+  -- ** Knowledge Transformer fields
+  , addVocab
+  , eventLaw
+  , addObs
+  -- ** Generation and validation
+  , baseTransformer
+  , validKT
+  -- * Updating Knowledge Structures 
+  , update
+  , (|+|)
+  , synchronousUpdate
+  ) where
 
 import Data.Graph.Inductive.Graph
 --import Data.HasCacBDD
@@ -32,35 +81,26 @@ data GossipAtom = GAt Rel Agent Agent deriving (Ord, Eq)
 instance Show GossipAtom where
   show (GAt rel a1 a2) = concat [show rel, showAgent a1, showAgent a2]
 
-texify :: GossipAtom -> String
-texify (GAt rel a1 a2) = List.concat ["\\texttt{", show rel, showAgent a1, showAgent a2, "}"]
+texifyGAt :: GossipAtom -> String
+texifyGAt (GAt rel a1 a2) = List.concat ["\\texttt{", show rel, showAgent a1, showAgent a2, "}"]
 
 -- | Converts Bdd formula to a list of GossipAtoms for all variables in the formula
 bddToGAt :: Int -> Bdd -> [GossipAtom]
-bddToGAt n bdd = map (varToGAt n) (allVarsOf bdd)
+bddToGAt n bdd = map (intToGAt n) (allVarsOf bdd)
 
 -- | Converts a Bbd variable index to a GossipAtom
-varToGAt :: Int -> Int -> GossipAtom
-varToGAt n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
+intToGAt :: Int -> Int -> GossipAtom
+intToGAt n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
   where rel =  v                   `div` n^2
         a1  =  v `mod` n^2         `div` n
         a2  =  v `mod` n^2 `mod` n
 
 -- | Convert a bdd variable index to a GossipAtom string
 showBddVar :: Int -> Int -> String
-showBddVar n = show . varToGAt n
+showBddVar n = show . intToGAt n
 
 texifyBddVar :: Int -> Int -> String
-texifyBddVar n = texify . varToGAt n
-
-strLabel :: Int -> VarLabeller
-strLabel = showBddVar
-
-texLabel :: Int -> VarLabeller
-texLabel = texifyBddVar
-
-gvar :: Int -> Int -> Bdd
-gvar n = varl (showBddVar n) (texifyBddVar n)
+texifyBddVar n = texifyGAt . intToGAt n
 
 -- | Convert a GossipAtom to a Bdd variable
 gAtToBdd :: Int -> GossipAtom -> Bdd
@@ -71,12 +111,23 @@ gAtToInt :: Int -> GossipAtom -> Int
 gAtToInt n (GAt rel (a1,_) (a2,_)) = n^2 * fromEnum rel + n * a1 + a2
 
 
+-- Local helper functions
+
+gvar :: Int -> Int -> Bdd
+gvar n = varl (showBddVar n) (texifyBddVar n)
+
+strLabel :: Int -> VarLabeller
+strLabel = showBddVar
+
+texLabel :: Int -> VarLabeller
+texLabel = texifyBddVar
+
+
 {- 
     Epistemic formulae for gossip
 -}
 
--- | A formula build o' of GossipAtoms, using the language of (van Ditmarsch et al., 2017).
---   We're not certain we need this, we might fully stick with Bdd formulae instead.
+-- | A recursively defined propositional formula build out of GossipAtoms.
 data GossipForm
     = Top                           -- ^ Always true
     | Atom GossipAtom               -- ^ Atom
@@ -86,7 +137,7 @@ data GossipForm
     | Impl GossipForm GossipForm    -- ^ Implication
     deriving (Show)
 
--- | An epistemic formula, defined in terms of Bdd's 
+-- | An epistemic formula, defined in terms of BDDs. This data structure allows for propositional formulae, as well as (higher-order) agent knowledge.  
 data Form = Fact Bdd
           | K Agent Form
 
@@ -111,9 +162,6 @@ data GossipKnowledgeStructure = GKS
     observables :: Map Agent (Set Int)
   }
 
-nag :: GossipKnowledgeStructure -> Int
-nag (GKS _ _ o) = Map.size o
-
 instance Show GossipKnowledgeStructure where
   show (GKS v l o) = concat
     [ "vocabulary: { ", List.intercalate ",\n              "  vocab, " }"
@@ -124,7 +172,7 @@ instance Show GossipKnowledgeStructure where
       vocab = map (List.intercalate ", ") $ chunksOf 9 $ map gat (Set.toList v)
 
       gat :: Int -> String
-      gat = show . varToGAt (Map.size o)
+      gat = show . intToGAt (Map.size o)
 
       shObs :: (Agent, Set Int) -> String
       shObs (a, s) =  concat
@@ -149,18 +197,6 @@ validKS (GKS vocab law obs) =
   let lawCheck = Set.fromList (allVarsOf law) `isSubsetOf` vocab
       obsCheck = Map.foldr ((&&) . (`isSubsetOf` vocab)) True obs
    in lawCheck && obsCheck
-
-gforall :: GossipKnowledgeStructure -> Int -> Bdd -> Bdd
-gforall k = foralll (strLabel $ nag k) (texLabel $ nag k)
-
-gexists :: GossipKnowledgeStructure -> Int -> Bdd -> Bdd
-gexists k = existsl (strLabel $ nag k) (texLabel $ nag k)
-
-gforallSet :: GossipKnowledgeStructure -> [Int] -> Bdd -> Bdd
-gforallSet k = forallSetl (strLabel $ nag k) (texLabel $ nag k)
-
-gexistsSet :: GossipKnowledgeStructure -> [Int] -> Bdd -> Bdd
-gexistsSet k = existsSetl (strLabel $ nag k) (texLabel $ nag k)
 
 -- | Converts a gossip graph to its corresponding knowledge structure. 
 --   Note that this doesn't convert a gossip state, i.e. no call sequence is encoded.
@@ -222,6 +258,23 @@ formToBdd k (K ag form) = knowledgeToBdd k ag form
 k <|> ϕ = formToBdd k ϕ
 infix 9 <|>
 
+
+-- Private helper functions for Knowledge Structures
+
+nag :: GossipKnowledgeStructure -> Int
+nag (GKS _ _ o) = Map.size o
+
+gforall :: GossipKnowledgeStructure -> Int -> Bdd -> Bdd
+gforall k = foralll (strLabel $ nag k) (texLabel $ nag k)
+
+gexists :: GossipKnowledgeStructure -> Int -> Bdd -> Bdd
+gexists k = existsl (strLabel $ nag k) (texLabel $ nag k)
+
+gforallSet :: GossipKnowledgeStructure -> [Int] -> Bdd -> Bdd
+gforallSet k = forallSetl (strLabel $ nag k) (texLabel $ nag k)
+
+gexistsSet :: GossipKnowledgeStructure -> [Int] -> Bdd -> Bdd
+gexistsSet k = existsSetl (strLabel $ nag k) (texLabel $ nag k)
 
 {- 
     Knowledge transformer for gossip 

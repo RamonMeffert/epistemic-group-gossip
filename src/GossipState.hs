@@ -98,7 +98,7 @@ evaluateGossipAtom (State _ _ s) (GAt C x y) = (x, y) `elem` s
 
 -- | Evaluate a Bdd variable as Int, given the current state
 evaluateBddVar :: State -> Int -> Bool
-evaluateBddVar s@(State g _ _) = evaluateGossipAtom s . varToGAt (noAgents g)
+evaluateBddVar s@(State g _ _) = evaluateGossipAtom s . intToGAt (noAgents g)
 
 -- | Evaluate an epistemic formula, given the current state
 evaluate :: State -> Form -> Bool
