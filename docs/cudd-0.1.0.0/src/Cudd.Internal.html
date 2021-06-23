@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LINE 1 &quot;Cudd/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-1"></span><span class="hs-pragma">{-# LANGUAGE ForeignFunctionInterface, EmptyDataDecls, CPP #-}</span><span>
+</span><span id="line-2"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Cudd.Internal</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-3"></span><span>    </span><span class="annot"><a href="Cudd.Internal.html#DdManager"><span class="hs-identifier">DdManager</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="Cudd.Internal.html#STDdManager"><span class="hs-identifier">STDdManager</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="Cudd.Internal.html#DdNode"><span class="hs-identifier">DdNode</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="Cudd.Internal.html#DDNode"><span class="hs-identifier">DDNode</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="Cudd.Internal.html#deref"><span class="hs-identifier">deref</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="Cudd.Internal.html#cudd_unique_slots"><span class="hs-identifier">cudd_unique_slots</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="Cudd.Internal.html#cudd_cache_slots"><span class="hs-identifier">cudd_cache_slots</span></a></span><span>
+</span><span id="line-10"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Foreign.Ptr</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Foreign.ForeignPtr</span></span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Cudd.C.html"><span class="hs-identifier">Cudd.C</span></a></span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="annot"><a href="Cudd.Internal.html#cudd_unique_slots"><span class="hs-identifier hs-type">cudd_unique_slots</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-21"></span><span id="cudd_unique_slots"><span class="annot"><span class="annottext">cudd_unique_slots :: Int
+</span><a href="Cudd.Internal.html#cudd_unique_slots"><span class="hs-identifier hs-var hs-var">cudd_unique_slots</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">256</span></span><span>
+</span><span id="line-22"></span><span class="hs-pragma">{-# LINE 22 &quot;Cudd/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="annot"><a href="Cudd.Internal.html#cudd_cache_slots"><span class="hs-identifier hs-type">cudd_cache_slots</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-24"></span><span id="cudd_cache_slots"><span class="annot"><span class="annottext">cudd_cache_slots :: Int
+</span><a href="Cudd.Internal.html#cudd_cache_slots"><span class="hs-identifier hs-var hs-var">cudd_cache_slots</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">262144</span></span><span>
+</span><span id="line-25"></span><span class="hs-pragma">{-# LINE 25 &quot;Cudd/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-25"></span><span>
+</span><span id="line-26"></span><span class="hs-keyword">newtype</span><span> </span><span id="DdManager"><span class="annot"><a href="Cudd.Internal.html#DdManager"><span class="hs-identifier hs-var">DdManager</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="DdManager"><span class="annot"><a href="Cudd.Internal.html#DdManager"><span class="hs-identifier hs-var">DdManager</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ptr</span></span><span> </span><span class="annot"><a href="Cudd.C.html#CDdManager"><span class="hs-identifier hs-type">CDdManager</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-27"></span><span>
+</span><span id="line-28"></span><span class="hs-keyword">newtype</span><span> </span><span id="STDdManager"><span class="annot"><a href="Cudd.Internal.html#STDdManager"><span class="hs-identifier hs-var">STDdManager</span></a></span></span><span> </span><span id="local-6989586621679043556"><span class="annot"><a href="#local-6989586621679043556"><span class="hs-identifier hs-type">s</span></a></span></span><span> </span><span id="local-6989586621679043555"><span class="annot"><a href="#local-6989586621679043555"><span class="hs-identifier hs-type">u</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="STDdManager"><span class="annot"><a href="Cudd.Internal.html#STDdManager"><span class="hs-identifier hs-var">STDdManager</span></a></span></span><span> </span><span class="hs-special">{</span><span id="unSTDdManager"><span class="annot"><span class="annottext">STDdManager s u -&gt; Ptr CDdManager
+</span><a href="Cudd.Internal.html#unSTDdManager"><span class="hs-identifier hs-var hs-var">unSTDdManager</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ptr</span></span><span> </span><span class="annot"><a href="Cudd.C.html#CDdManager"><span class="hs-identifier hs-type">CDdManager</span></a></span><span class="hs-special">}</span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span class="hs-keyword">newtype</span><span> </span><span id="DdNode"><span class="annot"><a href="Cudd.Internal.html#DdNode"><span class="hs-identifier hs-var">DdNode</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="DdNode"><span class="annot"><a href="Cudd.Internal.html#DdNode"><span class="hs-identifier hs-var">DdNode</span></a></span></span><span> </span><span class="hs-special">{</span><span id="unDdNode"><span class="annot"><span class="annottext">DdNode -&gt; ForeignPtr CDdNode
+</span><a href="Cudd.Internal.html#unDdNode"><span class="hs-identifier hs-var hs-var">unDdNode</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">ForeignPtr</span></span><span> </span><span class="annot"><a href="Cudd.C.html#CDdNode"><span class="hs-identifier hs-type">CDdNode</span></a></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679043536"><span id="local-6989586621679043538"><span id="local-6989586621679043540"><span id="local-6989586621679043542"><span id="local-6989586621679043544"><span id="local-6989586621679043546"><span id="local-6989586621679043548"><span class="annot"><span class="annottext">Eq DdNode
+Eq DdNode
+-&gt; (DdNode -&gt; DdNode -&gt; Ordering)
+-&gt; (DdNode -&gt; DdNode -&gt; Bool)
+-&gt; (DdNode -&gt; DdNode -&gt; Bool)
+-&gt; (DdNode -&gt; DdNode -&gt; Bool)
+-&gt; (DdNode -&gt; DdNode -&gt; Bool)
+-&gt; (DdNode -&gt; DdNode -&gt; DdNode)
+-&gt; (DdNode -&gt; DdNode -&gt; DdNode)
+-&gt; Ord DdNode
+DdNode -&gt; DdNode -&gt; Bool
+DdNode -&gt; DdNode -&gt; Ordering
+DdNode -&gt; DdNode -&gt; DdNode
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: DdNode -&gt; DdNode -&gt; DdNode
+$cmin :: DdNode -&gt; DdNode -&gt; DdNode
+max :: DdNode -&gt; DdNode -&gt; DdNode
+$cmax :: DdNode -&gt; DdNode -&gt; DdNode
+&gt;= :: DdNode -&gt; DdNode -&gt; Bool
+$c&gt;= :: DdNode -&gt; DdNode -&gt; Bool
+&gt; :: DdNode -&gt; DdNode -&gt; Bool
+$c&gt; :: DdNode -&gt; DdNode -&gt; Bool
+&lt;= :: DdNode -&gt; DdNode -&gt; Bool
+$c&lt;= :: DdNode -&gt; DdNode -&gt; Bool
+&lt; :: DdNode -&gt; DdNode -&gt; Bool
+$c&lt; :: DdNode -&gt; DdNode -&gt; Bool
+compare :: DdNode -&gt; DdNode -&gt; Ordering
+$ccompare :: DdNode -&gt; DdNode -&gt; Ordering
+$cp1Ord :: Eq DdNode
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679043531"><span id="local-6989586621679043533"><span class="annot"><span class="annottext">DdNode -&gt; DdNode -&gt; Bool
+(DdNode -&gt; DdNode -&gt; Bool)
+-&gt; (DdNode -&gt; DdNode -&gt; Bool) -&gt; Eq DdNode
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: DdNode -&gt; DdNode -&gt; Bool
+$c/= :: DdNode -&gt; DdNode -&gt; Bool
+== :: DdNode -&gt; DdNode -&gt; Bool
+$c== :: DdNode -&gt; DdNode -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679043524"><span id="local-6989586621679043526"><span id="local-6989586621679043528"><span class="annot"><span class="annottext">Int -&gt; DdNode -&gt; ShowS
+[DdNode] -&gt; ShowS
+DdNode -&gt; String
+(Int -&gt; DdNode -&gt; ShowS)
+-&gt; (DdNode -&gt; String) -&gt; ([DdNode] -&gt; ShowS) -&gt; Show DdNode
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [DdNode] -&gt; ShowS
+$cshowList :: [DdNode] -&gt; ShowS
+show :: DdNode -&gt; String
+$cshow :: DdNode -&gt; String
+showsPrec :: Int -&gt; DdNode -&gt; ShowS
+$cshowsPrec :: Int -&gt; DdNode -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span class="hs-keyword">newtype</span><span> </span><span id="DDNode"><span class="annot"><a href="Cudd.Internal.html#DDNode"><span class="hs-identifier hs-var">DDNode</span></a></span></span><span> </span><span id="local-6989586621679043522"><span class="annot"><a href="#local-6989586621679043522"><span class="hs-identifier hs-type">s</span></a></span></span><span> </span><span id="local-6989586621679043521"><span class="annot"><a href="#local-6989586621679043521"><span class="hs-identifier hs-type">u</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="DDNode"><span class="annot"><a href="Cudd.Internal.html#DDNode"><span class="hs-identifier hs-var">DDNode</span></a></span></span><span> </span><span class="hs-special">{</span><span id="unDDNode"><span class="annot"><span class="annottext">DDNode s u -&gt; Ptr CDdNode
+</span><a href="Cudd.Internal.html#unDDNode"><span class="hs-identifier hs-var hs-var">unDDNode</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ptr</span></span><span> </span><span class="annot"><a href="Cudd.C.html#CDdNode"><span class="hs-identifier hs-type">CDdNode</span></a></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679043504"><span id="local-6989586621679043506"><span id="local-6989586621679043508"><span id="local-6989586621679043510"><span id="local-6989586621679043512"><span id="local-6989586621679043514"><span id="local-6989586621679043516"><span class="annot"><span class="annottext">Eq (DDNode s u)
+Eq (DDNode s u)
+-&gt; (DDNode s u -&gt; DDNode s u -&gt; Ordering)
+-&gt; (DDNode s u -&gt; DDNode s u -&gt; Bool)
+-&gt; (DDNode s u -&gt; DDNode s u -&gt; Bool)
+-&gt; (DDNode s u -&gt; DDNode s u -&gt; Bool)
+-&gt; (DDNode s u -&gt; DDNode s u -&gt; Bool)
+-&gt; (DDNode s u -&gt; DDNode s u -&gt; DDNode s u)
+-&gt; (DDNode s u -&gt; DDNode s u -&gt; DDNode s u)
+-&gt; Ord (DDNode s u)
+DDNode s u -&gt; DDNode s u -&gt; Bool
+DDNode s u -&gt; DDNode s u -&gt; Ordering
+DDNode s u -&gt; DDNode s u -&gt; DDNode s u
+forall a.
+Eq a
+-&gt; (a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+forall s u. Eq (DDNode s u)
+forall s u. DDNode s u -&gt; DDNode s u -&gt; Bool
+forall s u. DDNode s u -&gt; DDNode s u -&gt; Ordering
+forall s u. DDNode s u -&gt; DDNode s u -&gt; DDNode s u
+min :: DDNode s u -&gt; DDNode s u -&gt; DDNode s u
+$cmin :: forall s u. DDNode s u -&gt; DDNode s u -&gt; DDNode s u
+max :: DDNode s u -&gt; DDNode s u -&gt; DDNode s u
+$cmax :: forall s u. DDNode s u -&gt; DDNode s u -&gt; DDNode s u
+&gt;= :: DDNode s u -&gt; DDNode s u -&gt; Bool
+$c&gt;= :: forall s u. DDNode s u -&gt; DDNode s u -&gt; Bool
+&gt; :: DDNode s u -&gt; DDNode s u -&gt; Bool
+$c&gt; :: forall s u. DDNode s u -&gt; DDNode s u -&gt; Bool
+&lt;= :: DDNode s u -&gt; DDNode s u -&gt; Bool
+$c&lt;= :: forall s u. DDNode s u -&gt; DDNode s u -&gt; Bool
+&lt; :: DDNode s u -&gt; DDNode s u -&gt; Bool
+$c&lt; :: forall s u. DDNode s u -&gt; DDNode s u -&gt; Bool
+compare :: DDNode s u -&gt; DDNode s u -&gt; Ordering
+$ccompare :: forall s u. DDNode s u -&gt; DDNode s u -&gt; Ordering
+$cp1Ord :: forall s u. Eq (DDNode s u)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679043500"><span id="local-6989586621679043502"><span class="annot"><span class="annottext">DDNode s u -&gt; DDNode s u -&gt; Bool
+(DDNode s u -&gt; DDNode s u -&gt; Bool)
+-&gt; (DDNode s u -&gt; DDNode s u -&gt; Bool) -&gt; Eq (DDNode s u)
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+forall s u. DDNode s u -&gt; DDNode s u -&gt; Bool
+/= :: DDNode s u -&gt; DDNode s u -&gt; Bool
+$c/= :: forall s u. DDNode s u -&gt; DDNode s u -&gt; Bool
+== :: DDNode s u -&gt; DDNode s u -&gt; Bool
+$c== :: forall s u. DDNode s u -&gt; DDNode s u -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679043494"><span id="local-6989586621679043496"><span id="local-6989586621679043498"><span class="annot"><span class="annottext">Int -&gt; DDNode s u -&gt; ShowS
+[DDNode s u] -&gt; ShowS
+DDNode s u -&gt; String
+(Int -&gt; DDNode s u -&gt; ShowS)
+-&gt; (DDNode s u -&gt; String)
+-&gt; ([DDNode s u] -&gt; ShowS)
+-&gt; Show (DDNode s u)
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+forall s u. Int -&gt; DDNode s u -&gt; ShowS
+forall s u. [DDNode s u] -&gt; ShowS
+forall s u. DDNode s u -&gt; String
+showList :: [DDNode s u] -&gt; ShowS
+$cshowList :: forall s u. [DDNode s u] -&gt; ShowS
+show :: DDNode s u -&gt; String
+$cshow :: forall s u. DDNode s u -&gt; String
+showsPrec :: Int -&gt; DDNode s u -&gt; ShowS
+$cshowsPrec :: forall s u. Int -&gt; DDNode s u -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="annot"><a href="Cudd.Internal.html#deref"><span class="hs-identifier hs-type">deref</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">FunPtr</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ptr</span></span><span> </span><span class="annot"><a href="Cudd.C.html#CDdManager"><span class="hs-identifier hs-type">CDdManager</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ptr</span></span><span> </span><span class="annot"><a href="Cudd.C.html#CDdNode"><span class="hs-identifier hs-type">CDdNode</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-35"></span><span id="deref"><span class="annot"><span class="annottext">deref :: FunPtr (Ptr CDdManager -&gt; Ptr CDdNode -&gt; IO ())
+</span><a href="Cudd.Internal.html#deref"><span class="hs-identifier hs-var hs-var">deref</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">FunPtr (Ptr CDdManager -&gt; Ptr CDdNode -&gt; IO ())
+</span><a href="Cudd.C.html#c_cuddIterDerefBddPtr"><span class="hs-identifier hs-var">c_cuddIterDerefBddPtr</span></a></span><span>
+</span><span id="line-36"></span></pre></body></html>
