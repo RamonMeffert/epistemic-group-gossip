@@ -34,7 +34,7 @@ Automatically generated Haddock documentation based on comments in the Haskell s
 
 Often, in a social network, agents have certain knowledge that others do not. In gossip these pieces of knowledge are so-called secrets. There are multiple ways of spreading these secrets through the network so that each agent eventually knows every secret. This is where gossip protocols come in.
 
-Multiple Gossip protocols already exist that try to find the most efficient way of spreading the secrets through the network. However, none are modelled to incorporate (higher-order) epistemic knowledge.
+Multiple gossip protocols already exist that try to find the most efficient way of spreading the secrets through the network. The "basic" versions of these protocols do not model knowledge, although several extensions of existing protocols as well as completely new protocols exist that *do* use epistemic modelling.
 
 ## The project
 
