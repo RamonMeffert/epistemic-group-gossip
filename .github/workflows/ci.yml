@@ -64,26 +64,24 @@ jobs:
         with:
           name: egg-${{ runner.os }}
           path: package
-        
-  docs:
-    name: Generate documentation
-    runs-on: ubuntu-18.04
-    needs: build
-    steps:
+          
       - name: Find Haddock docs path
-        run: echo "::set-output name=DOCS_DIR::$(stack path --local-doc-root)"
+        run: echo "DOCS_DIR=$(stack path --local-doc-root)" >> $GITHUB_ENV
         id: find-docs
-      - name: GitHub Pages
+        if: matrix.os == 'ubuntu-18.04'
+        
+      - name: Publish Haddock docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
+        if: matrix.os == 'ubuntu-18.04'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ steps.find-docs.outputs.DOCS_DIR }}
+          publish_dir: ${{ env.DOCS_DIR }}
           destination_dir: './docs'
           enable_jekyll: true
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
           commit_message: 'Update docs (automatic)'
-        
+  
   release:
     name: Create release
     runs-on: ubuntu-latest
