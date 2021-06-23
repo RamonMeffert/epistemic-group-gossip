@@ -50,7 +50,7 @@ jobs:
           key: ghc-${{ hashFiles('./stack.yaml.lock') }}
 
       - name: Build egg
-        run: stack build --haddock --no-haddock-deps --hide Cudd
+        run: stack build --haddock --no-haddock-deps
 
       - name: Package egg
         shell: bash
