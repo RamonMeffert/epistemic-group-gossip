@@ -87,24 +87,24 @@ makeCall c s@(State g k cs) =
     newState :: State -> [Relation] -> State
     newState (State g k cs) newEdges = State
       (insEdges newEdges g)
-      (synchronousUpdate k (length cs + 1) c)
+      (updateWithCall k (length cs + 1) c)
       (cs ++ [c])
 
--- | Evaluate a gossip atom (N(x,y), S(x,y) or C(x,y)), given the current state
+-- | Evaluates a gossip atom (N(x,y), S(x,y) or C(x,y)), given the current state
 evaluateGossipAtom :: State -> GossipAtom -> Bool
 evaluateGossipAtom (State g _ _) (GAt N x y) = hasRelationWith g x Number y
 evaluateGossipAtom (State g _ _) (GAt S x y) = hasRelationWith g x Secret y
 evaluateGossipAtom (State _ _ s) (GAt C x y) = (x, y) `elem` s
 
--- | Evaluate a Bdd variable as Int, given the current state
+-- | Evaluates a Bdd variable as Int, given the current state
 evaluateBddVar :: State -> Int -> Bool
 evaluateBddVar s@(State g _ _) = evaluateGossipAtom s . intToGAt (noAgents g)
 
--- | Evaluate an epistemic formula, given the current state
+-- | Evaluates an epistemic formula, given the current state
 evaluate :: State -> Form -> Bool
 evaluate state@(State _ k _) ϕ = evaluateFun (k <|> ϕ) (evaluateBddVar state)
 
--- | Evaluate a formula, given the current state
+-- | An infix operator of the `evaluate` function. 
 (|=) :: State -> Form -> Bool
 state |= form = evaluate state form
 infix 9 |=

@@ -138,7 +138,7 @@ hybridActions prot state = do
 userActions :: State -> IO ()
 userActions state = do
   newState <- performUserAction state
-  if graphIsComplete (stateGraph newState)
+  if isGraphComplete (stateGraph newState)
     then do
       continue <- requestContinuation
       when continue $ userActions newState
@@ -230,7 +230,7 @@ performUserAction = executeUserAction
 protocolActions :: GossipProtocol -> State -> IO ()
 protocolActions prot state = do
   newState <- performProtocolAction prot state
-  if graphIsComplete (stateGraph newState)
+  if isGraphComplete (stateGraph newState)
     then do
       printGraphComplete
       putStrLnFgc Red "Stopping protocol..."

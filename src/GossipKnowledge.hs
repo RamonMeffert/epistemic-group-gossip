@@ -46,7 +46,7 @@ module GossipKnowledge
   -- * Updating Knowledge Structures 
   , update
   , (|+|)
-  , synchronousUpdate
+  , updateWithCall
   ) where
 
 import Data.Graph.Inductive.Graph
@@ -191,7 +191,7 @@ data GossipKnowledgeStructure = GKS
 
     -- | The set of atoms seen by some agent. If an atom is observable for an agent, then they are certain as to whether this atom is true or false. 
     observables :: Map Agent (Set Int)
-  }
+  } deriving ( Eq )
 
 instance Show GossipKnowledgeStructure where
   show (GKS v l o) = concat
@@ -327,14 +327,11 @@ data KnowledgeTransformer = KT
     addObs :: Map Agent (Set Int)
   }
 
--- | A base Knowledge Transformer structure, which will not change the Knowledge Structure. For an arbitrary Knowledge Structure ks:
---
--- >>> ks |+| baseTransformer == ks
--- True
+-- | A base Knowledge Transformer structure, which will not change the Knowledge Structure.
 baseTransformer :: KnowledgeTransformer
 baseTransformer = KT Set.empty top Map.empty
 
--- | Checks if a Knowledge Transformer is valid. 
+-- | Checks if a Knowledge Transformer is valid. Checks whether all atoms in the additional vocabulary are actually new, whether the event law only uses variables that are contained in either the original vocabulary or the additional vocabulary, and whether the additional observables are items from the additional vocabulary.
 validKT :: GossipKnowledgeStructure -> KnowledgeTransformer -> Bool
 validKT (GKS v _ o) (KT v' l' o') =
   let vocabCheck = Set.disjoint v v'
@@ -342,6 +339,7 @@ validKT (GKS v _ o) (KT v' l' o') =
       obsCheck = Map.foldr ((&&) . (`isSubsetOf` v')) True o'
    in vocabCheck && lawCheck && obsCheck
 
+-- | Updates a Knowledge Structure, given a Knowledge Transformer. 
 update :: GossipKnowledgeStructure -> KnowledgeTransformer -> GossipKnowledgeStructure
 update (GKS v l o) (KT v' l' o') = GKS
   { vocabulary = v `union` v',
@@ -349,6 +347,7 @@ update (GKS v l o) (KT v' l' o') = GKS
     observables = unionWith union o o'
   }
 
+-- | An infix operator for the `update` function. 
 (|+|) :: GossipKnowledgeStructure -> KnowledgeTransformer -> GossipKnowledgeStructure
 f |+| x = update f x
 infixl 9 |+|
@@ -358,8 +357,9 @@ infixl 9 |+|
     Update schemes for gossip calls
 -}
 
-synchronousUpdate :: GossipKnowledgeStructure -> Int -> Call -> GossipKnowledgeStructure
-synchronousUpdate gks ticks (a, b) = gks |+| transformer
+-- | Updates a Knowledge Structure for a given call made between two agents. The integer argument denotes the tick counter. 
+updateWithCall :: GossipKnowledgeStructure -> Int -> Call -> GossipKnowledgeStructure
+updateWithCall gks ticks (a, b) = gks |+| transformer
   where
         transformer = baseTransformer
           { addObs = (Map.insert a oa . Map.insert b ob) Map.empty

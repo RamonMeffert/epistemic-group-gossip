@@ -7,6 +7,7 @@ Copyright   : (c) Jesper Kuiper, 2021
                   Ramon Meffert, 2021
 License     : BSD3
 -}
+
 module PrintableBdd
 ( -- * BDD type
   Bdd
@@ -61,7 +62,7 @@ import Data.List ( intercalate )
 
 import Data.Set (Set)
 
--- | Printable data wrapper for the Data.HasCacBDD.Bdd record.
+-- | Printable data wrapper for the `Data.HasCacBDD.Bdd` record.
 data Bdd = Bdd
   { -- | The formula represented as a unicode string for direct printing.
     str :: String
@@ -69,7 +70,7 @@ data Bdd = Bdd
     -- | The formula represented as a string, formatted in LaTeX.
   , tex :: String
 
-    -- | The binary decision diagram, as a Data.HasCacBDD.BDD. 
+    -- | The binary decision diagram, as a `Data.HasCacBDD.Bdd` type. 
   , bdd :: B.Bdd
   } deriving ( Eq, Read )
 
@@ -83,7 +84,7 @@ type Assignment = [(Int, Bool)]
 --   a variable integer to its corresponding name.
 type VarLabeller = (Int -> String)
 
--- | Encodes an arbitrary function that takes a single Data.HasCacBDD.Bdd argument to its printable counterpart.
+-- | Encodes an arbitrary function that takes a single `Data.HasCacBDD.Bdd` argument to its printable counterpart.
 directly :: (B.Bdd -> a) -> (Bdd -> a)
 directly = flip (.) bdd
 
@@ -91,18 +92,18 @@ directly = flip (.) bdd
 nullary :: String -> String -> B.Bdd -> Bdd
 nullary = Bdd
 
--- | Encodes a unary function (taking one Data.HasCacBDD.Bdd argument) of Data.HasCacBDD to its printable counterpart.
+-- | Encodes a unary function (taking one `Data.HasCacBDD.Bdd` argument) of `Data.HasCacBDD` to its printable counterpart.
 unary :: String -> String -> (B.Bdd -> B.Bdd) -> (Bdd -> Bdd)
 unary s t f b = Bdd (s ++ str b) (" " ++ t ++ " " ++ tex b) (f $ bdd b)
 
--- | Encodes a binary function (taking two Data.HasCacBDD.Bdd arguments) of Data.HasCacBDD to its printable counterpart.
+-- | Encodes a binary function (taking two `Data.HasCacBDD.Bdd` arguments) of `Data.HasCacBDD` to its printable counterpart.
 binary :: String -> String -> (B.Bdd -> B.Bdd -> B.Bdd) -> (Bdd -> Bdd -> Bdd)
 binary s t f b1 b2 = Bdd
   (concat ["(", str b1, " ", s, " ", str b2, ")"])
   (unwords ["(", tex b1, t, tex b2, ")"])
   (f (bdd b1) (bdd b2))
 
--- | Encodes an n-ary function of Data.HasCacBDD to its printable counterpart.
+-- | Encodes an n-ary function of `Data.HasCacBDD` to its printable counterpart.
 nary :: String -> String -> ([B.Bdd] -> B.Bdd) -> ([Bdd] -> Bdd)
 nary s t f list = Bdd
   ("(" ++ intercalate (" " ++ s ++ " ") (map str list) ++ ")")
