@@ -12,10 +12,10 @@ module GossipKnowledge
     GossipAtom ( GAt )
   , Rel( N, S, C )
   -- ** Conversion to and from BDDs
-  , bddToGAt
   , intToGAt
-  , gAtToBdd
+  , bddToGAt
   , gAtToInt
+  , gAtToBdd
   -- ** Texification
   , texifyGAt
   , texifyBddVar
@@ -70,55 +70,86 @@ import Util
 -}
 
 -- | The relation type of a GossipAtom. 
-data Rel = N  -- ^ x knows the number of y
-         | S  -- ^ x knows the secret of y
-         | C  -- ^ x has called y
+data Rel = N  -- ^ Indicates that x knows the number of y.
+         | S  -- ^ Indicates that x knows the secret of y.
+         | C  -- ^ Indicates that x has called y.
          deriving (Show, Ord, Eq, Enum)
 
--- | An atomic proposition in a gossip state: Rel(Agent, Agent)
+-- | An atomic proposition in a gossip state: Rel(Agent, Agent).
 data GossipAtom = GAt Rel Agent Agent deriving (Ord, Eq)
 
 instance Show GossipAtom where
   show (GAt rel a1 a2) = concat [show rel, showAgent a1, showAgent a2]
 
+-- | Converts an atomic gossip proposition into a LaTeX string.
+--
+-- >>> texify (GAt N a b)
+-- \texttt{N}ab
 texifyGAt :: GossipAtom -> String
 texifyGAt (GAt rel a1 a2) = List.concat ["\\texttt{", show rel, showAgent a1, showAgent a2, "}"]
 
--- | Converts Bdd formula to a list of GossipAtoms for all variables in the formula
+-- | Converts a BDD formula to a list of GossipAtoms for all variables in the formula. Internally calls intToGAt.
+--
+-- >>> bddToGAt 3 ((var 0) `imp` (var 12))
+-- >>> [Naa, Sba]
 bddToGAt :: Int -> Bdd -> [GossipAtom]
 bddToGAt n bdd = map (intToGAt n) (allVarsOf bdd)
 
--- | Converts a Bbd variable index to a GossipAtom
+-- | Converts a BDD variable index to a GossipAtom. Note that the first Int argument corresponds to the amount of agents present in the gossip graph. This is a bijective function to allow for unique indexing of atomic gossip propositions. 
+--
+-- >>> intToGAt 3 0
+-- Naa
+-- 
+-- >>> intToGAt 3 12
+-- Sba
 intToGAt :: Int -> Int -> GossipAtom
 intToGAt n v = GAt (toEnum rel) (a1, idToLab a1) (a2, idToLab a2)
   where rel =  v                   `div` n^2
         a1  =  v `mod` n^2         `div` n
         a2  =  v `mod` n^2 `mod` n
 
--- | Convert a bdd variable index to a GossipAtom string
+-- | Converts a BDD variable index to a GossipAtom, and converts that to a string.
+--
+-- >>> showBddVar 3 12
+-- >>> "Sba"
 showBddVar :: Int -> Int -> String
 showBddVar n = show . intToGAt n
 
+-- | Converts a BDD variable index to a GossipAtom, and converts that to a LaTeX string.
+--
+-- >>> texifyBddVar 3 12
+-- "\texttt{S}ba"
 texifyBddVar :: Int -> Int -> String
 texifyBddVar n = texifyGAt . intToGAt n
 
--- | Convert a GossipAtom to a Bdd variable
+-- | Converts a GossipAtom to a unique but labelled BDD variable. Note that the first argument corresponds to the amount of agents present in the gossip graph. 
+--
+-- >>> gAtToBdd 3 (GAt S b a)
+-- Sba
+--
+-- Note that, while this function prints the normal gossip atom, the type that is returned is of BDD instead of GossipAtom. Internally, a unique variable index has been generated.
 gAtToBdd :: Int -> GossipAtom -> Bdd
 gAtToBdd n gat = gvar n $ gAtToInt n gat
 
--- | Convert a GossipAtom to a unique integer
+-- | Converts a GossipAtom to a unique integer index that can be used for a BDD variable. 
+--
+-- >>> gAtToInt 3 (GAt S b a)
+-- 12
 gAtToInt :: Int -> GossipAtom -> Int
 gAtToInt n (GAt rel (a1,_) (a2,_)) = n^2 * fromEnum rel + n * a1 + a2
 
 
 -- Local helper functions
 
+-- | Generates a labelled BDD variable based on agent count and a variable index. 
 gvar :: Int -> Int -> Bdd
 gvar n = varl (showBddVar n) (texifyBddVar n)
 
+-- | The labeller that is used to label variables in the BDD. 
 strLabel :: Int -> VarLabeller
 strLabel = showBddVar
 
+-- | The labeller that is used to label variables in the LaTeX string of the BDD.
 texLabel :: Int -> VarLabeller
 texLabel = texifyBddVar
 
@@ -150,15 +181,15 @@ instance Show Form where
     Knowledge Structures for gossip
 -}
 
--- | A knowledge structure (Gattinger, 2018) which represents the knowledge of a Gossip State
+-- | A knowledge structure (Gattinger, 2018) which represents the knowledge of a Gossip State. 
 data GossipKnowledgeStructure = GKS
-  { -- | The set of atoms available in the model
+  { -- | The set of propositional atoms available in the model. 
     vocabulary :: Set Int,
 
-    -- | A boolean formula representing the law that every state needs to adhere to
+    -- | A boolean formula representing the law that every state needs to adhere to. 
     stateLaw :: Bdd,
 
-    -- | The set of atoms seen by some agent
+    -- | The set of atoms seen by some agent. If an atom is observable for an agent, then they are certain as to whether this atom is true or false. 
     observables :: Map Agent (Set Int)
   }
 
@@ -191,7 +222,9 @@ instance Show GossipKnowledgeStructure where
         splitter :: [e] -> ([e] -> a -> a) -> a -> a
         splitter [] _ n = n
         splitter l c n  = l `c` splitter (drop i l) c n
+      -- End of copy
 
+-- | Checks if a given Knowledge Structure is valid. It checks whether the variables found in both the state law and the observable sets are present in the vocabulary. 
 validKS :: GossipKnowledgeStructure -> Bool
 validKS (GKS vocab law obs) =
   let lawCheck = Set.fromList (allVarsOf law) `isSubsetOf` vocab
@@ -239,13 +272,13 @@ fromGossipGraph graph =
 
    in GKS (Set.fromList vocabulary) stateLaw observables
 
--- | Convert an epistemic formula to a boolean formula, given a knowledge structure
---   in Gattinger (2018), this is denoted by ||ϕ||_F
+-- | Converts an epistemic formula to a boolean formula, given a knowledge structure
+--   in Gattinger (2018), `fromToBdd k ϕ` is denoted by ||ϕ||_k.
 formToBdd :: GossipKnowledgeStructure -> Form -> Bdd
 formToBdd _ (Fact bdd)  = bdd
 formToBdd k (K ag form) = knowledgeToBdd k ag form
   where
-    -- | Convert a knowledge formula (Ka ϕ) to a Bdd formula, given the current state
+    -- | Convert a knowledge formula (Ka ϕ) to a Bdd formula, given the current state.
     knowledgeToBdd :: GossipKnowledgeStructure -> Agent -> Form -> Bdd
     knowledgeToBdd k ag form =
       let universe = Set.toList $ vocabulary k \\ (observables k ! ag)
@@ -254,6 +287,7 @@ formToBdd k (K ag form) = knowledgeToBdd k ag form
             K ag2 form -> stateLaw k `imp` knowledgeToBdd k ag2 form
       in gforallSet k universe formula
 
+-- | An infix operator for the formToBdd function. 
 (<|>) :: GossipKnowledgeStructure -> Form -> Bdd
 k <|> ϕ = formToBdd k ϕ
 infix 9 <|>
@@ -261,6 +295,7 @@ infix 9 <|>
 
 -- Private helper functions for Knowledge Structures
 
+-- | Extracts the number of agents from the Knowledge Structure. 
 nag :: GossipKnowledgeStructure -> Int
 nag (GKS _ _ o) = Map.size o
 
@@ -280,17 +315,21 @@ gexistsSet k = existsSetl (strLabel $ nag k) (texLabel $ nag k)
     Knowledge transformer for gossip 
 -}
 
+-- | The Knowledge Transformer data structure, as defined in (Gattinger, 2018).
 data KnowledgeTransformer = KT
-  { -- | Additional vocabulary
+  { -- | Additional vocabulary.
     addVocab :: Set Int,
 
-    -- | Event law
+    -- | The event law.
     eventLaw :: Bdd,
 
-    -- | Additional observables
+    -- | Additional observables.
     addObs :: Map Agent (Set Int)
   }
 
+-- | A base Knowledge Transformer structure, which will not change the Knowledge Structure. For an arbitrary Knowledge Structure ks:
+-- >>> ks |+| baseTransformer == ks
+-- True
 baseTransformer :: KnowledgeTransformer
 baseTransformer = KT Set.empty top Map.empty
 
