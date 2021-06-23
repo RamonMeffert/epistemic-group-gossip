@@ -1,0 +1,387 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE CPP #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- | Pairing heap implementation of dictionary</span><span>
+</span><span id="line-4"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Graph.Inductive.Internal.Heap</span><span class="hs-special">(</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Type</span></span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier">Heap</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#prettyHeap"><span class="hs-identifier">prettyHeap</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#printPrettyHeap"><span class="hs-identifier">printPrettyHeap</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Operations</span></span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#empty"><span class="hs-identifier">empty</span></a></span><span class="hs-special">,</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#unit"><span class="hs-keyword">unit</span></a></span><span class="hs-special">,</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#insert"><span class="hs-identifier">insert</span></a></span><span class="hs-special">,</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#merge"><span class="hs-identifier">merge</span></a></span><span class="hs-special">,</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#mergeAll"><span class="hs-identifier">mergeAll</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>    </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#isEmpty"><span class="hs-identifier">isEmpty</span></a></span><span class="hs-special">,</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#findMin"><span class="hs-identifier">findMin</span></a></span><span class="hs-special">,</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#deleteMin"><span class="hs-identifier">deleteMin</span></a></span><span class="hs-special">,</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#splitMin"><span class="hs-identifier">splitMin</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-12"></span><span>    </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#build"><span class="hs-identifier">build</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#toList"><span class="hs-identifier">toList</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#heapsort"><span class="hs-identifier">heapsort</span></a></span><span>
+</span><span id="line-13"></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">showListWith</span></span><span class="hs-special">)</span><span class="hs-cpp">
+
+#if MIN_VERSION_containers (0,4,2)
+</span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.DeepSeq</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">NFData</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-cpp">
+#endif
+</span><span>
+</span><span id="line-21"></span><span class="hs-keyword">data</span><span> </span><span id="Heap"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-var">Heap</span></a></span></span><span> </span><span id="local-6989586621679073089"><span class="annot"><a href="#local-6989586621679073089"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span id="local-6989586621679073088"><span class="annot"><a href="#local-6989586621679073088"><span class="hs-identifier hs-type">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Empty"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="Node"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-var">Node</span></a></span></span><span> </span><span class="annot"><a href="#local-6989586621679073089"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073088"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073089"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073088"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-22"></span><span>     </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679073019"><span id="local-6989586621679073021"><span class="annot"><span class="annottext">Heap a b -&gt; Heap a b -&gt; Bool
+(Heap a b -&gt; Heap a b -&gt; Bool)
+-&gt; (Heap a b -&gt; Heap a b -&gt; Bool) -&gt; Eq (Heap a b)
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+forall a b. (Eq a, Eq b) =&gt; Heap a b -&gt; Heap a b -&gt; Bool
+/= :: Heap a b -&gt; Heap a b -&gt; Bool
+$c/= :: forall a b. (Eq a, Eq b) =&gt; Heap a b -&gt; Heap a b -&gt; Bool
+== :: Heap a b -&gt; Heap a b -&gt; Bool
+$c== :: forall a b. (Eq a, Eq b) =&gt; Heap a b -&gt; Heap a b -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679073012"><span id="local-6989586621679073014"><span id="local-6989586621679073016"><span class="annot"><span class="annottext">Int -&gt; Heap a b -&gt; ShowS
+[Heap a b] -&gt; ShowS
+Heap a b -&gt; String
+(Int -&gt; Heap a b -&gt; ShowS)
+-&gt; (Heap a b -&gt; String) -&gt; ([Heap a b] -&gt; ShowS) -&gt; Show (Heap a b)
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+forall a b. (Show a, Show b) =&gt; Int -&gt; Heap a b -&gt; ShowS
+forall a b. (Show a, Show b) =&gt; [Heap a b] -&gt; ShowS
+forall a b. (Show a, Show b) =&gt; Heap a b -&gt; String
+showList :: [Heap a b] -&gt; ShowS
+$cshowList :: forall a b. (Show a, Show b) =&gt; [Heap a b] -&gt; ShowS
+show :: Heap a b -&gt; String
+$cshow :: forall a b. (Show a, Show b) =&gt; Heap a b -&gt; String
+showsPrec :: Int -&gt; Heap a b -&gt; ShowS
+$cshowsPrec :: forall a b. (Show a, Show b) =&gt; Int -&gt; Heap a b -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679073003"><span id="local-6989586621679073005"><span id="local-6989586621679073007"><span id="local-6989586621679073009"><span class="annot"><span class="annottext">ReadPrec [Heap a b]
+ReadPrec (Heap a b)
+Int -&gt; ReadS (Heap a b)
+ReadS [Heap a b]
+(Int -&gt; ReadS (Heap a b))
+-&gt; ReadS [Heap a b]
+-&gt; ReadPrec (Heap a b)
+-&gt; ReadPrec [Heap a b]
+-&gt; Read (Heap a b)
+forall a.
+(Int -&gt; ReadS a)
+-&gt; ReadS [a] -&gt; ReadPrec a -&gt; ReadPrec [a] -&gt; Read a
+forall a b. (Read a, Read b) =&gt; ReadPrec [Heap a b]
+forall a b. (Read a, Read b) =&gt; ReadPrec (Heap a b)
+forall a b. (Read a, Read b) =&gt; Int -&gt; ReadS (Heap a b)
+forall a b. (Read a, Read b) =&gt; ReadS [Heap a b]
+readListPrec :: ReadPrec [Heap a b]
+$creadListPrec :: forall a b. (Read a, Read b) =&gt; ReadPrec [Heap a b]
+readPrec :: ReadPrec (Heap a b)
+$creadPrec :: forall a b. (Read a, Read b) =&gt; ReadPrec (Heap a b)
+readList :: ReadS [Heap a b]
+$creadList :: forall a b. (Read a, Read b) =&gt; ReadS [Heap a b]
+readsPrec :: Int -&gt; ReadS (Heap a b)
+$creadsPrec :: forall a b. (Read a, Read b) =&gt; Int -&gt; ReadS (Heap a b)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Read</span></span></span></span></span></span><span class="hs-special">)</span><span class="hs-cpp">
+
+#if MIN_VERSION_containers (0,4,2)
+</span><span id="local-6989586621679073000"><span id="local-6989586621679073001"><span class="hs-keyword">instance</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">NFData</span></span><span> </span><span class="annot"><a href="#local-6989586621679073001"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">NFData</span></span><span> </span><span class="annot"><a href="#local-6989586621679073000"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">NFData</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073001"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073000"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-26"></span><span>  </span><span id="local-6989586621679072997"><span class="annot"><span class="annottext">rnf :: Heap a b -&gt; ()
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">rnf</span></span></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-27"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">rnf</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span id="local-6989586621679072995"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072995"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span id="local-6989586621679072994"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072994"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span id="local-6989586621679072993"><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072993"><span class="hs-identifier hs-var">hs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; ()
+forall a. NFData a =&gt; a -&gt; ()
+</span><span class="hs-identifier hs-var">rnf</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072995"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">() -&gt; () -&gt; ()
+</span><span class="hs-operator hs-var">`seq`</span></span><span> </span><span class="annot"><span class="annottext">b -&gt; ()
+forall a. NFData a =&gt; a -&gt; ()
+</span><span class="hs-identifier hs-var">rnf</span></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072994"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">() -&gt; () -&gt; ()
+</span><span class="hs-operator hs-var">`seq`</span></span><span> </span><span class="annot"><span class="annottext">[Heap a b] -&gt; ()
+forall a. NFData a =&gt; a -&gt; ()
+</span><span class="hs-identifier hs-var">rnf</span></span><span> </span><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072993"><span class="hs-identifier hs-var">hs</span></a></span></span></span><span class="hs-cpp">
+#endif
+</span><span>
+</span><span id="line-30"></span><span id="local-6989586621679072991"><span id="local-6989586621679072992"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#prettyHeap"><span class="hs-identifier hs-type">prettyHeap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="#local-6989586621679072992"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="#local-6989586621679072991"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072992"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072991"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span></span></span><span>
+</span><span id="line-31"></span><span id="prettyHeap"><span class="annot"><span class="annottext">prettyHeap :: Heap a b -&gt; String
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#prettyHeap"><span class="hs-identifier hs-var hs-var">prettyHeap</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Heap a b -&gt; ShowS
+forall a a. (Show a, Show a) =&gt; Heap a a -&gt; ShowS
+</span><a href="#local-6989586621679072990"><span class="hs-operator hs-var">`showsHeap`</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span class="hs-special">)</span><span>
+</span><span id="line-32"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-33"></span><span>    </span><span id="local-6989586621679072990"><span class="annot"><span class="annottext">showsHeap :: Heap a a -&gt; ShowS
+</span><a href="#local-6989586621679072990"><span class="hs-identifier hs-var hs-var">showsHeap</span></a></span></span><span> </span><span class="annot"><span class="annottext">Heap a a
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ShowS
+forall a. a -&gt; a
+</span><span class="hs-identifier hs-var">id</span></span><span>
+</span><span id="line-34"></span><span>    </span><span class="annot"><a href="#local-6989586621679072990"><span class="hs-identifier hs-var">showsHeap</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span id="local-6989586621679072988"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072988"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span id="local-6989586621679072987"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072987"><span class="hs-identifier hs-var">val</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; ShowS
+forall a. Show a =&gt; a -&gt; ShowS
+</span><span class="hs-identifier hs-var">shows</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072988"><span class="hs-identifier hs-var">key</span></a></span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; ShowS -&gt; ShowS
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;: &quot;</span></span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; ShowS -&gt; ShowS
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; ShowS
+forall a. Show a =&gt; a -&gt; ShowS
+</span><span class="hs-identifier hs-var">shows</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072987"><span class="hs-identifier hs-var">val</span></a></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><a href="#local-6989586621679072990"><span class="hs-identifier hs-var">showsHeap</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span id="local-6989586621679072984"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072984"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span id="local-6989586621679072983"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072983"><span class="hs-identifier hs-var">val</span></a></span></span><span> </span><span id="local-6989586621679072982"><span class="annot"><span class="annottext">[Heap a a]
+</span><a href="#local-6989586621679072982"><span class="hs-identifier hs-var">hs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; ShowS
+forall a. Show a =&gt; a -&gt; ShowS
+</span><span class="hs-identifier hs-var">shows</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072984"><span class="hs-identifier hs-var">key</span></a></span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; ShowS -&gt; ShowS
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;: &quot;</span></span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; ShowS -&gt; ShowS
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; ShowS
+forall a. Show a =&gt; a -&gt; ShowS
+</span><span class="hs-identifier hs-var">shows</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072983"><span class="hs-identifier hs-var">val</span></a></span><span>
+</span><span id="line-36"></span><span>                                  </span><span class="annot"><span class="annottext">ShowS -&gt; ShowS -&gt; ShowS
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">' '</span></span><span class="annot"><span class="annottext">Char -&gt; ShowS
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; ShowS -&gt; ShowS
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(Heap a a -&gt; ShowS) -&gt; [Heap a a] -&gt; ShowS
+forall a. (a -&gt; ShowS) -&gt; [a] -&gt; ShowS
+</span><span class="hs-identifier hs-var">showListWith</span></span><span> </span><span class="annot"><span class="annottext">Heap a a -&gt; ShowS
+</span><a href="#local-6989586621679072990"><span class="hs-identifier hs-var">showsHeap</span></a></span><span> </span><span class="annot"><span class="annottext">[Heap a a]
+</span><a href="#local-6989586621679072982"><span class="hs-identifier hs-var">hs</span></a></span><span>
+</span><span id="line-37"></span><span>
+</span><span id="line-38"></span><span id="local-6989586621679072980"><span id="local-6989586621679072981"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#printPrettyHeap"><span class="hs-identifier hs-type">printPrettyHeap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="#local-6989586621679072981"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="#local-6989586621679072980"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072981"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072980"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span></span></span><span>
+</span><span id="line-39"></span><span id="printPrettyHeap"><span class="annot"><span class="annottext">printPrettyHeap :: Heap a b -&gt; IO ()
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#printPrettyHeap"><span class="hs-identifier hs-var hs-var">printPrettyHeap</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; IO ()) -&gt; (Heap a b -&gt; String) -&gt; Heap a b -&gt; IO ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Heap a b -&gt; String
+forall a b. (Show a, Show b) =&gt; Heap a b -&gt; String
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#prettyHeap"><span class="hs-identifier hs-var">prettyHeap</span></a></span><span>
+</span><span id="line-40"></span><span>
+</span><span id="line-41"></span><span class="hs-comment">----------------------------------------------------------------------</span><span>
+</span><span id="line-42"></span><span class="hs-comment">-- MAIN FUNCTIONS</span><span>
+</span><span id="line-43"></span><span class="hs-comment">----------------------------------------------------------------------</span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span id="local-6989586621679072977"><span id="local-6989586621679072978"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#empty"><span class="hs-identifier hs-type">empty</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072978"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072977"><span class="hs-identifier hs-type">b</span></a></span></span></span><span>
+</span><span id="line-46"></span><span id="empty"><span class="annot"><span class="annottext">empty :: Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#empty"><span class="hs-identifier hs-var hs-var">empty</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Heap a b
+forall a b. Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span id="local-6989586621679073080"><span id="local-6989586621679073081"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#unit"><span class="hs-keyword hs-type">unit</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="#local-6989586621679073081"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679073080"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073081"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073080"><span class="hs-identifier hs-type">b</span></a></span></span></span><span>
+</span><span id="line-49"></span><span id="unit"><span class="annot"><span class="annottext">unit :: a -&gt; b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#unit"><span class="hs-keyword hs-var hs-var">unit</span></a></span></span><span> </span><span id="local-6989586621679072976"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072976"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span id="local-6989586621679072975"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072975"><span class="hs-identifier hs-var">val</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; b -&gt; [Heap a b] -&gt; Heap a b
+forall a b. a -&gt; b -&gt; [Heap a b] -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-var">Node</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072976"><span class="hs-identifier hs-var">key</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072975"><span class="hs-identifier hs-var">val</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span><span id="local-6989586621679073055"><span id="local-6989586621679073056"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#insert"><span class="hs-identifier hs-type">insert</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679073056"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679073056"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679073055"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073056"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073055"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073056"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073055"><span class="hs-identifier hs-type">b</span></a></span></span></span><span>
+</span><span id="line-52"></span><span id="insert"><span class="annot"><span class="annottext">insert :: (a, b) -&gt; Heap a b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#insert"><span class="hs-identifier hs-var hs-var">insert</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679072974"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072974"><span class="hs-identifier hs-var">key</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679072973"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072973"><span class="hs-identifier hs-var">val</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Heap a b -&gt; Heap a b -&gt; Heap a b
+forall a b. Ord a =&gt; Heap a b -&gt; Heap a b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#merge"><span class="hs-identifier hs-var">merge</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; b -&gt; Heap a b
+forall a b. a -&gt; b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#unit"><span class="hs-keyword hs-var">unit</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072974"><span class="hs-identifier hs-var">key</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072973"><span class="hs-identifier hs-var">val</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-53"></span><span>
+</span><span id="line-54"></span><span id="local-6989586621679073082"><span id="local-6989586621679073083"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#merge"><span class="hs-identifier hs-type">merge</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679073083"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073083"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073082"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073083"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073082"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073083"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073082"><span class="hs-identifier hs-type">b</span></a></span></span></span><span>
+</span><span id="line-55"></span><span id="merge"><span class="annot"><span class="annottext">merge :: Heap a b -&gt; Heap a b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#merge"><span class="hs-identifier hs-var hs-var">merge</span></a></span></span><span> </span><span id="local-6989586621679072972"><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072972"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072972"><span class="hs-identifier hs-var">h</span></a></span><span>
+</span><span id="line-56"></span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#merge"><span class="hs-identifier hs-var">merge</span></a></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span> </span><span id="local-6989586621679072971"><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072971"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072971"><span class="hs-identifier hs-var">h</span></a></span><span>
+</span><span id="line-57"></span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#merge"><span class="hs-identifier hs-var">merge</span></a></span><span> </span><span id="local-6989586621679072970"><span class="annot"><span class="annottext">h :: Heap a b
+</span><a href="#local-6989586621679072970"><span class="hs-identifier hs-var">h</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span id="local-6989586621679072969"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072969"><span class="hs-identifier hs-var">key1</span></a></span></span><span> </span><span id="local-6989586621679072968"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072968"><span class="hs-identifier hs-var">val1</span></a></span></span><span> </span><span id="local-6989586621679072967"><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072967"><span class="hs-identifier hs-var">hs</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679072966"><span class="annot"><span class="annottext">h' :: Heap a b
+</span><a href="#local-6989586621679072966"><span class="hs-identifier hs-var">h'</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span id="local-6989586621679072965"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072965"><span class="hs-identifier hs-var">key2</span></a></span></span><span> </span><span id="local-6989586621679072964"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072964"><span class="hs-identifier hs-var">val2</span></a></span></span><span> </span><span id="local-6989586621679072963"><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072963"><span class="hs-identifier hs-var">hs'</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-58"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072969"><span class="hs-identifier hs-var">key1</span></a></span><span class="annot"><span class="annottext">a -&gt; a -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&lt;</span></span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072965"><span class="hs-identifier hs-var">key2</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; b -&gt; [Heap a b] -&gt; Heap a b
+forall a b. a -&gt; b -&gt; [Heap a b] -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-var">Node</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072969"><span class="hs-identifier hs-var">key1</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072968"><span class="hs-identifier hs-var">val1</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072966"><span class="hs-identifier hs-var">h'</span></a></span><span class="annot"><span class="annottext">Heap a b -&gt; [Heap a b] -&gt; [Heap a b]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072967"><span class="hs-identifier hs-var">hs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-59"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; b -&gt; [Heap a b] -&gt; Heap a b
+forall a b. a -&gt; b -&gt; [Heap a b] -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-var">Node</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072965"><span class="hs-identifier hs-var">key2</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072964"><span class="hs-identifier hs-var">val2</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072970"><span class="hs-identifier hs-var">h</span></a></span><span class="annot"><span class="annottext">Heap a b -&gt; [Heap a b] -&gt; [Heap a b]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072963"><span class="hs-identifier hs-var">hs'</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span><span id="local-6989586621679073073"><span id="local-6989586621679073074"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#mergeAll"><span class="hs-identifier hs-type">mergeAll</span></a></span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679073074"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073074"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073073"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073074"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073073"><span class="hs-identifier hs-type">b</span></a></span></span></span><span>
+</span><span id="line-62"></span><span id="mergeAll"><span class="annot"><span class="annottext">mergeAll :: [Heap a b] -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#mergeAll"><span class="hs-identifier hs-var hs-var">mergeAll</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Heap a b
+forall a b. Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span>
+</span><span id="line-63"></span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#mergeAll"><span class="hs-identifier hs-var">mergeAll</span></a></span><span> </span><span class="hs-special">[</span><span id="local-6989586621679072961"><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072961"><span class="hs-identifier hs-var">h</span></a></span></span><span class="hs-special">]</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072961"><span class="hs-identifier hs-var">h</span></a></span><span>
+</span><span id="line-64"></span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#mergeAll"><span class="hs-identifier hs-var">mergeAll</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679072960"><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072960"><span class="hs-identifier hs-var">h</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679072959"><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072959"><span class="hs-identifier hs-var">h'</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679072958"><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072958"><span class="hs-identifier hs-var">hs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Heap a b -&gt; Heap a b -&gt; Heap a b
+forall a b. Ord a =&gt; Heap a b -&gt; Heap a b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#merge"><span class="hs-identifier hs-var">merge</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Heap a b -&gt; Heap a b -&gt; Heap a b
+forall a b. Ord a =&gt; Heap a b -&gt; Heap a b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#merge"><span class="hs-identifier hs-var">merge</span></a></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072960"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072959"><span class="hs-identifier hs-var">h'</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Heap a b] -&gt; Heap a b
+forall a b. Ord a =&gt; [Heap a b] -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#mergeAll"><span class="hs-identifier hs-var">mergeAll</span></a></span><span> </span><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072958"><span class="hs-identifier hs-var">hs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-65"></span><span>
+</span><span id="line-66"></span><span id="local-6989586621679072956"><span id="local-6989586621679072957"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#isEmpty"><span class="hs-identifier hs-type">isEmpty</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072957"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072956"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span></span></span><span>
+</span><span id="line-67"></span><span id="isEmpty"><span class="annot"><span class="annottext">isEmpty :: Heap a b -&gt; Bool
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#isEmpty"><span class="hs-identifier hs-var hs-var">isEmpty</span></a></span></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span>
+</span><span id="line-68"></span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#isEmpty"><span class="hs-identifier hs-var">isEmpty</span></a></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><span class="hs-identifier">_</span></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">False</span></span><span>
+</span><span id="line-69"></span><span>
+</span><span id="line-70"></span><span id="local-6989586621679073049"><span id="local-6989586621679073050"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#findMin"><span class="hs-identifier hs-type">findMin</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073050"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073049"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679073050"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="#local-6989586621679073049"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span></span></span><span>
+</span><span id="line-71"></span><span id="findMin"><span class="annot"><span class="annottext">findMin :: Heap a b -&gt; (a, b)
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#findMin"><span class="hs-identifier hs-var hs-var">findMin</span></a></span></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; (a, b)
+forall a. HasCallStack =&gt; String -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Heap.findMin: empty heap&quot;</span></span><span>
+</span><span id="line-72"></span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#findMin"><span class="hs-identifier hs-var">findMin</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span id="local-6989586621679072954"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072954"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span id="local-6989586621679072953"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072953"><span class="hs-identifier hs-var">val</span></a></span></span><span> </span><span class="annot"><span class="annottext">[Heap a b]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072954"><span class="hs-identifier hs-var">key</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072953"><span class="hs-identifier hs-var">val</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-73"></span><span>
+</span><span id="line-74"></span><span id="local-6989586621679073047"><span id="local-6989586621679073048"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#deleteMin"><span class="hs-identifier hs-type">deleteMin</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679073048"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073048"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073047"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073048"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073047"><span class="hs-identifier hs-type">b</span></a></span></span></span><span>
+</span><span id="line-75"></span><span id="deleteMin"><span class="annot"><span class="annottext">deleteMin :: Heap a b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#deleteMin"><span class="hs-identifier hs-var hs-var">deleteMin</span></a></span></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Heap a b
+forall a b. Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span>
+</span><span id="line-76"></span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#deleteMin"><span class="hs-identifier hs-var">deleteMin</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">b
+</span><span class="hs-identifier">_</span></span><span> </span><span id="local-6989586621679072952"><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072952"><span class="hs-identifier hs-var">hs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Heap a b] -&gt; Heap a b
+forall a b. Ord a =&gt; [Heap a b] -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#mergeAll"><span class="hs-identifier hs-var">mergeAll</span></a></span><span> </span><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072952"><span class="hs-identifier hs-var">hs</span></a></span><span>
+</span><span id="line-77"></span><span>
+</span><span id="line-78"></span><span id="local-6989586621679072950"><span id="local-6989586621679072951"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#splitMin"><span class="hs-identifier hs-type">splitMin</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679072951"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072951"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072950"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679072951"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span class="annot"><a href="#local-6989586621679072950"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">,</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072951"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679072950"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span></span></span><span>
+</span><span id="line-79"></span><span id="splitMin"><span class="annot"><span class="annottext">splitMin :: Heap a b -&gt; (a, b, Heap a b)
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#splitMin"><span class="hs-identifier hs-var hs-var">splitMin</span></a></span></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; (a, b, Heap a b)
+forall a. HasCallStack =&gt; String -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Heap.splitMin: empty heap&quot;</span></span><span>
+</span><span id="line-80"></span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#splitMin"><span class="hs-identifier hs-var">splitMin</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span id="local-6989586621679072949"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072949"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span id="local-6989586621679072948"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072948"><span class="hs-identifier hs-var">val</span></a></span></span><span> </span><span id="local-6989586621679072947"><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072947"><span class="hs-identifier hs-var">hs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072949"><span class="hs-identifier hs-var">key</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679072948"><span class="hs-identifier hs-var">val</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">[Heap a b] -&gt; Heap a b
+forall a b. Ord a =&gt; [Heap a b] -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#mergeAll"><span class="hs-identifier hs-var">mergeAll</span></a></span><span> </span><span class="annot"><span class="annottext">[Heap a b]
+</span><a href="#local-6989586621679072947"><span class="hs-identifier hs-var">hs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-81"></span><span>
+</span><span id="line-82"></span><span>
+</span><span id="line-83"></span><span class="hs-comment">----------------------------------------------------------------------</span><span>
+</span><span id="line-84"></span><span class="hs-comment">-- APPLICATION FUNCTIONS, EXAMPLES</span><span>
+</span><span id="line-85"></span><span class="hs-comment">----------------------------------------------------------------------</span><span>
+</span><span id="line-86"></span><span>
+</span><span id="line-87"></span><span>
+</span><span id="line-88"></span><span id="local-6989586621679073040"><span id="local-6989586621679073041"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#build"><span class="hs-identifier hs-type">build</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679073041"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679073041"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span class="annot"><a href="#local-6989586621679073040"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073041"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073040"><span class="hs-identifier hs-type">b</span></a></span></span></span><span>
+</span><span id="line-89"></span><span id="build"><span class="annot"><span class="annottext">build :: [(a, b)] -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#build"><span class="hs-identifier hs-var hs-var">build</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((a, b) -&gt; Heap a b -&gt; Heap a b)
+-&gt; Heap a b -&gt; [(a, b)] -&gt; Heap a b
+forall (t :: * -&gt; *) a b.
+Foldable t =&gt;
+(a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldr</span></span><span> </span><span class="annot"><span class="annottext">(a, b) -&gt; Heap a b -&gt; Heap a b
+forall a b. Ord a =&gt; (a, b) -&gt; Heap a b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#insert"><span class="hs-identifier hs-var">insert</span></a></span><span> </span><span class="annot"><span class="annottext">Heap a b
+forall a b. Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span>
+</span><span id="line-90"></span><span>
+</span><span id="line-91"></span><span id="local-6989586621679073051"><span id="local-6989586621679073052"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#toList"><span class="hs-identifier hs-type">toList</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679073052"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073052"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073051"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679073052"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span class="annot"><a href="#local-6989586621679073051"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span></span></span><span>
+</span><span id="line-92"></span><span id="toList"><span class="annot"><span class="annottext">toList :: Heap a b -&gt; [(a, b)]
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#toList"><span class="hs-identifier hs-var hs-var">toList</span></a></span></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#Empty"><span class="hs-identifier hs-var">Empty</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-93"></span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span id="local-6989586621679072945"><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072945"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(a, b)
+</span><a href="#local-6989586621679072944"><span class="hs-identifier hs-var">x</span></a></span><span class="annot"><span class="annottext">(a, b) -&gt; [(a, b)] -&gt; [(a, b)]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">Heap a b -&gt; [(a, b)]
+forall a b. Ord a =&gt; Heap a b -&gt; [(a, b)]
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072943"><span class="hs-identifier hs-var">r</span></a></span><span>
+</span><span id="line-94"></span><span>           </span><span class="hs-keyword">where</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679072944"><span class="annot"><span class="annottext">(a, b)
+</span><a href="#local-6989586621679072944"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679072943"><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072943"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Heap a b -&gt; (a, b)
+forall a b. Heap a b -&gt; (a, b)
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#findMin"><span class="hs-identifier hs-var">findMin</span></a></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072945"><span class="hs-identifier hs-var">h</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">Heap a b -&gt; Heap a b
+forall a b. Ord a =&gt; Heap a b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#deleteMin"><span class="hs-identifier hs-var">deleteMin</span></a></span><span> </span><span class="annot"><span class="annottext">Heap a b
+</span><a href="#local-6989586621679072945"><span class="hs-identifier hs-var">h</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-95"></span><span>
+</span><span id="line-96"></span><span id="local-6989586621679072942"><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#heapsort"><span class="hs-identifier hs-type">heapsort</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679072942"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679072942"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679072942"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span></span><span>
+</span><span id="line-97"></span><span id="heapsort"><span class="annot"><span class="annottext">heapsort :: [a] -&gt; [a]
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#heapsort"><span class="hs-identifier hs-var hs-var">heapsort</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((a, a) -&gt; a) -&gt; [(a, a)] -&gt; [a]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">(a, a) -&gt; a
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">([(a, a)] -&gt; [a]) -&gt; ([a] -&gt; [(a, a)]) -&gt; [a] -&gt; [a]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Heap a a -&gt; [(a, a)]
+forall a b. Ord a =&gt; Heap a b -&gt; [(a, b)]
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#toList"><span class="hs-identifier hs-var">toList</span></a></span><span> </span><span class="annot"><span class="annottext">(Heap a a -&gt; [(a, a)]) -&gt; ([a] -&gt; Heap a a) -&gt; [a] -&gt; [(a, a)]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">[(a, a)] -&gt; Heap a a
+forall a b. Ord a =&gt; [(a, b)] -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#build"><span class="hs-identifier hs-var">build</span></a></span><span> </span><span class="annot"><span class="annottext">([(a, a)] -&gt; Heap a a) -&gt; ([a] -&gt; [(a, a)]) -&gt; [a] -&gt; Heap a a
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(a -&gt; (a, a)) -&gt; [a] -&gt; [(a, a)]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679072941"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072941"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-glyph">-&gt;</span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072941"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679072941"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-98"></span><span class="hs-comment">{-
+l :: (Num a) =&gt; [a]
+l  = [6,9,2,13,6,8,14,9,10,7,5]
+l' = reverse l
+
+h1  = build $ map (\x-&gt;(x,x)) l
+h1' = build $ map (\x-&gt;(x,x)) l'
+
+s1  = heapsort l
+s1' = heapsort l'
+-}</span><span>
+</span><span id="line-109"></span></pre></body></html>

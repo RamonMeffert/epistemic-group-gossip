@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- (c) 2000 - 2002 by Martin Erwig [see file COPYRIGHT]</span><span>
+</span><span id="line-2"></span><span class="hs-comment">-- | Maximum Independent Node Sets</span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Graph.Inductive.Query.Indep</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="Data.Graph.Inductive.Query.Indep.html#indep"><span class="hs-identifier">indep</span></a></span><span>
+</span><span id="line-5"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Query.Indep.html#indepSize"><span class="hs-identifier">indepSize</span></a></span><span>
+</span><span id="line-6"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Graph.html"><span class="hs-identifier">Data.Graph.Inductive.Graph</span></a></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Arrow</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(***)</span></span><span class="hs-special">)</span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Function</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">on</span></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.List</span></span><span>     </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">maximumBy</span></span><span class="hs-special">)</span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-comment">-- -----------------------------------------------------------------------------</span><span>
+</span><span id="line-15"></span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- | Calculate the maximum independent node set of the specified</span><span>
+</span><span id="line-17"></span><span class="hs-comment">--   graph.</span><span>
+</span><span id="line-18"></span><span id="local-6989586621679076888"><span id="local-6989586621679076889"><span id="local-6989586621679076890"><span class="annot"><a href="Data.Graph.Inductive.Query.Indep.html#indep"><span class="hs-identifier hs-type">indep</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#DynGraph"><span class="hs-identifier hs-type">DynGraph</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679076890"><span class="hs-identifier hs-type">gr</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679076890"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679076889"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679076888"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span class="hs-special">]</span></span></span></span><span>
+</span><span id="line-19"></span><span id="indep"><span class="annot"><span class="annottext">indep :: gr a b -&gt; [Node]
+</span><a href="Data.Graph.Inductive.Query.Indep.html#indep"><span class="hs-identifier hs-var hs-var">indep</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Node], Node) -&gt; [Node]
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">(([Node], Node) -&gt; [Node])
+-&gt; (gr a b -&gt; ([Node], Node)) -&gt; gr a b -&gt; [Node]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">gr a b -&gt; ([Node], Node)
+forall (gr :: * -&gt; * -&gt; *) a b.
+DynGraph gr =&gt;
+gr a b -&gt; ([Node], Node)
+</span><a href="Data.Graph.Inductive.Query.Indep.html#indepSize"><span class="hs-identifier hs-var">indepSize</span></a></span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- | The maximum independent node set along with its size.</span><span>
+</span><span id="line-22"></span><span id="local-6989586621679076943"><span id="local-6989586621679076944"><span id="local-6989586621679076946"><span class="annot"><a href="Data.Graph.Inductive.Query.Indep.html#indepSize"><span class="hs-identifier hs-type">indepSize</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#DynGraph"><span class="hs-identifier hs-type">DynGraph</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679076946"><span class="hs-identifier hs-type">gr</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679076946"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679076944"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679076943"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span></span></span></span><span>
+</span><span id="line-23"></span><span id="indepSize"><span class="annot"><span class="annottext">indepSize :: gr a b -&gt; ([Node], Node)
+</span><a href="Data.Graph.Inductive.Query.Indep.html#indepSize"><span class="hs-identifier hs-var hs-var">indepSize</span></a></span></span><span> </span><span id="local-6989586621679076886"><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679076886"><span class="hs-identifier hs-var">g</span></a></span></span><span>
+</span><span id="line-24"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">gr a b -&gt; Bool
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; Bool
+</span><a href="Data.Graph.Inductive.Graph.html#isEmpty"><span class="hs-identifier hs-var">isEmpty</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679076886"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><span class="hs-number">0</span></span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679076884"><span class="hs-identifier hs-var">l1</span></a></span><span> </span><span class="annot"><span class="annottext">Node -&gt; Node -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;</span></span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679076882"><span class="hs-identifier hs-var">l2</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Node], Node)
+</span><a href="#local-6989586621679076881"><span class="hs-identifier hs-var">il1</span></a></span><span>
+</span><span id="line-26"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Node], Node)
+</span><a href="#local-6989586621679076880"><span class="hs-identifier hs-var">il2</span></a></span><span>
+</span><span id="line-27"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-28"></span><span>    </span><span id="local-6989586621679076879"><span class="annot"><span class="annottext">vs :: [Node]
+</span><a href="#local-6989586621679076879"><span class="hs-identifier hs-var hs-var">vs</span></a></span></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">gr a b -&gt; [Node]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [Node]
+</span><a href="Data.Graph.Inductive.Graph.html#nodes"><span class="hs-identifier hs-var">nodes</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679076886"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-29"></span><span>    </span><span id="local-6989586621679076877"><span class="annot"><span class="annottext">v :: Node
+</span><a href="#local-6989586621679076877"><span class="hs-identifier hs-var hs-var">v</span></a></span></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Node, Node) -&gt; Node
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">((Node, Node) -&gt; Node)
+-&gt; ([Node] -&gt; (Node, Node)) -&gt; [Node] -&gt; Node
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">((Node, Node) -&gt; (Node, Node) -&gt; Ordering)
+-&gt; [(Node, Node)] -&gt; (Node, Node)
+forall (t :: * -&gt; *) a.
+Foldable t =&gt;
+(a -&gt; a -&gt; Ordering) -&gt; t a -&gt; a
+</span><span class="hs-identifier hs-var">maximumBy</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node -&gt; Node -&gt; Ordering
+forall a. Ord a =&gt; a -&gt; a -&gt; Ordering
+</span><span class="hs-identifier hs-var">compare</span></span><span> </span><span class="annot"><span class="annottext">(Node -&gt; Node -&gt; Ordering)
+-&gt; ((Node, Node) -&gt; Node)
+-&gt; (Node, Node)
+-&gt; (Node, Node)
+-&gt; Ordering
+forall b c a. (b -&gt; b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">`on`</span></span><span> </span><span class="annot"><span class="annottext">(Node, Node) -&gt; Node
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span class="hs-special">)</span><span>
+</span><span id="line-30"></span><span>                  </span><span class="annot"><span class="annottext">([(Node, Node)] -&gt; (Node, Node))
+-&gt; ([Node] -&gt; [(Node, Node)]) -&gt; [Node] -&gt; (Node, Node)
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(Node -&gt; (Node, Node)) -&gt; [Node] -&gt; [(Node, Node)]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-special">,</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Node -&gt; Node -&gt; (Node, Node))
+-&gt; (Node -&gt; Node) -&gt; Node -&gt; (Node, Node)
+forall (m :: * -&gt; *) a b. Monad m =&gt; (a -&gt; m b) -&gt; m a -&gt; m b
+</span><span class="hs-operator hs-var">=&lt;&lt;</span></span><span> </span><span class="annot"><span class="annottext">gr a b -&gt; Node -&gt; Node
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; Node -&gt; Node
+</span><a href="Data.Graph.Inductive.Graph.html#deg"><span class="hs-identifier hs-var">deg</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679076886"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([Node] -&gt; Node) -&gt; [Node] -&gt; Node
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Node]
+</span><a href="#local-6989586621679076879"><span class="hs-identifier hs-var">vs</span></a></span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679076873"><span class="annot"><span class="annottext">Context a b
+</span><a href="#local-6989586621679076873"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679076872"><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679076872"><span class="hs-identifier hs-var">g'</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Node -&gt; gr a b -&gt; (Maybe (Context a b), gr a b)
+forall (gr :: * -&gt; * -&gt; *) a b.
+Graph gr =&gt;
+Node -&gt; gr a b -&gt; Decomp gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679076877"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679076886"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-32"></span><span>    </span><span id="local-6989586621679076881"><span class="annot"><span class="annottext">il1 :: ([Node], Node)
+</span><a href="#local-6989586621679076881"><span class="hs-identifier hs-var">il1</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Node]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span id="local-6989586621679076884"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679076884"><span class="hs-identifier hs-var">l1</span></a></span></span><span class="hs-special">)</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">gr a b -&gt; ([Node], Node)
+forall (gr :: * -&gt; * -&gt; *) a b.
+DynGraph gr =&gt;
+gr a b -&gt; ([Node], Node)
+</span><a href="Data.Graph.Inductive.Query.Indep.html#indepSize"><span class="hs-identifier hs-var">indepSize</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679076872"><span class="hs-identifier hs-var">g'</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span id="local-6989586621679076880"><span class="annot"><span class="annottext">il2 :: ([Node], Node)
+</span><a href="#local-6989586621679076880"><span class="hs-identifier hs-var">il2</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Node]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span id="local-6989586621679076882"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679076882"><span class="hs-identifier hs-var">l2</span></a></span></span><span class="hs-special">)</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679076877"><span class="hs-identifier hs-var">v</span></a></span><span class="annot"><span class="annottext">Node -&gt; [Node] -&gt; [Node]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([Node] -&gt; [Node])
+-&gt; (Node -&gt; Node) -&gt; ([Node], Node) -&gt; ([Node], Node)
+forall (a :: * -&gt; * -&gt; *) b c b' c'.
+Arrow a =&gt;
+a b c -&gt; a b' c' -&gt; a (b, b') (c, c')
+</span><span class="hs-operator hs-var">***</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node -&gt; Node -&gt; Node
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span class="annot"><span class="annottext">Node
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(([Node], Node) -&gt; ([Node], Node))
+-&gt; ([Node], Node) -&gt; ([Node], Node)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">gr a b -&gt; ([Node], Node)
+forall (gr :: * -&gt; * -&gt; *) a b.
+DynGraph gr =&gt;
+gr a b -&gt; ([Node], Node)
+</span><a href="Data.Graph.Inductive.Query.Indep.html#indepSize"><span class="hs-identifier hs-var">indepSize</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Node] -&gt; gr a b -&gt; gr a b
+forall (gr :: * -&gt; * -&gt; *) a b.
+Graph gr =&gt;
+[Node] -&gt; gr a b -&gt; gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#delNodes"><span class="hs-identifier hs-var">delNodes</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Context a b -&gt; [Node]
+forall a b. Context a b -&gt; [Node]
+</span><a href="Data.Graph.Inductive.Graph.html#neighbors%27"><span class="hs-identifier hs-var">neighbors'</span></a></span><span> </span><span class="annot"><span class="annottext">Context a b
+</span><a href="#local-6989586621679076873"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679076872"><span class="hs-identifier hs-var">g'</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-34"></span></pre></body></html>
