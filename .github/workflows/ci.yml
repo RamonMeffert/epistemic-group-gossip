@@ -68,6 +68,7 @@ jobs:
   docs:
     name: Generate documentation
     runs-on: ubuntu-18.04
+    needs: build
     steps:
       - name: GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
