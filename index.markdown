@@ -30,8 +30,31 @@ This model monitors the knowledge of the agents in the network and allows the us
 
 ### Model layout
 
-The model is programmed in Haskell as it is a functional programming language and therefore allows us to define the gossip graph structure and its operators through functions, who will be called approprately. As these functions do not differ much from the formal notation will this not only speed up the conversion from this formal notation into 'functional' code but also allow easier interpretation and explanation of the implementation. Furthermore,  the Action Models from SMCDEL (written in Haskell) can be imported and modified, so that less time is spend on implementing the gossip graphs and more time can be spend implementing the group calls, perchance increasing model performance.
+The model is programmed in Haskell as it is a functional programming language and therefore allows us to define the gossip graph structure and its operators through functions, who will be called appropriately. As these functions do not differ much from the formal notation will this not only speed up the conversion from this formal notation into 'functional' code but also allow easier interpretation and explanation of the implementation. Furthermore,  the Action Models from SMCDEL (written in Haskell) can be imported and modified, so that less time is spend on implementing the gossip graphs and more time can be spend implementing the group calls, perchance increasing model performance.
 
 ## Model interaction
+> The notation used for denoting agents and their knowledge of the numbers and secrets of the other agents follows the notation used by van Dietmarsch [[1]](https://doi.org/10/f9p6c3)
 
-The user will first have to provide the architecture of the gossip graph. Then, once the graph is initialized, the user will be able to interact with the model through the console, while being presented with a view of the current state of the graph. Once a command is executed, the effects on the state of the gossip graph will be printed. If applicable, possible actions for the agents, as a reaction on the state change of the gossip graph for the respective implemented gossip protocols, are displayed.
+Interacting with the model is quite inuitive. All possible inputs each time are either highlighted in the console, or explained. Invalid input is detected and catched to prevent undesired behaviour. We indentify the following control flow / interaction parts:
+
+### Model layout
+The user will first have to provide the layput of the gossip graph. This layout will determine which agents will have the numbers of which other agents intially. The user can either choose to use a predefined layout (defined by us), choose to load a layout from a text file or to type it out in the console input directly.
+
+### Model operation mode
+Once the graph is initialized, the user can choose the model operation mode; *user actions*, *protocol* or *hybrid* mode. *User actions* mode allows the user to interact each tick. *Protocol* mode will run the model using the gossipprotocol specified by the user. Finally, the *hybrid* mode is a mixture between the *usera ctions* and *protocol* mode, where each tick, the user may choose whether to execute a *user action*, *protocol action* or perform both.
+
+### Actions
+As for the *useractions*, the user can choose between multiple actions. First action is to perform a *call*. Secondly, the user can view the possible calls. Finally there is the possibility of viewing the current state of the model.
+
+During a *protocol action*, the model will first determine all the calls that are allowed. This includes all the single calls (i.e. all pairs of $xy$ such that $Nxy$), and groupcalls (i.e. all $xY$ such that $x\in N$ and $Y\subseteq (N\setminus x)$ such that $\forall y\in Y\ :\ Nxy$). Then, the protocol is used to filter those calls that can be made using the rule defined in the protocol (e.g. for the learn-new-secrets (LNS) protocol this are all the calls $(x,y)$ such that $Nxy\wedge\neg Sxy$). Once there are both direct- and groupcalls left, the user may choose which type of call is actually executed, otherwise the one type is chosen. Then, the first call of this type is performed. 
+
+### Making a call
+Making a call is very simple. Once the user select they want to make a call, the user first has to enter the name of the agent who is calling (i.e. *a* for agent 0). Then the user can enter the names of the agents who are being called. If only one agent is entered, a direct call will be made. If multiple agents are entered (e.g. *bcd*) a groupcall will be made.
+
+> Note that for both types of calls, the calls have to be valid (i.e. the agent who is calling needs to have the number of all the agents that are being called). However, the program will check for that and will show which call is invalid and ask for a resubmission.
+
+### Viewing the modelstate
+Either by user request, or after each tick, the state of the model is shown. This will include 3 main properties of the modelstate: the gossipgraph, the knowledgestructure and the callsequence. The gossipgraph will show all the different connections between the agents. The knowledgestructure includes the display of the vocabulary, eventlaw and observables per agent. Finally the callsequence will show all the calls that have been made (note that as groupcalls are converted to multiple direct calls, the callsequence will only contain direct calls).
+
+### Complete state / Model termination
+After each update the of the modelstate, the model is checked on completion. A model is complete whenever every agent is an expert: every agent knows the secret of every other agent. If this is the case the model will terminate ending the program. However, the user may choose to keep on interacting with the model if they want to.
