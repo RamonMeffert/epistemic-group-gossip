@@ -1,0 +1,34 @@
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/epistemic-group-gossip.cabal:
+  hash: 7a5f1861595bc9e896f6981e548e7b2c559687bf76ba77748f6ab3d4d2ef9dbf
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/src/Program.hs:
+  hash: 3f2428cc23edd3293a9d3335880bd7e084da71979fb41f85920a9881b9957af1
+? /mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/.stack-work/dist/x86_64-linux-tinfo6/Cabal-3.2.1.0/build/autogen/Paths_epistemic_group_gossip.hs
+: hash: 7b87fc98b3908841329bd4b2f0a364b4b044af1834d2f1eeac58613e875d40b8
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/src/GossipGraph.hs:
+  hash: 7d99e90682dcd8092b7fc13e312c5786c2d065d8cf2c2cc622d0d16397928d77
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/ChangeLog.md:
+  hash: f3c36f0e402d45e4b929f3a218f637cab1b2354c567ade2d6cdfa2da4d280e87
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/src/ToDo.hs:
+  hash: 5add0f034cf5b58c5f989135e477dd103c194dfcda1e97a1bd50c56a7a40f8e6
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/src/GossipKnowledge.hs:
+  hash: 50d11a1a52c3affe6295b094dfdf9e45ee70da74e23a55bd617504c09b609dc0
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/src/GossipState.hs:
+  hash: 1fa2ec3ebbaf7f4ee83b61e66e08f9393b12f10a726f6ab3ed4ffb188974f439
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/src/PrintableBdd.hs:
+  hash: c31f26350a5288541a6e89169150ad69e01ef3610278dd5801297ee1306cd799
+? /mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/.stack-work/dist/x86_64-linux-tinfo6/Cabal-3.2.1.0/build/autogen/cabal_macros.h
+: hash: ce887e66f30423c054a076f67471ee27b10c68bda7a23c6bd63af2a1a7176f98
+/usr/include/stdc-predef.h:
+  hash: 64fdf694f7b3d51ec6c45c06dcb71ebbe9455742d3ea673012016668853d3bff
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/src/Util.hs:
+  hash: 50db241f5d07ca6a659a4d6c9497e458bd0c6b5b5b4986a701c309c534172e96
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/src/GossipProtocol.hs:
+  hash: 57f588fb8399b10a3a672e5792155b4d63ea70c72d473428fb28b7def28e9259
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/src/GossipTypes.hs:
+  hash: 53b844e16a48a564e0adbdf029ae3cf11a87d77cf9005255fa5cc185fd205d63
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/README.md:
+  hash: 309f774edf4bfaa5c81ef747754937e3b4798f4791a91c6ce4d727fc59f0f13c
+/mnt/c/Users/Jesper/Documents/local-study/1-4-lamas/projects/epistemic-group-gossip/package.yaml:
+  hash: 7746bf06fadc7d250acb84569244e3949461b8a7a7a60d35f3dc18a9c362e4ea
+/home/jsk/.stack/programs/x86_64-linux/ghc-tinfo6-8.10.4/lib/ghc-8.10.4/include/ghcversion.h:
+  hash: ddf0d2a5b1862138ade2de39566db63c5db748c6df9abc567bd8b7326ae3838a

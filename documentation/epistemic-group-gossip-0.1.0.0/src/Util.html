@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Util</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">System.Console.ANSI</span></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">System.IO</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="PrintableBdd.html"><span class="hs-identifier">PrintableBdd</span></a></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.HasCacBDD.Visuals</span></span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="annot"><a href="Util.html#printInvalidActionStr"><span class="hs-identifier hs-type">printInvalidActionStr</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-9"></span><span id="printInvalidActionStr"><span class="annot"><span class="annottext">printInvalidActionStr :: String -&gt; IO ()
+</span><a href="Util.html#printInvalidActionStr"><span class="hs-identifier hs-var hs-var">printInvalidActionStr</span></a></span></span><span> </span><span id="local-6989586621679057806"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679057806"><span class="hs-identifier hs-var">action</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><span class="annottext">Color -&gt; String -&gt; IO ()
+</span><a href="Util.html#putStrFgc"><span class="hs-identifier hs-var">putStrFgc</span></a></span><span> </span><span class="annot"><span class="annottext">Color
+</span><span class="hs-identifier hs-var">Red</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Invalid action: &quot;</span></span><span>
+</span><span id="line-11"></span><span>    </span><span class="annot"><span class="annottext">Color -&gt; String -&gt; IO ()
+</span><a href="Util.html#putStrFgc"><span class="hs-identifier hs-var">putStrFgc</span></a></span><span> </span><span class="annot"><span class="annottext">Color
+</span><span class="hs-identifier hs-var">Blue</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679057806"><span class="hs-identifier hs-var">action</span></a></span><span>
+</span><span id="line-12"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot; is not a valid action in the current context.&quot;</span></span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="annot"><a href="Util.html#printInvalidAction"><span class="hs-identifier hs-type">printInvalidAction</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-15"></span><span id="printInvalidAction"><span class="annot"><span class="annottext">printInvalidAction :: Char -&gt; IO ()
+</span><a href="Util.html#printInvalidAction"><span class="hs-identifier hs-var hs-var">printInvalidAction</span></a></span></span><span> </span><span id="local-6989586621679057800"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679057800"><span class="hs-identifier hs-var">action</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><a href="Util.html#printInvalidActionStr"><span class="hs-identifier hs-var">printInvalidActionStr</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679057800"><span class="hs-identifier hs-var">action</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-16"></span><span>    </span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="annot"><a href="Util.html#printGraphComplete"><span class="hs-identifier hs-type">printGraphComplete</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span id="printGraphComplete"><span class="annot"><span class="annottext">printGraphComplete :: IO ()
+</span><a href="Util.html#printGraphComplete"><span class="hs-identifier hs-var hs-var">printGraphComplete</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-20"></span><span>    </span><span class="annot"><span class="annottext">Color -&gt; String -&gt; IO ()
+</span><a href="Util.html#putStrLnFgc"><span class="hs-identifier hs-var">putStrLnFgc</span></a></span><span> </span><span class="annot"><span class="annottext">Color
+</span><span class="hs-identifier hs-var">Green</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n!!! Graph complete !!!&quot;</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Everybody is an expert (i.e. every agent knows the secrets of all other agents).&quot;</span></span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="annot"><a href="Util.html#putStrFgc"><span class="hs-identifier hs-type">putStrFgc</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Color</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span id="putStrFgc"><span class="annot"><span class="annottext">putStrFgc :: Color -&gt; String -&gt; IO ()
+</span><a href="Util.html#putStrFgc"><span class="hs-identifier hs-var hs-var">putStrFgc</span></a></span></span><span> </span><span id="local-6989586621679057796"><span class="annot"><span class="annottext">Color
+</span><a href="#local-6989586621679057796"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span id="local-6989586621679057795"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679057795"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-25"></span><span>    </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ConsoleLayer -&gt; ColorIntensity -&gt; Color -&gt; SGR
+</span><span class="hs-identifier hs-var">SetColor</span></span><span> </span><span class="annot"><span class="annottext">ConsoleLayer
+</span><span class="hs-identifier hs-var">Foreground</span></span><span> </span><span class="annot"><span class="annottext">ColorIntensity
+</span><span class="hs-identifier hs-var">Vivid</span></span><span> </span><span class="annot"><span class="annottext">Color
+</span><a href="#local-6989586621679057796"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-26"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679057795"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-27"></span><span>    </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">SGR
+</span><span class="hs-identifier hs-var">Reset</span></span><span class="hs-special">]</span><span>
+</span><span id="line-28"></span><span>
+</span><span id="line-29"></span><span class="annot"><a href="Util.html#putStrLnFgc"><span class="hs-identifier hs-type">putStrLnFgc</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Color</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-30"></span><span id="putStrLnFgc"><span class="annot"><span class="annottext">putStrLnFgc :: Color -&gt; String -&gt; IO ()
+</span><a href="Util.html#putStrLnFgc"><span class="hs-identifier hs-var hs-var">putStrLnFgc</span></a></span></span><span> </span><span id="local-6989586621679057788"><span class="annot"><span class="annottext">Color
+</span><a href="#local-6989586621679057788"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span id="local-6989586621679057787"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679057787"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ConsoleLayer -&gt; ColorIntensity -&gt; Color -&gt; SGR
+</span><span class="hs-identifier hs-var">SetColor</span></span><span> </span><span class="annot"><span class="annottext">ConsoleLayer
+</span><span class="hs-identifier hs-var">Foreground</span></span><span> </span><span class="annot"><span class="annottext">ColorIntensity
+</span><span class="hs-identifier hs-var">Vivid</span></span><span> </span><span class="annot"><span class="annottext">Color
+</span><a href="#local-6989586621679057788"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-32"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679057787"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">SGR
+</span><span class="hs-identifier hs-var">Reset</span></span><span class="hs-special">]</span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span class="annot"><a href="Util.html#writeGraph"><span class="hs-identifier hs-type">writeGraph</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-36"></span><span id="writeGraph"><span class="annot"><span class="annottext">writeGraph :: String -&gt; Bdd -&gt; IO ()
+</span><a href="Util.html#writeGraph"><span class="hs-identifier hs-var hs-var">writeGraph</span></a></span></span><span> </span><span id="local-6989586621679057785"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679057785"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679057784"><span class="annot"><span class="annottext">Bdd
+</span><a href="#local-6989586621679057784"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; IO String
+</span><span class="hs-identifier hs-var">svgGraph</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
+</span><a href="PrintableBdd.html#bdd"><span class="hs-identifier hs-var hs-var">bdd</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
+</span><a href="#local-6989586621679057784"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">IO String -&gt; (String -&gt; IO ()) -&gt; IO ()
+forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">writeFile</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679057785"><span class="hs-identifier hs-var">s</span></a></span></pre></body></html>

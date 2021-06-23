@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Graph.Inductive.Query.TransClos</span><span class="hs-special">(</span><span>
+</span><span id="line-2"></span><span>    </span><span class="annot"><a href="Data.Graph.Inductive.Query.TransClos.html#trc"><span class="hs-identifier">trc</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Query.TransClos.html#rc"><span class="hs-identifier">rc</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Query.TransClos.html#tc"><span class="hs-identifier">tc</span></a></span><span>
+</span><span id="line-3"></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-4"></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Graph.html"><span class="hs-identifier">Data.Graph.Inductive.Graph</span></a></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Query.BFS.html"><span class="hs-identifier">Data.Graph.Inductive.Query.BFS</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Query.BFS.html#bfen"><span class="hs-identifier">bfen</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="hs-comment">{-|
+Finds the transitive closure of a directed graph.
+Given a graph G=(V,E), its transitive closure is the graph:
+G* = (V,E*) where E*={(i,j): i,j in V and there is a path from i to j in G}
+-}</span><span>
+</span><span id="line-13"></span><span id="local-6989586621679078334"><span id="local-6989586621679078335"><span id="local-6989586621679078336"><span class="annot"><a href="Data.Graph.Inductive.Query.TransClos.html#tc"><span class="hs-identifier hs-type">tc</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#DynGraph"><span class="hs-identifier hs-type">DynGraph</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078336"><span class="hs-identifier hs-type">gr</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679078336"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078335"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078334"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679078336"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078335"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span></span></span></span><span>
+</span><span id="line-14"></span><span id="tc"><span class="annot"><span class="annottext">tc :: gr a b -&gt; gr a ()
+</span><a href="Data.Graph.Inductive.Query.TransClos.html#tc"><span class="hs-identifier hs-var hs-var">tc</span></a></span></span><span> </span><span id="local-6989586621679078333"><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078333"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(Node, Node, ())]
+</span><a href="#local-6989586621679078332"><span class="hs-identifier hs-var">newEdges</span></a></span><span> </span><span class="annot"><span class="annottext">[(Node, Node, ())] -&gt; gr a () -&gt; gr a ()
+forall (gr :: * -&gt; * -&gt; *) b a.
+DynGraph gr =&gt;
+[LEdge b] -&gt; gr a b -&gt; gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#insEdges"><span class="hs-operator hs-var">`insEdges`</span></a></span><span> </span><span class="annot"><span class="annottext">[LNode a] -&gt; gr a () -&gt; gr a ()
+forall (gr :: * -&gt; * -&gt; *) a b.
+DynGraph gr =&gt;
+[LNode a] -&gt; gr a b -&gt; gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#insNodes"><span class="hs-identifier hs-var">insNodes</span></a></span><span> </span><span class="annot"><span class="annottext">[LNode a]
+</span><a href="#local-6989586621679078329"><span class="hs-identifier hs-var">ln</span></a></span><span> </span><span class="annot"><span class="annottext">gr a ()
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#empty"><span class="hs-identifier hs-var">empty</span></a></span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-16"></span><span>    </span><span id="local-6989586621679078329"><span class="annot"><span class="annottext">ln :: [LNode a]
+</span><a href="#local-6989586621679078329"><span class="hs-identifier hs-var hs-var">ln</span></a></span></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">gr a b -&gt; [LNode a]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [LNode a]
+</span><a href="Data.Graph.Inductive.Graph.html#labNodes"><span class="hs-identifier hs-var">labNodes</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078333"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-17"></span><span>    </span><span id="local-6989586621679078332"><span class="annot"><span class="annottext">newEdges :: [(Node, Node, ())]
+</span><a href="#local-6989586621679078332"><span class="hs-identifier hs-var hs-var">newEdges</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078326"><span class="hs-identifier hs-var">u</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078325"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679078326"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078326"><span class="hs-identifier hs-var">u</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[LNode a]
+</span><a href="#local-6989586621679078329"><span class="hs-identifier hs-var">ln</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679078325"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078325"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[(Node, Node)] -&gt; gr a b -&gt; [(Node, Node)]
+forall (gr :: * -&gt; * -&gt; *) a b.
+Graph gr =&gt;
+[(Node, Node)] -&gt; gr a b -&gt; [(Node, Node)]
+</span><a href="Data.Graph.Inductive.Query.BFS.html#bfen"><span class="hs-identifier hs-var">bfen</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">gr a b -&gt; Node -&gt; [(Node, Node)]
+forall (gr :: * -&gt; * -&gt; *) a b.
+Graph gr =&gt;
+gr a b -&gt; Node -&gt; [(Node, Node)]
+</span><a href="#local-6989586621679078324"><span class="hs-identifier hs-var">outU</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078333"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078326"><span class="hs-identifier hs-var">u</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078333"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-special">]</span><span>
+</span><span id="line-18"></span><span>    </span><span id="local-6989586621679078324"><span class="annot"><span class="annottext">outU :: gr a b -&gt; Node -&gt; [(Node, Node)]
+</span><a href="#local-6989586621679078324"><span class="hs-identifier hs-var hs-var">outU</span></a></span></span><span> </span><span id="local-6989586621679078323"><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078323"><span class="hs-identifier hs-var">gr</span></a></span></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(LEdge b -&gt; (Node, Node)) -&gt; [LEdge b] -&gt; [(Node, Node)]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">LEdge b -&gt; (Node, Node)
+forall b. LEdge b -&gt; (Node, Node)
+</span><a href="Data.Graph.Inductive.Graph.html#toEdge"><span class="hs-identifier hs-var">toEdge</span></a></span><span> </span><span class="annot"><span class="annottext">([LEdge b] -&gt; [(Node, Node)])
+-&gt; (Node -&gt; [LEdge b]) -&gt; Node -&gt; [(Node, Node)]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">gr a b -&gt; Node -&gt; [LEdge b]
+forall (gr :: * -&gt; * -&gt; *) a b.
+Graph gr =&gt;
+gr a b -&gt; Node -&gt; [LEdge b]
+</span><a href="Data.Graph.Inductive.Graph.html#out"><span class="hs-identifier hs-var">out</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078323"><span class="hs-identifier hs-var">gr</span></a></span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-comment">{-|
+Finds the transitive, reflexive closure of a directed graph.
+Given a graph G=(V,E), its transitive closure is the graph:
+G* = (V,E*) where E*={(i,j): i,j in V and either i = j or there is a path from i to j in G}
+-}</span><span>
+</span><span id="line-25"></span><span id="local-6989586621679078317"><span id="local-6989586621679078318"><span id="local-6989586621679078319"><span class="annot"><a href="Data.Graph.Inductive.Query.TransClos.html#trc"><span class="hs-identifier hs-type">trc</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#DynGraph"><span class="hs-identifier hs-type">DynGraph</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078319"><span class="hs-identifier hs-type">gr</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679078319"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078318"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078317"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679078319"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078318"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span></span></span></span><span>
+</span><span id="line-26"></span><span id="trc"><span class="annot"><span class="annottext">trc :: gr a b -&gt; gr a ()
+</span><a href="Data.Graph.Inductive.Query.TransClos.html#trc"><span class="hs-identifier hs-var hs-var">trc</span></a></span></span><span> </span><span id="local-6989586621679078316"><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078316"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(Node, Node, ())]
+</span><a href="#local-6989586621679078315"><span class="hs-identifier hs-var">newEdges</span></a></span><span> </span><span class="annot"><span class="annottext">[(Node, Node, ())] -&gt; gr a () -&gt; gr a ()
+forall (gr :: * -&gt; * -&gt; *) b a.
+DynGraph gr =&gt;
+[LEdge b] -&gt; gr a b -&gt; gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#insEdges"><span class="hs-operator hs-var">`insEdges`</span></a></span><span> </span><span class="annot"><span class="annottext">[LNode a] -&gt; gr a () -&gt; gr a ()
+forall (gr :: * -&gt; * -&gt; *) a b.
+DynGraph gr =&gt;
+[LNode a] -&gt; gr a b -&gt; gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#insNodes"><span class="hs-identifier hs-var">insNodes</span></a></span><span> </span><span class="annot"><span class="annottext">[LNode a]
+</span><a href="#local-6989586621679078314"><span class="hs-identifier hs-var">ln</span></a></span><span> </span><span class="annot"><span class="annottext">gr a ()
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#empty"><span class="hs-identifier hs-var">empty</span></a></span><span>
+</span><span id="line-27"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-28"></span><span>    </span><span id="local-6989586621679078314"><span class="annot"><span class="annottext">ln :: [LNode a]
+</span><a href="#local-6989586621679078314"><span class="hs-identifier hs-var hs-var">ln</span></a></span></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">gr a b -&gt; [LNode a]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [LNode a]
+</span><a href="Data.Graph.Inductive.Graph.html#labNodes"><span class="hs-identifier hs-var">labNodes</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078316"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-29"></span><span>    </span><span id="local-6989586621679078315"><span class="annot"><span class="annottext">newEdges :: [(Node, Node, ())]
+</span><a href="#local-6989586621679078315"><span class="hs-identifier hs-var hs-var">newEdges</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078313"><span class="hs-identifier hs-var">u</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078312"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679078313"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078313"><span class="hs-identifier hs-var">u</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[LNode a]
+</span><a href="#local-6989586621679078314"><span class="hs-identifier hs-var">ln</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679078312"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078312"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[(Node, Node)] -&gt; gr a b -&gt; [(Node, Node)]
+forall (gr :: * -&gt; * -&gt; *) a b.
+Graph gr =&gt;
+[(Node, Node)] -&gt; gr a b -&gt; [(Node, Node)]
+</span><a href="Data.Graph.Inductive.Query.BFS.html#bfen"><span class="hs-identifier hs-var">bfen</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078313"><span class="hs-identifier hs-var">u</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078313"><span class="hs-identifier hs-var">u</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078316"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-special">]</span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="hs-comment">{-|
+Finds the reflexive closure of a directed graph.
+Given a graph G=(V,E), its transitive closure is the graph:
+G* = (V,Er union E) where Er = {(i,i): i in V}
+-}</span><span>
+</span><span id="line-36"></span><span id="local-6989586621679078309"><span id="local-6989586621679078310"><span id="local-6989586621679078311"><span class="annot"><a href="Data.Graph.Inductive.Query.TransClos.html#rc"><span class="hs-identifier hs-type">rc</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#DynGraph"><span class="hs-identifier hs-type">DynGraph</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078311"><span class="hs-identifier hs-type">gr</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679078311"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078310"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078309"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679078311"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078310"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span></span></span></span><span>
+</span><span id="line-37"></span><span id="rc"><span class="annot"><span class="annottext">rc :: gr a b -&gt; gr a ()
+</span><a href="Data.Graph.Inductive.Query.TransClos.html#rc"><span class="hs-identifier hs-var hs-var">rc</span></a></span></span><span> </span><span id="local-6989586621679078308"><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078308"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(Node, Node, ())]
+</span><a href="#local-6989586621679078307"><span class="hs-identifier hs-var">newEdges</span></a></span><span> </span><span class="annot"><span class="annottext">[(Node, Node, ())] -&gt; gr a () -&gt; gr a ()
+forall (gr :: * -&gt; * -&gt; *) b a.
+DynGraph gr =&gt;
+[LEdge b] -&gt; gr a b -&gt; gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#insEdges"><span class="hs-operator hs-var">`insEdges`</span></a></span><span> </span><span class="annot"><span class="annottext">[LNode a] -&gt; gr a () -&gt; gr a ()
+forall (gr :: * -&gt; * -&gt; *) a b.
+DynGraph gr =&gt;
+[LNode a] -&gt; gr a b -&gt; gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#insNodes"><span class="hs-identifier hs-var">insNodes</span></a></span><span> </span><span class="annot"><span class="annottext">[LNode a]
+</span><a href="#local-6989586621679078306"><span class="hs-identifier hs-var">ln</span></a></span><span> </span><span class="annot"><span class="annottext">gr a ()
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#empty"><span class="hs-identifier hs-var">empty</span></a></span><span>
+</span><span id="line-38"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-39"></span><span>    </span><span id="local-6989586621679078306"><span class="annot"><span class="annottext">ln :: [LNode a]
+</span><a href="#local-6989586621679078306"><span class="hs-identifier hs-var hs-var">ln</span></a></span></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">gr a b -&gt; [LNode a]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [LNode a]
+</span><a href="Data.Graph.Inductive.Graph.html#labNodes"><span class="hs-identifier hs-var">labNodes</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078308"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span id="local-6989586621679078307"><span class="annot"><span class="annottext">newEdges :: [(Node, Node, ())]
+</span><a href="#local-6989586621679078307"><span class="hs-identifier hs-var hs-var">newEdges</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078305"><span class="hs-identifier hs-var">u</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078305"><span class="hs-identifier hs-var">u</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679078305"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078305"><span class="hs-identifier hs-var">u</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">a
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[LNode a]
+</span><a href="#local-6989586621679078306"><span class="hs-identifier hs-var">ln</span></a></span><span> </span><span class="hs-special">]</span><span>
+</span><span id="line-41"></span></pre></body></html>

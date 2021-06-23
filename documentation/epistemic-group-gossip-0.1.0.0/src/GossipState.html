@@ -1,0 +1,575 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# OPTIONS_GHC -Wno-overlapping-patterns #-}</span><span>
+</span><span id="line-2"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">GossipState</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-comment">--import Data.HasCacBDD hiding ( evaluate, Top )</span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span> </span><span class="hs-special">(</span><span> </span><span class="hs-special">(</span><span class="hs-glyph">!</span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Set</span></span><span> </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-operator">(\\)</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Map</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Set</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Set</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">System.Console.ANSI</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Graph.Inductive</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Graph.Inductive.Graph</span></span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="PrintableBdd.html"><span class="hs-identifier">PrintableBdd</span></a></span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="PrintableBdd.html#evaluate"><span class="hs-identifier">evaluate</span></a></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="GossipTypes.html"><span class="hs-identifier">GossipTypes</span></a></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="GossipGraph.html"><span class="hs-identifier">GossipGraph</span></a></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="GossipKnowledge.html"><span class="hs-identifier">GossipKnowledge</span></a></span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">data</span><span> </span><span id="State"><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-var">State</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="State"><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-var">State</span></a></span></span><span> </span><span class="hs-special">{</span><span>
+</span><span id="line-21"></span><span>  </span><span id="stateGraph"><span class="annot"><span class="annottext">State -&gt; GossipGraph
+</span><a href="GossipState.html#stateGraph"><span class="hs-identifier hs-var hs-var">stateGraph</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipGraph.html#GossipGraph"><span class="hs-identifier hs-type">GossipGraph</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-22"></span><span>  </span><span id="stateKnowledgeStruct"><span class="annot"><span class="annottext">State -&gt; GossipKnowledgeStructure
+</span><a href="GossipState.html#stateKnowledgeStruct"><span class="hs-identifier hs-var hs-var">stateKnowledgeStruct</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipKnowledge.html#GossipKnowledgeStructure"><span class="hs-identifier hs-type">GossipKnowledgeStructure</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-23"></span><span>  </span><span id="stateCallSeq"><span class="annot"><span class="annottext">State -&gt; [Call]
+</span><a href="GossipState.html#stateCallSeq"><span class="hs-identifier hs-var hs-var">stateCallSeq</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-24"></span><span class="hs-special">}</span><span>
+</span><span id="line-25"></span><span>
+</span><span id="line-26"></span><span class="annot"><a href="GossipState.html#printState"><span class="hs-identifier hs-type">printState</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-27"></span><span id="printState"><span class="annot"><span class="annottext">printState :: State -&gt; Bool -&gt; IO ()
+</span><a href="GossipState.html#printState"><span class="hs-identifier hs-var hs-var">printState</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679058690"><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058690"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span id="local-6989586621679058689"><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><a href="#local-6989586621679058689"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679058688"><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058688"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679058687"><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679058687"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-28"></span><span>  </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ConsoleLayer -&gt; ColorIntensity -&gt; Color -&gt; SGR
+</span><span class="hs-identifier hs-var">SetColor</span></span><span> </span><span class="annot"><span class="annottext">ConsoleLayer
+</span><span class="hs-identifier hs-var">Foreground</span></span><span> </span><span class="annot"><span class="annottext">ColorIntensity
+</span><span class="hs-identifier hs-var">Vivid</span></span><span> </span><span class="annot"><span class="annottext">Color
+</span><span class="hs-identifier hs-var">Magenta</span></span><span class="hs-special">]</span><span>
+</span><span id="line-29"></span><span>  </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679058687"><span class="hs-identifier hs-var">n</span></a></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n=== UPDATED STATE ===&quot;</span></span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n=== CURRENT STATE ===&quot;</span></span><span>
+</span><span id="line-32"></span><span>  </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ConsoleLayer -&gt; ColorIntensity -&gt; Color -&gt; SGR
+</span><span class="hs-identifier hs-var">SetColor</span></span><span> </span><span class="annot"><span class="annottext">ConsoleLayer
+</span><span class="hs-identifier hs-var">Foreground</span></span><span> </span><span class="annot"><span class="annottext">ColorIntensity
+</span><span class="hs-identifier hs-var">Vivid</span></span><span> </span><span class="annot"><span class="annottext">Color
+</span><span class="hs-identifier hs-var">Cyan</span></span><span class="hs-special">]</span><span>
+</span><span id="line-33"></span><span>  </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;= GossipGraph =&quot;</span></span><span>
+</span><span id="line-34"></span><span>  </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">SGR
+</span><span class="hs-identifier hs-var">Reset</span></span><span class="hs-special">]</span><span>
+</span><span id="line-35"></span><span>  </span><span class="annot"><span class="annottext">GossipGraph -&gt; IO ()
+</span><a href="GossipGraph.html#printGraph"><span class="hs-identifier hs-var">printGraph</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058690"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-36"></span><span>  </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ConsoleLayer -&gt; ColorIntensity -&gt; Color -&gt; SGR
+</span><span class="hs-identifier hs-var">SetColor</span></span><span> </span><span class="annot"><span class="annottext">ConsoleLayer
+</span><span class="hs-identifier hs-var">Foreground</span></span><span> </span><span class="annot"><span class="annottext">ColorIntensity
+</span><span class="hs-identifier hs-var">Vivid</span></span><span> </span><span class="annot"><span class="annottext">Color
+</span><span class="hs-identifier hs-var">Cyan</span></span><span class="hs-special">]</span><span>
+</span><span id="line-37"></span><span>  </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n= Knowledgestructure =&quot;</span></span><span>
+</span><span id="line-38"></span><span>  </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">SGR
+</span><span class="hs-identifier hs-var">Reset</span></span><span class="hs-special">]</span><span>
+</span><span id="line-39"></span><span>  </span><span class="annot"><span class="annottext">GossipKnowledgeStructure -&gt; IO ()
+forall a. Show a =&gt; a -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><a href="#local-6989586621679058689"><span class="hs-identifier hs-var">k</span></a></span><span>
+</span><span id="line-40"></span><span>  </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ConsoleLayer -&gt; ColorIntensity -&gt; Color -&gt; SGR
+</span><span class="hs-identifier hs-var">SetColor</span></span><span> </span><span class="annot"><span class="annottext">ConsoleLayer
+</span><span class="hs-identifier hs-var">Foreground</span></span><span> </span><span class="annot"><span class="annottext">ColorIntensity
+</span><span class="hs-identifier hs-var">Vivid</span></span><span> </span><span class="annot"><span class="annottext">Color
+</span><span class="hs-identifier hs-var">Cyan</span></span><span class="hs-special">]</span><span>
+</span><span id="line-41"></span><span>  </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n= Callsequence =&quot;</span></span><span>
+</span><span id="line-42"></span><span>  </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">SGR
+</span><span class="hs-identifier hs-var">Reset</span></span><span class="hs-special">]</span><span>
+</span><span id="line-43"></span><span>  </span><span class="annot"><span class="annottext">[Call] -&gt; IO ()
+</span><a href="GossipTypes.html#printCalls"><span class="hs-identifier hs-var">printCalls</span></a></span><span> </span><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058688"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-44"></span><span>  </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">ConsoleLayer -&gt; ColorIntensity -&gt; Color -&gt; SGR
+</span><span class="hs-identifier hs-var">SetColor</span></span><span> </span><span class="annot"><span class="annottext">ConsoleLayer
+</span><span class="hs-identifier hs-var">Foreground</span></span><span> </span><span class="annot"><span class="annottext">ColorIntensity
+</span><span class="hs-identifier hs-var">Vivid</span></span><span> </span><span class="annot"><span class="annottext">Color
+</span><span class="hs-identifier hs-var">Magenta</span></span><span class="hs-special">]</span><span>
+</span><span id="line-45"></span><span>  </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n=====================&quot;</span></span><span>
+</span><span id="line-46"></span><span>  </span><span class="annot"><span class="annottext">[SGR] -&gt; IO ()
+</span><span class="hs-identifier hs-var">setSGR</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">SGR
+</span><span class="hs-identifier hs-var">Reset</span></span><span class="hs-special">]</span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span class="hs-comment">-- | Determines based on the current GossipGraph state which calls are actually allowed to be made.</span><span>
+</span><span id="line-49"></span><span class="annot"><a href="GossipState.html#validCalls"><span class="hs-identifier hs-type">validCalls</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipGraph.html#GossipGraph"><span class="hs-identifier hs-type">GossipGraph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-50"></span><span id="validCalls"><span class="annot"><span class="annottext">validCalls :: GossipGraph -&gt; ([Call], [GroupCall])
+</span><a href="GossipState.html#validCalls"><span class="hs-identifier hs-var hs-var">validCalls</span></a></span></span><span> </span><span id="local-6989586621679058675"><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058675"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058674"><span class="hs-identifier hs-var">validDirectCalls</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[GroupCall]
+</span><a href="#local-6989586621679058673"><span class="hs-identifier hs-var">validGroupCalls</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-51"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-52"></span><span>    </span><span class="annot"><a href="#local-6989586621679058674"><span class="hs-identifier hs-type">validDirectCalls</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-53"></span><span>    </span><span id="local-6989586621679058674"><span class="annot"><span class="annottext">validDirectCalls :: [Call]
+</span><a href="#local-6989586621679058674"><span class="hs-identifier hs-var hs-var">validDirectCalls</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058672"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName -&gt; LNode AgentName -&gt; Call
+</span><a href="GossipTypes.html#%260E"><span class="hs-operator hs-var">&#9742;</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058670"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679058672"><span class="annot"><span class="annottext">f :: LNode AgentName
+</span><a href="#local-6989586621679058672"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679058669"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058669"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; [LNode AgentName]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [LNode a]
+</span><span class="hs-identifier hs-var">labNodes</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058675"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058670"><span class="annot"><span class="annottext">t :: LNode AgentName
+</span><a href="#local-6989586621679058670"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679058667"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058667"><span class="hs-identifier hs-var">j</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; [LNode AgentName]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [LNode a]
+</span><span class="hs-identifier hs-var">labNodes</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058675"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058669"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">Node -&gt; Node -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">/=</span></span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058667"><span class="hs-identifier hs-var">j</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; LEdge Kind -&gt; Bool
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Eq b) =&gt;
+gr a b -&gt; LEdge b -&gt; Bool
+</span><span class="hs-identifier hs-var">hasLEdge</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058675"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058669"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058667"><span class="hs-identifier hs-var">j</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Number"><span class="hs-identifier hs-var">Number</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-54"></span><span>    </span><span>
+</span><span id="line-55"></span><span>    </span><span class="annot"><a href="#local-6989586621679058673"><span class="hs-identifier hs-type">validGroupCalls</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-56"></span><span>    </span><span id="local-6989586621679058673"><span class="annot"><span class="annottext">validGroupCalls :: [GroupCall]
+</span><a href="#local-6989586621679058673"><span class="hs-identifier hs-var hs-var">validGroupCalls</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058663"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">LNode AgentName -&gt; [LNode AgentName]
+</span><a href="#local-6989586621679058662"><span class="hs-identifier hs-var">tos</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058663"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679058663"><span class="annot"><span class="annottext">f :: LNode AgentName
+</span><a href="#local-6989586621679058663"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679058661"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058661"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; [LNode AgentName]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [LNode a]
+</span><span class="hs-identifier hs-var">labNodes</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058675"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span>    </span><span class="annot"><a href="#local-6989586621679058662"><span class="hs-identifier hs-type">tos</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#Agent"><span class="hs-identifier hs-type">Agent</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#Agent"><span class="hs-identifier hs-type">Agent</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-59"></span><span>    </span><span id="local-6989586621679058662"><span class="annot"><span class="annottext">tos :: LNode AgentName -&gt; [LNode AgentName]
+</span><a href="#local-6989586621679058662"><span class="hs-identifier hs-var hs-var">tos</span></a></span></span><span> </span><span id="local-6989586621679058659"><span class="annot"><span class="annottext">f :: LNode AgentName
+</span><a href="#local-6989586621679058659"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679058658"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058658"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058657"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679058657"><span class="annot"><span class="annottext">t :: LNode AgentName
+</span><a href="#local-6989586621679058657"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679058656"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058656"><span class="hs-identifier hs-var">j</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; [LNode AgentName]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [LNode a]
+</span><span class="hs-identifier hs-var">labNodes</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058675"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058659"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName -&gt; LNode AgentName -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">/=</span></span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058657"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; LEdge Kind -&gt; Bool
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Eq b) =&gt;
+gr a b -&gt; LEdge b -&gt; Bool
+</span><span class="hs-identifier hs-var">hasLEdge</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058675"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058658"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058656"><span class="hs-identifier hs-var">j</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Number"><span class="hs-identifier hs-var">Number</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span><span class="annot"><a href="GossipState.html#executeCalls"><span class="hs-identifier hs-type">executeCalls</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
+</span><span id="line-62"></span><span id="executeCalls"><span class="annot"><span class="annottext">executeCalls :: [Call] -&gt; State -&gt; IO State
+</span><a href="GossipState.html#executeCalls"><span class="hs-identifier hs-var hs-var">executeCalls</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span id="local-6989586621679058654"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058654"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; IO State
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058654"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-63"></span><span class="annot"><a href="GossipState.html#executeCalls"><span class="hs-identifier hs-var">executeCalls</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058653"><span class="annot"><span class="annottext">Call
+</span><a href="#local-6989586621679058653"><span class="hs-identifier hs-var">c</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679058652"><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058652"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679058651"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058651"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-64"></span><span>  </span><span class="annot"><span class="annottext">Call -&gt; IO ()
+</span><a href="GossipTypes.html#printMakeCall"><span class="hs-identifier hs-var">printMakeCall</span></a></span><span> </span><span class="annot"><span class="annottext">Call
+</span><a href="#local-6989586621679058653"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-65"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679058649"><span class="annot"><span class="annottext">newState :: State
+</span><a href="#local-6989586621679058649"><span class="hs-identifier hs-var hs-var">newState</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Call -&gt; State -&gt; State
+</span><a href="GossipState.html#makeCall"><span class="hs-identifier hs-var">makeCall</span></a></span><span> </span><span class="annot"><span class="annottext">Call
+</span><a href="#local-6989586621679058653"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058651"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-66"></span><span>  </span><span class="annot"><span class="annottext">State -&gt; Bool -&gt; IO ()
+</span><a href="GossipState.html#printState"><span class="hs-identifier hs-var">printState</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058649"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span>
+</span><span id="line-67"></span><span>  </span><span class="annot"><span class="annottext">[Call] -&gt; State -&gt; IO State
+</span><a href="GossipState.html#executeCalls"><span class="hs-identifier hs-var">executeCalls</span></a></span><span> </span><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058652"><span class="hs-identifier hs-var">cs</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058649"><span class="hs-identifier hs-var">newState</span></a></span><span>
+</span><span id="line-68"></span><span>
+</span><span id="line-69"></span><span class="annot"><a href="GossipState.html#makeCall"><span class="hs-identifier hs-type">makeCall</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
+</span><span id="line-70"></span><span id="makeCall"><span class="annot"><span class="annottext">makeCall :: Call -&gt; State -&gt; State
+</span><a href="GossipState.html#makeCall"><span class="hs-identifier hs-var hs-var">makeCall</span></a></span></span><span> </span><span id="local-6989586621679058647"><span class="annot"><span class="annottext">Call
+</span><a href="#local-6989586621679058647"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span id="local-6989586621679058646"><span class="annot"><span class="annottext">s :: State
+</span><a href="#local-6989586621679058646"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679058645"><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span id="local-6989586621679058644"><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><a href="#local-6989586621679058644"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679058643"><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058643"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-71"></span><span>  </span><span class="annot"><span class="annottext">State -&gt; [LEdge Kind] -&gt; State
+</span><a href="#local-6989586621679058642"><span class="hs-identifier hs-var">newState</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058646"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">([LEdge Kind] -&gt; State) -&gt; [LEdge Kind] -&gt; State
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">((LEdge Kind -&gt; Bool) -&gt; [LEdge Kind] -&gt; [LEdge Kind])
+-&gt; [LEdge Kind] -&gt; (LEdge Kind -&gt; Bool) -&gt; [LEdge Kind]
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">(LEdge Kind -&gt; Bool) -&gt; [LEdge Kind] -&gt; [LEdge Kind]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Call -&gt; [LEdge Kind]
+</span><a href="#local-6989586621679058640"><span class="hs-identifier hs-var">allEdges</span></a></span><span> </span><span class="annot"><span class="annottext">Call
+</span><a href="#local-6989586621679058647"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((LEdge Kind -&gt; Bool) -&gt; [LEdge Kind])
+-&gt; (LEdge Kind -&gt; Bool) -&gt; [LEdge Kind]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool
+</span><span class="hs-identifier hs-var">not</span></span><span> </span><span class="annot"><span class="annottext">(Bool -&gt; Bool) -&gt; (LEdge Kind -&gt; Bool) -&gt; LEdge Kind -&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; LEdge Kind -&gt; Bool
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Eq b) =&gt;
+gr a b -&gt; LEdge b -&gt; Bool
+</span><span class="hs-identifier hs-var">hasLEdge</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-72"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-73"></span><span>    </span><span class="annot"><a href="#local-6989586621679058640"><span class="hs-identifier hs-type">allEdges</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipGraph.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-74"></span><span>    </span><span id="local-6989586621679058640"><span class="annot"><span class="annottext">allEdges :: Call -&gt; [LEdge Kind]
+</span><a href="#local-6989586621679058640"><span class="hs-identifier hs-var hs-var">allEdges</span></a></span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span id="local-6989586621679058636"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058636"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058635"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058635"><span class="hs-identifier hs-var">b</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-75"></span><span>      </span><span class="hs-comment">-- (a,x,Number) forall x s.t. N(b,x)</span><span>
+</span><span id="line-76"></span><span>      </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058636"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058634"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Number"><span class="hs-identifier hs-var">Number</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058634"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058634"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; [LNode AgentName]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [LNode a]
+</span><span class="hs-identifier hs-var">labNodes</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; LEdge Kind -&gt; Bool
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Eq b) =&gt;
+gr a b -&gt; LEdge b -&gt; Bool
+</span><span class="hs-identifier hs-var">hasLEdge</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058635"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058634"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Number"><span class="hs-identifier hs-var">Number</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-77"></span><span>      </span><span class="annot"><span class="annottext">[LEdge Kind] -&gt; [LEdge Kind] -&gt; [LEdge Kind]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-78"></span><span>      </span><span class="hs-comment">-- (a,x,Secret) forall x s.t. S(b,x)</span><span>
+</span><span id="line-79"></span><span>      </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058636"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058633"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Secret"><span class="hs-identifier hs-var">Secret</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058633"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058633"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; [LNode AgentName]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [LNode a]
+</span><span class="hs-identifier hs-var">labNodes</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; LEdge Kind -&gt; Bool
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Eq b) =&gt;
+gr a b -&gt; LEdge b -&gt; Bool
+</span><span class="hs-identifier hs-var">hasLEdge</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058635"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058633"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Secret"><span class="hs-identifier hs-var">Secret</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-80"></span><span>      </span><span class="annot"><span class="annottext">[LEdge Kind] -&gt; [LEdge Kind] -&gt; [LEdge Kind]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-81"></span><span>      </span><span class="hs-comment">-- (b,x,Number) forall x s.t. N(a,x)</span><span>
+</span><span id="line-82"></span><span>      </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058635"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058631"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Number"><span class="hs-identifier hs-var">Number</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058631"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058631"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; [LNode AgentName]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [LNode a]
+</span><span class="hs-identifier hs-var">labNodes</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; LEdge Kind -&gt; Bool
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Eq b) =&gt;
+gr a b -&gt; LEdge b -&gt; Bool
+</span><span class="hs-identifier hs-var">hasLEdge</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058636"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058631"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Number"><span class="hs-identifier hs-var">Number</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-83"></span><span>      </span><span class="annot"><span class="annottext">[LEdge Kind] -&gt; [LEdge Kind] -&gt; [LEdge Kind]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span>
+</span><span id="line-84"></span><span>      </span><span class="hs-comment">-- (b,x,Secret) forall x s.t. S(a,x)</span><span>
+</span><span id="line-85"></span><span>      </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058635"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058630"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Secret"><span class="hs-identifier hs-var">Secret</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058630"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058630"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; [LNode AgentName]
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; [LNode a]
+</span><span class="hs-identifier hs-var">labNodes</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; LEdge Kind -&gt; Bool
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Eq b) =&gt;
+gr a b -&gt; LEdge b -&gt; Bool
+</span><span class="hs-identifier hs-var">hasLEdge</span></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058636"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058630"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Secret"><span class="hs-identifier hs-var">Secret</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-86"></span><span>
+</span><span id="line-87"></span><span>    </span><span class="annot"><a href="#local-6989586621679058642"><span class="hs-identifier hs-type">newState</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipGraph.html#Relation"><span class="hs-identifier hs-type">Relation</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span>
+</span><span id="line-88"></span><span>    </span><span id="local-6989586621679058642"><span class="annot"><span class="annottext">newState :: State -&gt; [LEdge Kind] -&gt; State
+</span><a href="#local-6989586621679058642"><span class="hs-identifier hs-var hs-var">newState</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679058629"><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058629"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span id="local-6989586621679058628"><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><a href="#local-6989586621679058628"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679058627"><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058627"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679058626"><span class="annot"><span class="annottext">[LEdge Kind]
+</span><a href="#local-6989586621679058626"><span class="hs-identifier hs-var">newEdges</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; GossipKnowledgeStructure -&gt; [Call] -&gt; State
+</span><a href="GossipState.html#State"><span class="hs-identifier hs-var">State</span></a></span><span>
+</span><span id="line-89"></span><span>      </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[LEdge Kind] -&gt; GossipGraph -&gt; GossipGraph
+forall (gr :: * -&gt; * -&gt; *) b a.
+DynGraph gr =&gt;
+[LEdge b] -&gt; gr a b -&gt; gr a b
+</span><span class="hs-identifier hs-var">insEdges</span></span><span> </span><span class="annot"><span class="annottext">[LEdge Kind]
+</span><a href="#local-6989586621679058626"><span class="hs-identifier hs-var">newEdges</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058629"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-90"></span><span>      </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+-&gt; Node -&gt; Call -&gt; GossipKnowledgeStructure
+</span><a href="GossipKnowledge.html#updateWithCall"><span class="hs-identifier hs-var">updateWithCall</span></a></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><a href="#local-6989586621679058628"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Call] -&gt; Node
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Node
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058627"><span class="hs-identifier hs-var">cs</span></a></span><span> </span><span class="annot"><span class="annottext">Node -&gt; Node -&gt; Node
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Node
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Call
+</span><a href="#local-6989586621679058647"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-91"></span><span>      </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058627"><span class="hs-identifier hs-var">cs</span></a></span><span> </span><span class="annot"><span class="annottext">[Call] -&gt; [Call] -&gt; [Call]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Call
+</span><a href="#local-6989586621679058647"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-92"></span><span>
+</span><span id="line-93"></span><span class="hs-comment">-- | Evaluates a gossip atom (N(x,y), S(x,y) or C(x,y)), given the current state</span><span>
+</span><span id="line-94"></span><span class="annot"><a href="GossipState.html#evaluateGossipAtom"><span class="hs-identifier hs-type">evaluateGossipAtom</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipKnowledge.html#GossipAtom"><span class="hs-identifier hs-type">GossipAtom</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-95"></span><span id="evaluateGossipAtom"><span class="annot"><span class="annottext">evaluateGossipAtom :: State -&gt; GossipAtom -&gt; Bool
+</span><a href="GossipState.html#evaluateGossipAtom"><span class="hs-identifier hs-var hs-var">evaluateGossipAtom</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679058620"><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058620"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">[Call]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#GAt"><span class="hs-identifier hs-type">GAt</span></a></span><span> </span><span class="annot"><span class="annottext">Rel
+</span><a href="GossipKnowledge.html#N"><span class="hs-identifier hs-var">N</span></a></span><span> </span><span id="local-6989586621679058617"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058617"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679058616"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058616"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; LNode AgentName -&gt; Kind -&gt; LNode AgentName -&gt; Bool
+</span><a href="GossipGraph.html#hasRelationWith"><span class="hs-identifier hs-var">hasRelationWith</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058620"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058617"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Number"><span class="hs-identifier hs-var">Number</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058616"><span class="hs-identifier hs-var">y</span></a></span><span>
+</span><span id="line-96"></span><span class="annot"><a href="GossipState.html#evaluateGossipAtom"><span class="hs-identifier hs-var">evaluateGossipAtom</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679058614"><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058614"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">[Call]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#GAt"><span class="hs-identifier hs-type">GAt</span></a></span><span> </span><span class="annot"><span class="annottext">Rel
+</span><a href="GossipKnowledge.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span id="local-6989586621679058612"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058612"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679058611"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058611"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; LNode AgentName -&gt; Kind -&gt; LNode AgentName -&gt; Bool
+</span><a href="GossipGraph.html#hasRelationWith"><span class="hs-identifier hs-var">hasRelationWith</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058614"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058612"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Secret"><span class="hs-identifier hs-var">Secret</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058611"><span class="hs-identifier hs-var">y</span></a></span><span>
+</span><span id="line-97"></span><span class="annot"><a href="GossipState.html#evaluateGossipAtom"><span class="hs-identifier hs-var">evaluateGossipAtom</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><span class="hs-identifier">_</span></span><span> </span><span id="local-6989586621679058610"><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058610"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#GAt"><span class="hs-identifier hs-type">GAt</span></a></span><span> </span><span class="annot"><span class="annottext">Rel
+</span><a href="GossipKnowledge.html#C"><span class="hs-identifier hs-var">C</span></a></span><span> </span><span id="local-6989586621679058608"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058608"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679058607"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058607"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058608"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058607"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Call -&gt; [Call] -&gt; Bool
+forall (t :: * -&gt; *) a. (Foldable t, Eq a) =&gt; a -&gt; t a -&gt; Bool
+</span><span class="hs-operator hs-var">`elem`</span></span><span> </span><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058610"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-98"></span><span>
+</span><span id="line-99"></span><span class="hs-comment">-- | Evaluates a Bdd variable as Int, given the current state</span><span>
+</span><span id="line-100"></span><span class="annot"><a href="GossipState.html#evaluateBddVar"><span class="hs-identifier hs-type">evaluateBddVar</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-101"></span><span id="evaluateBddVar"><span class="annot"><span class="annottext">evaluateBddVar :: State -&gt; Node -&gt; Bool
+</span><a href="GossipState.html#evaluateBddVar"><span class="hs-identifier hs-var hs-var">evaluateBddVar</span></a></span></span><span> </span><span id="local-6989586621679058604"><span class="annot"><span class="annottext">s :: State
+</span><a href="#local-6989586621679058604"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679058603"><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058603"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">[Call]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; GossipAtom -&gt; Bool
+</span><a href="GossipState.html#evaluateGossipAtom"><span class="hs-identifier hs-var">evaluateGossipAtom</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058604"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">(GossipAtom -&gt; Bool) -&gt; (Node -&gt; GossipAtom) -&gt; Node -&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Node -&gt; Node -&gt; GossipAtom
+</span><a href="GossipKnowledge.html#intToGAt"><span class="hs-identifier hs-var">intToGAt</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GossipGraph -&gt; Node
+</span><a href="GossipGraph.html#noAgents"><span class="hs-identifier hs-var">noAgents</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058603"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-102"></span><span>
+</span><span id="line-103"></span><span class="hs-comment">-- | Evaluates an epistemic formula, given the current state</span><span>
+</span><span id="line-104"></span><span class="annot"><a href="GossipState.html#evaluate"><span class="hs-identifier hs-type">evaluate</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipKnowledge.html#Form"><span class="hs-identifier hs-type">Form</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-105"></span><span id="evaluate"><span class="annot"><span class="annottext">evaluate :: State -&gt; Form -&gt; Bool
+</span><a href="GossipState.html#evaluate"><span class="hs-identifier hs-var hs-var">evaluate</span></a></span></span><span> </span><span id="local-6989586621679058599"><span class="annot"><span class="annottext">state :: State
+</span><a href="#local-6989586621679058599"><span class="hs-identifier hs-var">state</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><span class="hs-identifier">_</span></span><span> </span><span id="local-6989586621679058598"><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><a href="#local-6989586621679058598"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="annot"><span class="annottext">[Call]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679058597"><span class="annot"><span class="annottext">Form
+</span><a href="#local-6989586621679058597"><span class="hs-identifier hs-var">&#981;</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; (Node -&gt; Bool) -&gt; Bool
+</span><a href="PrintableBdd.html#evaluateFun"><span class="hs-identifier hs-var">evaluateFun</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><a href="#local-6989586621679058598"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure -&gt; Form -&gt; Bdd
+</span><a href="GossipKnowledge.html#%3C%7C%3E"><span class="hs-operator hs-var">&lt;|&gt;</span></a></span><span> </span><span class="annot"><span class="annottext">Form
+</span><a href="#local-6989586621679058597"><span class="hs-identifier hs-var">&#981;</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">State -&gt; Node -&gt; Bool
+</span><a href="GossipState.html#evaluateBddVar"><span class="hs-identifier hs-var">evaluateBddVar</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058599"><span class="hs-identifier hs-var">state</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-106"></span><span>
+</span><span id="line-107"></span><span class="hs-comment">-- | An infix operator of the `evaluate` function. </span><span>
+</span><span id="line-108"></span><span class="annot"><a href="GossipState.html#%7C%3D"><span class="hs-operator hs-type">(|=)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipKnowledge.html#Form"><span class="hs-identifier hs-type">Form</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-109"></span><span id="local-6989586621679058593"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058593"><span class="hs-identifier hs-var">state</span></a></span></span><span> </span><span id="%7C%3D"><span class="annot"><span class="annottext">|= :: State -&gt; Form -&gt; Bool
+</span><a href="GossipState.html#%7C%3D"><span class="hs-operator hs-var hs-var">|=</span></a></span></span><span> </span><span id="local-6989586621679058592"><span class="annot"><span class="annottext">Form
+</span><a href="#local-6989586621679058592"><span class="hs-identifier hs-var">form</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; Form -&gt; Bool
+</span><a href="GossipState.html#evaluate"><span class="hs-identifier hs-var">evaluate</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058593"><span class="hs-identifier hs-var">state</span></a></span><span> </span><span class="annot"><span class="annottext">Form
+</span><a href="#local-6989586621679058592"><span class="hs-identifier hs-var">form</span></a></span><span>
+</span><span id="line-110"></span><span class="hs-keyword">infix</span><span> </span><span class="hs-number">9</span><span> </span><span class="annot"><a href="GossipState.html#%7C%3D"><span class="hs-operator hs-type">|=</span></a></span><span>
+</span><span id="line-111"></span><span>
+</span><span id="line-112"></span><span class="hs-comment">-- | Legacy method, evalute a GossipFormula (note, without knowledge) by naive recursion</span><span>
+</span><span id="line-113"></span><span class="annot"><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-type">evaluate'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipKnowledge.html#GossipForm"><span class="hs-identifier hs-type">GossipForm</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-114"></span><span id="evaluate%27"><span class="annot"><span class="annottext">evaluate' :: State -&gt; GossipForm -&gt; Bool
+</span><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var hs-var">evaluate'</span></a></span></span><span> </span><span class="annot"><span class="annottext">State
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">GossipForm
+</span><a href="GossipKnowledge.html#Top"><span class="hs-identifier hs-var">Top</span></a></span><span>                            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span>
+</span><span id="line-115"></span><span class="annot"><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679058589"><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058589"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">[Call]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#Atom"><span class="hs-identifier hs-type">Atom</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#GAt"><span class="hs-identifier hs-type">GAt</span></a></span><span> </span><span class="annot"><span class="annottext">Rel
+</span><a href="GossipKnowledge.html#N"><span class="hs-identifier hs-var">N</span></a></span><span> </span><span id="local-6989586621679058587"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058587"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679058586"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058586"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; LNode AgentName -&gt; Kind -&gt; LNode AgentName -&gt; Bool
+</span><a href="GossipGraph.html#hasRelationWith"><span class="hs-identifier hs-var">hasRelationWith</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058589"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058587"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Number"><span class="hs-identifier hs-var">Number</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058586"><span class="hs-identifier hs-var">y</span></a></span><span>
+</span><span id="line-116"></span><span class="annot"><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679058585"><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058585"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">[Call]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#Atom"><span class="hs-identifier hs-type">Atom</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#GAt"><span class="hs-identifier hs-type">GAt</span></a></span><span> </span><span class="annot"><span class="annottext">Rel
+</span><a href="GossipKnowledge.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span id="local-6989586621679058584"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058584"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679058583"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058583"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; LNode AgentName -&gt; Kind -&gt; LNode AgentName -&gt; Bool
+</span><a href="GossipGraph.html#hasRelationWith"><span class="hs-identifier hs-var">hasRelationWith</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058585"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058584"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Kind
+</span><a href="GossipGraph.html#Secret"><span class="hs-identifier hs-var">Secret</span></a></span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058583"><span class="hs-identifier hs-var">y</span></a></span><span>
+</span><span id="line-117"></span><span class="annot"><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><span class="hs-identifier">_</span></span><span> </span><span id="local-6989586621679058582"><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058582"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#Atom"><span class="hs-identifier hs-type">Atom</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#GAt"><span class="hs-identifier hs-type">GAt</span></a></span><span> </span><span class="annot"><span class="annottext">Rel
+</span><a href="GossipKnowledge.html#C"><span class="hs-identifier hs-var">C</span></a></span><span> </span><span id="local-6989586621679058581"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058581"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679058580"><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058580"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058581"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">LNode AgentName
+</span><a href="#local-6989586621679058580"><span class="hs-identifier hs-var">y</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Call -&gt; [Call] -&gt; Bool
+forall (t :: * -&gt; *) a. (Foldable t, Eq a) =&gt; a -&gt; t a -&gt; Bool
+</span><span class="hs-operator hs-var">`elem`</span></span><span> </span><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058582"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-118"></span><span class="annot"><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span id="local-6989586621679058579"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058579"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#Neg"><span class="hs-identifier hs-type">Neg</span></a></span><span> </span><span id="local-6989586621679058577"><span class="annot"><span class="annottext">GossipForm
+</span><a href="#local-6989586621679058577"><span class="hs-identifier hs-var">form</span></a></span></span><span class="hs-special">)</span><span>                     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool
+</span><span class="hs-identifier hs-var">not</span></span><span> </span><span class="annot"><span class="annottext">(Bool -&gt; Bool) -&gt; Bool -&gt; Bool
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">State -&gt; GossipForm -&gt; Bool
+</span><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058579"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">GossipForm
+</span><a href="#local-6989586621679058577"><span class="hs-identifier hs-var">form</span></a></span><span>
+</span><span id="line-119"></span><span class="annot"><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span id="local-6989586621679058576"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058576"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#Conj"><span class="hs-identifier hs-type">Conj</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058574"><span class="annot"><span class="annottext">GossipForm
+</span><a href="#local-6989586621679058574"><span class="hs-identifier hs-var">form</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679058573"><span class="annot"><span class="annottext">[GossipForm]
+</span><a href="#local-6989586621679058573"><span class="hs-identifier hs-var">rest</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; GossipForm -&gt; Bool
+</span><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058576"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">GossipForm
+</span><a href="#local-6989586621679058574"><span class="hs-identifier hs-var">form</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">State -&gt; GossipForm -&gt; Bool
+</span><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058576"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[GossipForm] -&gt; GossipForm
+</span><a href="GossipKnowledge.html#Conj"><span class="hs-identifier hs-var">Conj</span></a></span><span> </span><span class="annot"><span class="annottext">[GossipForm]
+</span><a href="#local-6989586621679058573"><span class="hs-identifier hs-var">rest</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-120"></span><span class="annot"><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span id="local-6989586621679058571"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058571"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#Disj"><span class="hs-identifier hs-type">Disj</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058569"><span class="annot"><span class="annottext">GossipForm
+</span><a href="#local-6989586621679058569"><span class="hs-identifier hs-var">form</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679058568"><span class="annot"><span class="annottext">[GossipForm]
+</span><a href="#local-6989586621679058568"><span class="hs-identifier hs-var">rest</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State -&gt; GossipForm -&gt; Bool
+</span><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058571"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">GossipForm
+</span><a href="#local-6989586621679058569"><span class="hs-identifier hs-var">form</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">||</span></span><span> </span><span class="annot"><span class="annottext">State -&gt; GossipForm -&gt; Bool
+</span><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058571"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[GossipForm] -&gt; GossipForm
+</span><a href="GossipKnowledge.html#Disj"><span class="hs-identifier hs-var">Disj</span></a></span><span> </span><span class="annot"><span class="annottext">[GossipForm]
+</span><a href="#local-6989586621679058568"><span class="hs-identifier hs-var">rest</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-121"></span><span class="annot"><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span id="local-6989586621679058566"><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058566"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#Impl"><span class="hs-identifier hs-type">Impl</span></a></span><span> </span><span id="local-6989586621679058564"><span class="annot"><span class="annottext">GossipForm
+</span><a href="#local-6989586621679058564"><span class="hs-identifier hs-var">prem</span></a></span></span><span> </span><span id="local-6989586621679058563"><span class="annot"><span class="annottext">GossipForm
+</span><a href="#local-6989586621679058563"><span class="hs-identifier hs-var">conc</span></a></span></span><span class="hs-special">)</span><span>               </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool
+</span><span class="hs-identifier hs-var">not</span></span><span> </span><span class="annot"><span class="annottext">(Bool -&gt; Bool) -&gt; Bool -&gt; Bool
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">State -&gt; GossipForm -&gt; Bool
+</span><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058566"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">GossipForm
+</span><a href="#local-6989586621679058564"><span class="hs-identifier hs-var">prem</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">||</span></span><span> </span><span class="annot"><span class="annottext">State -&gt; GossipForm -&gt; Bool
+</span><a href="GossipState.html#evaluate%27"><span class="hs-identifier hs-var">evaluate'</span></a></span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058566"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">GossipForm
+</span><a href="#local-6989586621679058563"><span class="hs-identifier hs-var">conc</span></a></span><span>
+</span><span id="line-122"></span><span>
+</span><span id="line-123"></span><span>
+</span><span id="line-124"></span><span class="annot"><a href="GossipState.html#tester"><span class="hs-identifier hs-type">tester</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-125"></span><span id="tester"><span class="annot"><span class="annottext">tester :: Node -&gt; Bool
+</span><a href="GossipState.html#tester"><span class="hs-identifier hs-var hs-var">tester</span></a></span></span><span> </span><span id="local-6989586621679058561"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058561"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-126"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679058560"><span class="annot"><span class="annottext">g :: GossipGraph
+</span><a href="#local-6989586621679058560"><span class="hs-identifier hs-var hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Node -&gt; GossipGraph
+</span><a href="GossipGraph.html#defaultGraph"><span class="hs-identifier hs-var">defaultGraph</span></a></span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679058561"><span class="hs-identifier hs-var">n</span></a></span><span>
+</span><span id="line-127"></span><span>      </span><span id="local-6989586621679058558"><span class="annot"><span class="annottext">s :: State
+</span><a href="#local-6989586621679058558"><span class="hs-identifier hs-var hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; GossipKnowledgeStructure -&gt; [Call] -&gt; State
+</span><a href="GossipState.html#State"><span class="hs-identifier hs-var">State</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058560"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GossipGraph -&gt; GossipKnowledgeStructure
+</span><a href="GossipKnowledge.html#fromGossipGraph"><span class="hs-identifier hs-var">fromGossipGraph</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679058560"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-128"></span><span>      </span><span id="local-6989586621679058556"><span class="annot"><span class="annottext">f :: Form
+</span><a href="#local-6989586621679058556"><span class="hs-identifier hs-var hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">LNode AgentName -&gt; Form -&gt; Form
+</span><a href="GossipKnowledge.html#K"><span class="hs-identifier hs-var">K</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><span class="hs-number">0</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AgentName
+</span><span class="hs-char">'a'</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Form -&gt; Form) -&gt; Form -&gt; Form
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; Form
+</span><a href="GossipKnowledge.html#Fact"><span class="hs-identifier hs-var">Fact</span></a></span><span> </span><span class="annot"><span class="annottext">(Bdd -&gt; Form) -&gt; Bdd -&gt; Form
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Node -&gt; Bdd
+</span><a href="PrintableBdd.html#var"><span class="hs-identifier hs-var">var</span></a></span><span> </span><span class="annot"><span class="annottext">Node
+</span><span class="hs-number">0</span></span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; Bdd -&gt; Bdd
+</span><a href="PrintableBdd.html#imp"><span class="hs-operator hs-var">`imp`</span></a></span><span> </span><span class="annot"><span class="annottext">Node -&gt; Bdd
+</span><a href="PrintableBdd.html#var"><span class="hs-identifier hs-var">var</span></a></span><span> </span><span class="annot"><span class="annottext">Node
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-129"></span><span>   </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679058558"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; Form -&gt; Bool
+</span><a href="GossipState.html#%7C%3D"><span class="hs-operator hs-var">|=</span></a></span><span> </span><span class="annot"><span class="annottext">Form
+</span><a href="#local-6989586621679058556"><span class="hs-identifier hs-var">f</span></a></span></pre></body></html>

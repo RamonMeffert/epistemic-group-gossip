@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- (c) 2000-2005 by Martin Erwig [see file COPYRIGHT]</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- | Shortest path algorithms</span><span>
+</span><span id="line-4"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Graph.Inductive.Query.SP</span><span class="hs-special">(</span><span>
+</span><span id="line-5"></span><span>      </span><span class="annot"><a href="Data.Graph.Inductive.Query.SP.html#spTree"><span class="hs-identifier">spTree</span></a></span><span>
+</span><span id="line-6"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Query.SP.html#sp"><span class="hs-identifier">sp</span></a></span><span>
+</span><span id="line-7"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Query.SP.html#spLength"><span class="hs-identifier">spLength</span></a></span><span>
+</span><span id="line-8"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Query.SP.html#dijkstra"><span class="hs-identifier">dijkstra</span></a></span><span>
+</span><span id="line-9"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.RootPath.html#LRTree"><span class="hs-identifier">LRTree</span></a></span><span>
+</span><span id="line-10"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier">H.Heap</span></a></span><span>
+</span><span id="line-11"></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html"><span class="hs-identifier">Data.Graph.Inductive.Internal.Heap</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">H</span></span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Graph.html"><span class="hs-identifier">Data.Graph.Inductive.Graph</span></a></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.RootPath.html"><span class="hs-identifier">Data.Graph.Inductive.Internal.RootPath</span></a></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span id="local-6989586621679078178"><span id="local-6989586621679078179"><span class="annot"><a href="Data.Graph.Inductive.Query.SP.html#expand"><span class="hs-identifier hs-type">expand</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Real</span></span><span> </span><span class="annot"><a href="#local-6989586621679078179"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679078179"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#LPath"><span class="hs-identifier hs-type">LPath</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078179"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Context"><span class="hs-identifier hs-type">Context</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078178"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078179"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">H.Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078179"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#LPath"><span class="hs-identifier hs-type">LPath</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078179"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span></span></span><span>
+</span><span id="line-19"></span><span id="expand"><span class="annot"><span class="annottext">expand :: b -&gt; LPath b -&gt; Context a b -&gt; [Heap b (LPath b)]
+</span><a href="Data.Graph.Inductive.Query.SP.html#expand"><span class="hs-identifier hs-var hs-var">expand</span></a></span></span><span> </span><span id="local-6989586621679078152"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679078152"><span class="hs-identifier hs-var">d</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#LP"><span class="hs-identifier hs-type">LP</span></a></span><span> </span><span id="local-6989586621679078150"><span class="annot"><span class="annottext">[LNode b]
+</span><a href="#local-6989586621679078150"><span class="hs-identifier hs-var">p</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Adj b
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span class="annot"><span class="annottext">Node
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span class="annot"><span class="annottext">a
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span id="local-6989586621679078149"><span class="annot"><span class="annottext">Adj b
+</span><a href="#local-6989586621679078149"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((b, Node) -&gt; Heap b (LPath b)) -&gt; Adj b -&gt; [Heap b (LPath b)]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679078148"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679078148"><span class="hs-identifier hs-var">l</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679078147"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078147"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-special">)</span><span class="hs-glyph">-&gt;</span><span class="annot"><span class="annottext">b -&gt; LPath b -&gt; Heap b (LPath b)
+forall a b. a -&gt; b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#unit"><span class="hs-identifier hs-var">H.unit</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679078148"><span class="hs-identifier hs-var">l</span></a></span><span class="annot"><span class="annottext">b -&gt; b -&gt; b
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679078152"><span class="hs-identifier hs-var">d</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[LNode b] -&gt; LPath b
+forall a. [LNode a] -&gt; LPath a
+</span><a href="Data.Graph.Inductive.Graph.html#LP"><span class="hs-identifier hs-var">LP</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078147"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679078148"><span class="hs-identifier hs-var">l</span></a></span><span class="annot"><span class="annottext">b -&gt; b -&gt; b
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679078152"><span class="hs-identifier hs-var">d</span></a></span><span class="hs-special">)</span><span class="annot"><span class="annottext">LNode b -&gt; [LNode b] -&gt; [LNode b]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">[LNode b]
+</span><a href="#local-6989586621679078150"><span class="hs-identifier hs-var">p</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Adj b
+</span><a href="#local-6989586621679078149"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- | Dijkstra's shortest path algorithm.</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">--   The edge labels of type @b@ are the edge weights; negative edge</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--   weights are not supported.</span><span>
+</span><span id="line-25"></span><span id="local-6989586621679078182"><span id="local-6989586621679078183"><span id="local-6989586621679078184"><span class="annot"><a href="Data.Graph.Inductive.Query.SP.html#dijkstra"><span class="hs-identifier hs-type">dijkstra</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078184"><span class="hs-identifier hs-type">gr</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Real</span></span><span> </span><span class="annot"><a href="#local-6989586621679078183"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.Heap.html#Heap"><span class="hs-identifier hs-type">H.Heap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078183"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#LPath"><span class="hs-identifier hs-type">LPath</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078183"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-comment">-- ^ Initial heap of known paths and their lengths.</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679078184"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078182"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078183"><span class="hs-identifier hs-type">b</span></a></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.RootPath.html#LRTree"><span class="hs-identifier hs-type">LRTree</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078183"><span class="hs-identifier hs-type">b</span></a></span></span></span></span><span>
+</span><span id="line-29"></span><span id="dijkstra"><span class="annot"><span class="annottext">dijkstra :: Heap b (LPath b) -&gt; gr a b -&gt; LRTree b
+</span><a href="Data.Graph.Inductive.Query.SP.html#dijkstra"><span class="hs-identifier hs-var hs-var">dijkstra</span></a></span></span><span> </span><span id="local-6989586621679078144"><span class="annot"><span class="annottext">Heap b (LPath b)
+</span><a href="#local-6989586621679078144"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span id="local-6989586621679078143"><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078143"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Heap b (LPath b) -&gt; Bool
+forall a b. Heap a b -&gt; Bool
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#isEmpty"><span class="hs-identifier hs-var">H.isEmpty</span></a></span><span> </span><span class="annot"><span class="annottext">Heap b (LPath b)
+</span><a href="#local-6989586621679078144"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">||</span></span><span> </span><span class="annot"><span class="annottext">gr a b -&gt; Bool
+forall (gr :: * -&gt; * -&gt; *) a b. Graph gr =&gt; gr a b -&gt; Bool
+</span><a href="Data.Graph.Inductive.Graph.html#isEmpty"><span class="hs-identifier hs-var">isEmpty</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078143"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-30"></span><span class="annot"><a href="Data.Graph.Inductive.Query.SP.html#dijkstra"><span class="hs-identifier hs-var">dijkstra</span></a></span><span> </span><span id="local-6989586621679078139"><span class="annot"><span class="annottext">Heap b (LPath b)
+</span><a href="#local-6989586621679078139"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span id="local-6989586621679078138"><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078138"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Node -&gt; gr a b -&gt; Decomp gr a b
+forall (gr :: * -&gt; * -&gt; *) a b.
+Graph gr =&gt;
+Node -&gt; gr a b -&gt; Decomp gr a b
+</span><a href="Data.Graph.Inductive.Graph.html#match"><span class="hs-identifier hs-var">match</span></a></span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078136"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078138"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-32"></span><span>         </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679078135"><span class="annot"><span class="annottext">Context a b
+</span><a href="#local-6989586621679078135"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679078134"><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078134"><span class="hs-identifier hs-var">g'</span></a></span></span><span class="hs-special">)</span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">LPath b
+</span><a href="#local-6989586621679078133"><span class="hs-identifier hs-var">p</span></a></span><span class="annot"><span class="annottext">LPath b -&gt; LRTree b -&gt; LRTree b
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">Heap b (LPath b) -&gt; gr a b -&gt; LRTree b
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Real b) =&gt;
+Heap b (LPath b) -&gt; gr a b -&gt; LRTree b
+</span><a href="Data.Graph.Inductive.Query.SP.html#dijkstra"><span class="hs-identifier hs-var">dijkstra</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Heap b (LPath b)] -&gt; Heap b (LPath b)
+forall a b. Ord a =&gt; [Heap a b] -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#mergeAll"><span class="hs-identifier hs-var">H.mergeAll</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Heap b (LPath b)
+</span><a href="#local-6989586621679078131"><span class="hs-identifier hs-var">h'</span></a></span><span class="annot"><span class="annottext">Heap b (LPath b) -&gt; [Heap b (LPath b)] -&gt; [Heap b (LPath b)]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">b -&gt; LPath b -&gt; Context a b -&gt; [Heap b (LPath b)]
+forall b a.
+Real b =&gt;
+b -&gt; LPath b -&gt; Context a b -&gt; [Heap b (LPath b)]
+</span><a href="Data.Graph.Inductive.Query.SP.html#expand"><span class="hs-identifier hs-var">expand</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679078130"><span class="hs-identifier hs-var">d</span></a></span><span> </span><span class="annot"><span class="annottext">LPath b
+</span><a href="#local-6989586621679078133"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">Context a b
+</span><a href="#local-6989586621679078135"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078134"><span class="hs-identifier hs-var">g'</span></a></span><span>
+</span><span id="line-33"></span><span>         </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Maybe (Context a b)
+</span><span class="hs-identifier hs-var">Nothing</span></span><span class="hs-special">,</span><span id="local-6989586621679078129"><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078129"><span class="hs-identifier hs-var">g'</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Heap b (LPath b) -&gt; gr a b -&gt; LRTree b
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Real b) =&gt;
+Heap b (LPath b) -&gt; gr a b -&gt; LRTree b
+</span><a href="Data.Graph.Inductive.Query.SP.html#dijkstra"><span class="hs-identifier hs-var">dijkstra</span></a></span><span> </span><span class="annot"><span class="annottext">Heap b (LPath b)
+</span><a href="#local-6989586621679078131"><span class="hs-identifier hs-var">h'</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078129"><span class="hs-identifier hs-var">g'</span></a></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-keyword">where</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">b
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span id="local-6989586621679078133"><span class="annot"><span class="annottext">p :: LPath b
+</span><a href="#local-6989586621679078133"><span class="hs-identifier hs-var">p</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#LP"><span class="hs-identifier hs-type">LP</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span id="local-6989586621679078136"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078136"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679078130"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679078130"><span class="hs-identifier hs-var">d</span></a></span></span><span class="hs-special">)</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span class="annot"><span class="annottext">[LNode b]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">,</span><span id="local-6989586621679078131"><span class="annot"><span class="annottext">Heap b (LPath b)
+</span><a href="#local-6989586621679078131"><span class="hs-identifier hs-var">h'</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Heap b (LPath b) -&gt; (b, LPath b, Heap b (LPath b))
+forall a b. Ord a =&gt; Heap a b -&gt; (a, b, Heap a b)
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#splitMin"><span class="hs-identifier hs-var">H.splitMin</span></a></span><span> </span><span class="annot"><span class="annottext">Heap b (LPath b)
+</span><a href="#local-6989586621679078139"><span class="hs-identifier hs-var">h</span></a></span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span class="hs-comment">-- | Tree of shortest paths from a certain node to the rest of the</span><span>
+</span><span id="line-37"></span><span class="hs-comment">--   (reachable) nodes.</span><span>
+</span><span id="line-38"></span><span class="hs-comment">--</span><span>
+</span><span id="line-39"></span><span class="hs-comment">--   Corresponds to 'dijkstra' applied to a heap in which the only known node is</span><span>
+</span><span id="line-40"></span><span class="hs-comment">--   the starting node, with a path of length 0 leading to it.</span><span>
+</span><span id="line-41"></span><span class="hs-comment">--</span><span>
+</span><span id="line-42"></span><span class="hs-comment">--   The edge labels of type @b@ are the edge weights; negative edge</span><span>
+</span><span id="line-43"></span><span class="hs-comment">--   weights are not supported.</span><span>
+</span><span id="line-44"></span><span id="local-6989586621679078163"><span id="local-6989586621679078164"><span id="local-6989586621679078165"><span class="annot"><a href="Data.Graph.Inductive.Query.SP.html#spTree"><span class="hs-identifier hs-type">spTree</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078165"><span class="hs-identifier hs-type">gr</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Real</span></span><span> </span><span class="annot"><a href="#local-6989586621679078164"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679078165"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078163"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078164"><span class="hs-identifier hs-type">b</span></a></span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Internal.RootPath.html#LRTree"><span class="hs-identifier hs-type">LRTree</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078164"><span class="hs-identifier hs-type">b</span></a></span></span></span></span><span>
+</span><span id="line-48"></span><span id="spTree"><span class="annot"><span class="annottext">spTree :: Node -&gt; gr a b -&gt; LRTree b
+</span><a href="Data.Graph.Inductive.Query.SP.html#spTree"><span class="hs-identifier hs-var hs-var">spTree</span></a></span></span><span> </span><span id="local-6989586621679078127"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078127"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Heap b (LPath b) -&gt; gr a b -&gt; LRTree b
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Real b) =&gt;
+Heap b (LPath b) -&gt; gr a b -&gt; LRTree b
+</span><a href="Data.Graph.Inductive.Query.SP.html#dijkstra"><span class="hs-identifier hs-var">dijkstra</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">b -&gt; LPath b -&gt; Heap b (LPath b)
+forall a b. a -&gt; b -&gt; Heap a b
+</span><a href="Data.Graph.Inductive.Internal.Heap.html#unit"><span class="hs-identifier hs-var">H.unit</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[LNode b] -&gt; LPath b
+forall a. [LNode a] -&gt; LPath a
+</span><a href="Data.Graph.Inductive.Graph.html#LP"><span class="hs-identifier hs-var">LP</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078127"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">b
+</span><span class="hs-number">0</span></span><span class="hs-special">)</span><span class="hs-special">]</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-49"></span><span>
+</span><span id="line-50"></span><span class="hs-comment">-- | Length of the shortest path between two nodes, if any.</span><span>
+</span><span id="line-51"></span><span class="hs-comment">--</span><span>
+</span><span id="line-52"></span><span class="hs-comment">--   Returns 'Nothing' if there is no path, and @'Just' &lt;path length&gt;@</span><span>
+</span><span id="line-53"></span><span class="hs-comment">--   otherwise.</span><span>
+</span><span id="line-54"></span><span class="hs-comment">--</span><span>
+</span><span id="line-55"></span><span class="hs-comment">--   The edge labels of type @b@ are the edge weights; negative edge</span><span>
+</span><span id="line-56"></span><span class="hs-comment">--   weights are not supported.</span><span>
+</span><span id="line-57"></span><span id="local-6989586621679078124"><span id="local-6989586621679078125"><span id="local-6989586621679078126"><span class="annot"><a href="Data.Graph.Inductive.Query.SP.html#spLength"><span class="hs-identifier hs-type">spLength</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078126"><span class="hs-identifier hs-type">gr</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Real</span></span><span> </span><span class="annot"><a href="#local-6989586621679078125"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-58"></span><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span class="hs-comment">-- ^ Start</span><span>
+</span><span id="line-59"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span class="hs-comment">-- ^ Destination</span><span>
+</span><span id="line-60"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679078126"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078124"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078125"><span class="hs-identifier hs-type">b</span></a></span><span>
+</span><span id="line-61"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="#local-6989586621679078125"><span class="hs-identifier hs-type">b</span></a></span></span></span></span><span>
+</span><span id="line-62"></span><span id="spLength"><span class="annot"><span class="annottext">spLength :: Node -&gt; Node -&gt; gr a b -&gt; Maybe b
+</span><a href="Data.Graph.Inductive.Query.SP.html#spLength"><span class="hs-identifier hs-var hs-var">spLength</span></a></span></span><span> </span><span id="local-6989586621679078123"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078123"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679078122"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078122"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Node -&gt; LRTree b -&gt; Maybe b
+forall a. Node -&gt; LRTree a -&gt; Maybe a
+</span><a href="Data.Graph.Inductive.Internal.RootPath.html#getDistance"><span class="hs-identifier hs-var">getDistance</span></a></span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078122"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">(LRTree b -&gt; Maybe b) -&gt; (gr a b -&gt; LRTree b) -&gt; gr a b -&gt; Maybe b
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Node -&gt; gr a b -&gt; LRTree b
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Real b) =&gt;
+Node -&gt; gr a b -&gt; LRTree b
+</span><a href="Data.Graph.Inductive.Query.SP.html#spTree"><span class="hs-identifier hs-var">spTree</span></a></span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078123"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-63"></span><span>
+</span><span id="line-64"></span><span class="hs-comment">-- | Shortest path between two nodes, if any.</span><span>
+</span><span id="line-65"></span><span class="hs-comment">--</span><span>
+</span><span id="line-66"></span><span class="hs-comment">--   Returns 'Nothing' if the destination is not reachable from the</span><span>
+</span><span id="line-67"></span><span class="hs-comment">--   start node, and @'Just' &lt;path&gt;@ otherwise.</span><span>
+</span><span id="line-68"></span><span class="hs-comment">--</span><span>
+</span><span id="line-69"></span><span class="hs-comment">--   The edge labels of type @b@ are the edge weights; negative edge</span><span>
+</span><span id="line-70"></span><span class="hs-comment">--   weights are not supported.</span><span>
+</span><span id="line-71"></span><span id="local-6989586621679078117"><span id="local-6989586621679078118"><span id="local-6989586621679078119"><span class="annot"><a href="Data.Graph.Inductive.Query.SP.html#sp"><span class="hs-identifier hs-type">sp</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078119"><span class="hs-identifier hs-type">gr</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Real</span></span><span> </span><span class="annot"><a href="#local-6989586621679078118"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-72"></span><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span class="hs-comment">-- ^ Start</span><span>
+</span><span id="line-73"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Node"><span class="hs-identifier hs-type">Node</span></a></span><span> </span><span class="hs-comment">-- ^ Destination</span><span>
+</span><span id="line-74"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679078119"><span class="hs-identifier hs-type">gr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078117"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679078118"><span class="hs-identifier hs-type">b</span></a></span><span>
+</span><span id="line-75"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Data.Graph.Inductive.Graph.html#Path"><span class="hs-identifier hs-type">Path</span></a></span></span></span></span><span>
+</span><span id="line-76"></span><span id="sp"><span class="annot"><span class="annottext">sp :: Node -&gt; Node -&gt; gr a b -&gt; Maybe Path
+</span><a href="Data.Graph.Inductive.Query.SP.html#sp"><span class="hs-identifier hs-var hs-var">sp</span></a></span></span><span> </span><span id="local-6989586621679078116"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078116"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679078115"><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078115"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679078114"><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078114"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Node -&gt; LRTree b -&gt; Path
+forall a. Node -&gt; LRTree a -&gt; Path
+</span><a href="Data.Graph.Inductive.Internal.RootPath.html#getLPathNodes"><span class="hs-identifier hs-var">getLPathNodes</span></a></span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078115"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node -&gt; gr a b -&gt; LRTree b
+forall (gr :: * -&gt; * -&gt; *) b a.
+(Graph gr, Real b) =&gt;
+Node -&gt; gr a b -&gt; LRTree b
+</span><a href="Data.Graph.Inductive.Query.SP.html#spTree"><span class="hs-identifier hs-var">spTree</span></a></span><span> </span><span class="annot"><span class="annottext">Node
+</span><a href="#local-6989586621679078116"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">gr a b
+</span><a href="#local-6989586621679078114"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-77"></span><span>  </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Maybe Path
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-78"></span><span>  </span><span id="local-6989586621679078112"><span class="annot"><span class="annottext">Path
+</span><a href="#local-6989586621679078112"><span class="hs-identifier hs-var">p</span></a></span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Path -&gt; Maybe Path
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">Path
+</span><a href="#local-6989586621679078112"><span class="hs-identifier hs-var">p</span></a></span><span>
+</span><span id="line-79"></span></pre></body></html>
