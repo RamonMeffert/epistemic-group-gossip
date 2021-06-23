@@ -328,11 +328,13 @@ data KnowledgeTransformer = KT
   }
 
 -- | A base Knowledge Transformer structure, which will not change the Knowledge Structure. For an arbitrary Knowledge Structure ks:
+--
 -- >>> ks |+| baseTransformer == ks
 -- True
 baseTransformer :: KnowledgeTransformer
 baseTransformer = KT Set.empty top Map.empty
 
+-- | Checks if a Knowledge Transformer is valid. 
 validKT :: GossipKnowledgeStructure -> KnowledgeTransformer -> Bool
 validKT (GKS v _ o) (KT v' l' o') =
   let vocabCheck = Set.disjoint v v'
