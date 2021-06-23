@@ -34,7 +34,7 @@ plugins:
 
 header_pages:
   - theory/index.markdown
-  - documentation/index.html
+  - implementation.markdown
   - about.markdown
   - license.markdown
 
