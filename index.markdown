@@ -12,8 +12,9 @@ menu: Home
 - For our planning and to-do items, please refer to the [About]({{ site.baseurl }}{% link about.markdown %}) page.
 - For the theoretical background for this project, please refer to the [Theoretical Background]({{ site.baseurl }}{% link theory/background.markdown %}) page.
 - For a theoretical description of our extensions to gossip, knowledge structures and action models, please refer to the [This project]({{ site.baseurl }}{% link theory/this-project.markdown %}) page.
-- For the documentation of our code, please refer to the [Documentation]({{ site.baseurl }}{% link docs/index.html %}) page.
 {: style="background-color: #def; padding: 1rem 1.4rem 1rem 2rem; margin:0 0 1rem 0"}
+{% comment %}- For the documentation of our code, please refer to the [Documentation]({{ site.baseurl }}{% link docs/index.html %}) page. {% endcomment %}
+
 
 ## Introduction
 

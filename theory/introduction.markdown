@@ -78,32 +78,13 @@ Epistemic Logic (DEL) we know that [Action Models][action-models] can be used to
 succinctly represent changes to a Kripke model. Their equivalent for knowledge
 structures is called a [_knowledge transformer_][k-transformers].
 
-### Knowledge of time
-
-Since we are working with [synchronous][synchronicity] dynamic gossip, we are
-working with the assumption that there is some concept of global time. The way
-this works in our model is by keeping track of a global tick count. This is
-necessary because at every tick, one call is made.
-
-This introduces a [temporal aspect][ticks] into the model: it is common
-knowledge how many ticks have happened. Based on this knowledge, agents can
-reason about what calls (must) have been made without the calls themselves being
-common knowledge. This means that an agent considers it possible that any of the
-calls that are legal under the current protocol have been made at tick $$t$$.
-When they have higher-order knowledge, e.g., agent A knows that agent B knows
-the secret of agent C, they also know that a call must have happened in which B
-received this secret, i.e., some sequence of calls happened that involved agents
-B and C[^1].
-
 ## Putting it all together
 
 ### Kripke models for gossip graphs
 
-### Reducing model size (and improving performance!)
+### Reducing model size
 
 ### Transforming knowledge
-
-### Keeping track of time
 
 ## References
 
