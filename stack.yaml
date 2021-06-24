@@ -11,4 +11,4 @@ extra-deps:
 build:
   haddock-arguments:
     haddock-args:
-      - "--hide Cudd"
+      - --hide Cudd
