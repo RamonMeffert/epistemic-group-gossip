@@ -6,28 +6,48 @@ menu: Home
 
 ## Quick links
 
-<div style="columns: 3; margin-bottom: 1rem;">
-<div markdown="block" style="background-color: #def; padding: 1rem 1rem .6rem 1rem;break-inside: avoid">
+<div style="columns: 3 225px;">
+<div markdown="block" style="background-color: #def; padding: 1rem 1rem 0.1rem 1rem;margin-bottom: 1rem;break-inside: avoid">
 ### [Theoretical Background]({{ site.baseurl }}{% link theory/background.markdown %})
 
 A summary of the theoretical background necessary for understanding this project.
 
 <a href="{{ site.baseurl }}{% link theory/background.markdown %}" style="padding: .4rem 1rem; background-color: #7da0c445; border-radius: 3px; display: inline-block; color: black;">→ Background</a>
 </div>
-<div markdown="block" style="background-color: #def; padding: 1rem 1rem .6rem 1rem;break-inside: avoid;">
+<div markdown="block" style="background-color: #def; padding: 1rem 1rem .1rem 1rem;margin-bottom: 1rem;break-inside: avoid;">
 ### [This project]({{ site.baseurl }}{% link theory/this-project.markdown %})
 
 A theoretical description of our extensions to gossip, knowledge structures and action models.
 
 <a href="{{ site.baseurl }}{% link theory/this-project.markdown %}" style="padding: .4rem 1rem; background-color: #7da0c445; border-radius: 3px; display: inline-block; color: black;">→ This project</a>
 </div>
-<div markdown="block" style="background-color: #def; padding: 1rem 1rem .6rem 1rem; break-inside: avoid">
+<div markdown="block" style="background-color: #def; padding: 1rem 1rem .1rem 1rem;margin-bottom: 1rem; break-inside: avoid">
 ### [Documentation]({{ site.baseurl }}{% link docs/index.html %})
 
 Automatically generated Haddock documentation based on comments in the Haskell source code.
 
 <a href="{{ site.baseurl }}{% link docs/index.html %}" style="padding: .4rem 1rem; background-color: #7da0c445; border-radius: 3px; display: inline-block; color: black;">→ Documentation</a>
 </div>
+</div>
+<div markdown="block" style="background-color: #def; padding: 1rem 1rem .1rem 1rem; margin-bottom: 1rem;">
+### Source code and executable
+
+A pre-compiled executable is available for macOS and Linux. The source code is available on GitHub.
+
+<details markdown="block" style="margin-bottom:1rem;">
+<summary>Running</summary>
+
+You can use the program by running `./egg-{version}` in a terminal window. On macOS, you might have to [remove the quarantine flag](https://proinsias.github.io/til/Mac-Remove-quarantine-flag-from-app/) first.
+</details>
+
+<a href="https://github.com/RamonMeffert/epistemic-group-gossip/releases/download/latest/Egg-Linux" target="_blank" style="padding: .4rem 1rem; background-color: #7da0c445; border-radius: 3px; display: inline-block; color: black;">
+⤓ Download for Linux
+</a>
+<a href="https://github.com/RamonMeffert/epistemic-group-gossip/releases/download/latest/Egg-macOS" target="_blank" style="padding: .4rem 1rem; background-color: #7da0c445; border-radius: 3px; display: inline-block; color: black;">
+⤓ Download for macOS
+</a>
+<a href="https://github.com/RamonMeffert/epistemic-group-gossip" target="_blank" style="padding: .4rem 1rem; background-color: #7da0c445; border-radius: 3px; display: inline-block; color: black;"><svg style="width:16px; height: 16px; display: inline-block; vertical-align:-2px;"><use xlink:href="/epistemic-group-gossip/assets/minima-social-icons.svg#github"></use></svg> Check out the source code
+</a>
 </div>
 
 ## Introduction
