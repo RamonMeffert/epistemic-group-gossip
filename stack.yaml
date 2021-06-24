@@ -9,4 +9,4 @@ extra-deps:
 - smcdel-1.1.0
 
 build:
-  haddock-arguments: "--hide Cudd"
+  haddock-arguments: --hide Cudd
