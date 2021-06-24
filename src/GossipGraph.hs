@@ -1,18 +1,45 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module GossipGraph where
+{-|
+Module      : GossipGraph
+Description : Implements a graph structure for gossip and operations hereon, as defined in (Van Ditmarsch, 2017).
+Copyright   : (c) Jesper Kuiper, 2021
+                  Leander van Boven, 2021
+                  Ramon Meffert, 2021
+License     : BSD3
+-}
 
--- ( AgentName,
---   AgentId,
---   Agent,
---   GossipGraph,
---   Relation,
---   Kind,
---   fromString,
---   fromAgentsAndRelations,
---   initialGraph
--- )
+module GossipGraph 
+  ( -- * Gossip Graph types
+    GossipGraph
+  , Kind ( Number, Secret )
+  , Relation
+  -- * Pre-made graphs
+  , testGraph
+  , testGraph2
+  , biggerGraph
+  , defaultGraph
+  -- * Graph construction
+  , initialGraph
+  -- * Graph inspection
+  , numbersKnownBy
+  , secretsKnownBy
+  , hasRelationWith
+  , isGraphComplete
+  , noAgents
+  -- * Agent-specific functions
+  , idToLab
+  , labToId
+  -- * Agent construction
+  , agentFromId
+  , agentFromLab
+  -- * Relation construction
+  , relation
+  -- * Graph printing
+  , printGraph
+  ) where
+
 
 import Control.Arrow ((***))
 import Control.Monad (join)
@@ -21,25 +48,28 @@ import Data.Graph.Inductive (Gr, LEdge, LNode, prettyPrint, Graph (noNodes))
 import Data.Graph.Inductive.Graph --(Graph (mkGraph), prettify, labNodes, hasLEdge)
 import Data.List (find, filter)
 import Data.Map (Map, (!))
-import qualified Data.Map as Map
-import Data.Maybe ()
 import Data.Set (Set)
-import qualified Data.Set as Set
-import qualified Data.Text as Text
 import Data.Tuple (swap)
 
-import GossipTypes
+import qualified Data.Map as Map
+import qualified Data.Set as Set
+import qualified Data.Text as Text
 
--- | Edge label indicating whether an agent knows the number or secret of
--- another agent
+import GossipTypes ( AgentName, AgentId, Agent )
+
+-- | An agent relation label, indicating whether x knows the number of y, or x knows the secret of y.
 data Kind
   = Number
   | Secret
   deriving (Eq, Show)
 
+-- | A relation between to agents, either knowledge of number or knowledge of secret.
 type Relation = LEdge Kind
+
+-- | The gossip graph. This is defined in terms of the `Data.Graph.Inductive.Graph` module. 
 type GossipGraph = Gr AgentName Kind
 
+-- | Prints the graph in a readable manner. 
 printGraph :: GossipGraph -> IO ()
 printGraph = prettyPrint
 
@@ -47,16 +77,25 @@ printGraph = prettyPrint
 testGraph :: GossipGraph
 testGraph = initialGraph 3 [('a', ['a', 'b']), ('b', ['b', 'c']), ('c', ['c'])]
 
+-- | Another simple graph with slightly different number relations. 
 testGraph2 :: GossipGraph
 testGraph2 = initialGraph 3 [('a',['a','b','c']), ('b',['b']), ('c',['c'])]
 
+-- | A slightly bigger graph, with five instead of three agents. 
 biggerGraph :: GossipGraph
 biggerGraph = initialGraph 5 [('a', "abc"), ('b', "be"), ('c', "acd"), ('d', "ce"), ('e', "e")]
 
+-- | A default graph with generic size. In this graph, every agent only knows their own number. 
+--
+-- >>> defaultGraph 3
+-- mkGraph [(0,'a'),(1,'b'),(2,'c')] [(0,0,Number),(0,0,Secret),(1,1,Number),(1,1,Secret),(2,2,Number),(2,2,Secret)]
 defaultGraph :: Int -> GossipGraph
 defaultGraph n = initialGraph n $ map (\ x -> (idToLab x, [idToLab x])) [0..(n-1)]
 
--- | Generate an initial gossip graph (with no initial shared secrets), based on a list of agents and their known phone numbers.
+-- | Generates an initial gossip graph (with no initial shared secrets), based on a list of agents and their known phone numbers. In this initial graph, everyone will only know their own secret.
+--
+-- >>> initialGraph 2 [('a', "ab"), ('b', "b")]
+-- mkGraph [(0,'a'),(1,'b')] [(0,0,Number),(0,0,Secret),(0,1,Number),(1,1,Number),(1,1,Secret)]
 initialGraph :: Int -> [(Char, [Char])] -> GossipGraph
 initialGraph nAgents numberLists =
   let agIds = [0 .. nAgents - 1]
@@ -85,37 +124,67 @@ initialGraph nAgents numberLists =
       numbers = (map (withKind . tupCharToInt) . flatten) numberLists
    in mkGraph nodes (secrets ++ numbers)
 
--- | Convert an agent ID to an agent label
+-- | Converts an agent ID to an agent label. 
+--
+-- >>> idToLab 0
+-- 'a'
+-- >>> idToLab 12
+-- 'm'
 idToLab :: Int -> Char
 idToLab = toEnum . (97 +)
 
--- | Convert an agent label to an agnet ID
+-- | Converts an agent label to an agent ID.
+--
+-- >>> labToId 'a'
+-- 0
+-- >>> labToId 'w'
+-- 22
 labToId :: Char -> Int
 labToId = flip (-) 97 . fromEnum
 
+-- | Checks whether two agents have some relation, either secret or number. 
 hasRelationWith :: GossipGraph -> Agent -> Kind -> Agent -> Bool
 hasRelationWith g (ag1, _) kind (ag2, _) = hasLEdge g (ag1, ag2, kind)
 
+-- | Returns the list of agents of which an agent knows the number, given a gossip graph. 
 numbersKnownBy :: GossipGraph -> Agent -> [Agent]
 --numbersKnownBy graph agent = filter (hasRelationWith graph agent Number) (labNodes graph)
 numbersKnownBy graph agent = map (agentFromId . fst) $ filter ((==) Number . snd) (lsuc graph $ fst agent)
 
+-- | Returns the list of agents of which an agent knows the secret, given a gossip graph. 
 secretsKnownBy :: GossipGraph -> Agent -> [Agent]
 secretsKnownBy graph agent = map (agentFromId . fst) $ filter ((==) Secret . snd) (lsuc graph $ fst agent)
 
+-- | Returns the amount of agents that are present in a gossip graph. 
+--
+-- >>> noAgents testGraph
+-- 3
 noAgents :: GossipGraph -> Int
 noAgents = noNodes
 
--- | Warning, ignores the Char argument! Remains for legacy purposes. 
+-- | Creates an agent. Warning, ignores the Char argument! Remains for legacy purposes. 
 agent :: Int -> Char -> Agent
 agent _id _ = agentFromId _id
 
+-- | Generates an agent, based on its ID. 
+--
+-- >>> agentFromId 0
+-- (0, 'a')
+-- >>> agentFromId 2
+-- (2, 'c')
 agentFromId :: Int -> Agent
 agentFromId id = (id, idToLab id)
 
+-- | Generates an agent, based on its label character. 
+--
+-- >>> agentFromLab 'a'
+-- (0, 'a')
+-- >>> agentFromLab 'd'
+-- (3, 'd')
 agentFromLab :: Char -> Agent
 agentFromLab lab = (labToId lab, lab)
 
+-- | Generates a relation between to agents, given a relation kind. 
 relation :: Agent -> Agent -> Kind -> Relation
 relation (from, _) (to, _) kind = (from, to, kind)
 
@@ -127,8 +196,8 @@ findAgentByName agents name =
     getCharName (_, n) = Char.toUpper n
 
 -- | Check whether each agent is an expert; i.e. knows the secret of everyone.
-graphIsComplete :: GossipGraph -> Bool
-graphIsComplete g = length (edges g) == 2 * noAgents g ^ 2 --ufold ((&&) . isExpert (noAgents g)) True g
+isGraphComplete :: GossipGraph -> Bool
+isGraphComplete g = length (edges g) == 2 * noAgents g ^ 2 --ufold ((&&) . isExpert (noAgents g)) True g
 
     -- isExpert :: Int -> ([(Kind, Node)], Node, AgentName, [(Kind, Node)]) -> Bool
     -- isExpert n c@(i, _, _, _) = length i == n * 2

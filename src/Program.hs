@@ -45,11 +45,12 @@ runProgram = do
   where
     obtainTestGraph :: IO GossipGraph
     obtainTestGraph = do
-      putStrLn "testGraph(1) or testGraph(2)?"
+      putStrLn "testGraph(1), testGraph(2) or biggerGraph(3)?"
       g <- getLine
       case toLower $ head g of
         '1' -> return testGraph
         '2' -> return testGraph2
+        '3' -> return biggerGraph
         other -> do
           printInvalidAction other
           obtainTestGraph
@@ -137,7 +138,7 @@ hybridActions prot state = do
 userActions :: State -> IO ()
 userActions state = do
   newState <- performUserAction state
-  if graphIsComplete (stateGraph newState)
+  if isGraphComplete (stateGraph newState)
     then do
       continue <- requestContinuation
       when continue $ userActions newState
@@ -174,8 +175,8 @@ performUserAction = executeUserAction
       putStrLnFgc Red "Invalid calls:"
       mapM_ (uncurry printCallNotAllowed) [c | c@((i, _), (j, _)) <- calls, not (hasLEdge (stateGraph state) (i, j, Number))]
 
-    createCall :: State -> Char -> Char -> Call
-    createCall state f t = (agentFromLab f, agentFromLab t)
+    createCall :: Char -> Char -> Call
+    createCall f t = agentFromLab f ☎ agentFromLab t
 
     callsAllowed :: State -> [Call] -> Bool
     callsAllowed state calls = all (\ ((i,_), (j, _)) -> hasLEdge (stateGraph state) (i, j, Number)) calls
@@ -187,21 +188,13 @@ performUserAction = executeUserAction
       putStrLn "Who is being called? (multiple agents for groupcall)"
       toStr <- getLine
       let to = filter isAlpha toStr
-      let mainCalls = map (createCall s $ head fromStr) to
+      let mainCalls = map (createCall $ head fromStr) to
       if callsAllowed s mainCalls
-        then return $ map (createCall s $ head fromStr) to ++ [createCall s ta tb | ta <- to, tb <- to, ta /= tb]
+        then return $ mainCalls ++ [createCall ta tb | ta <- to, tb <- to, ta /= tb]
         else do
           printInvalidCalls s mainCalls
           putStrLn "Resubmit call details..."
           obtainCallDetails s
-
-    executeCalls :: State -> [Call] -> IO State
-    executeCalls s [] = return s
-    executeCalls s (c:cs) = do
-        printMakeCall c
-        let newState = makeCall c s
-        printState newState True
-        executeCalls newState cs
 
     printUserActions :: IO ()
     printUserActions = do
@@ -221,9 +214,9 @@ performUserAction = executeUserAction
       case toLower $ head a of
         'c' -> do
           c <- obtainCallDetails s
-          executeCalls s c
+          executeCalls c s
         'p' -> do
-          printCalls $ validCalls $ stateGraph s
+          printAllCalls $ validCalls $ stateGraph s
           putStr "\n"
           return s
         's' -> do
@@ -237,7 +230,7 @@ performUserAction = executeUserAction
 protocolActions :: GossipProtocol -> State -> IO ()
 protocolActions prot state = do
   newState <- performProtocolAction prot state
-  if graphIsComplete (stateGraph newState)
+  if isGraphComplete (stateGraph newState)
     then do
       printGraphComplete
       putStrLnFgc Red "Stopping protocol..."
@@ -265,7 +258,7 @@ performProtocolAction prot state = do
   let calls = selectedCalls prot state
 
   putStrLnFgc Yellow "\nCalls allowed by the protocol for this tick:"
-  printCalls calls
+  printAllCalls calls
 
   newState <- executeCall calls state
   printState newState True
@@ -276,11 +269,40 @@ performProtocolAction prot state = do
   return newState
 
   where
-    executeCall :: [Call] -> State -> IO State
-    executeCall [] s = do
+    executeDirectCall :: [Call] -> State -> IO State
+    executeDirectCall d s = do
+      printMakeCall $ head d
+      putStrLn ""
+      return $ flip makeCall s $ head d
+
+    executeGroupCall :: [GroupCall] -> State -> IO State
+    executeGroupCall g s = do
+      putStrLnFgc Green "Making group call:"
+      printMakeGroupCall $ head g
+      flip executeCalls s $ toCalls $ head g
+
+    getCallType :: IO String
+    getCallType = do
+      putStrLn "Both direct and group calls possible."
+      putStr "Perform ("
+      putStrFgc actionColor "d"
+      putStr ")irect call or ("
+      putStrFgc actionColor "g"
+      putStrLn ")roup call?"
+      getLine
+
+    executeCall :: ([Call], [GroupCall]) -> State -> IO State
+    -- No calls possible:
+    executeCall ([], []) s = do
       putStrLn "As there is no call allowed, the state will not be updated..."
       return s
-    executeCall c s = do
-      printMakeCall $ head c
-      putStrLn ""
-      return $ flip makeCall s $ head c
+    -- Only direct calls possible:
+    executeCall (d, []) s = executeDirectCall d s
+    -- Only groupcalls possible:
+    executeCall ([], g) s = executeGroupCall g s
+    -- Both direct and groupcalls possible:
+    executeCall (d,g) s = do
+      t <- getCallType
+      case toLower $ head t of
+        'd' -> executeDirectCall d s
+        'g' -> executeGroupCall g s

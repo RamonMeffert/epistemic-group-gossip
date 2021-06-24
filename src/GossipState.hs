@@ -46,8 +46,25 @@ printState (State g k c) n = do
   setSGR [Reset]
 
 -- | Determines based on the current GossipGraph state which calls are actually allowed to be made.
-validCalls :: GossipGraph -> [Call]
-validCalls g = [(x, y) | x@(i, _) <- labNodes g, y@(j, _) <- labNodes g, i /= j, hasLEdge g (i, j, Number)]
+validCalls :: GossipGraph -> ([Call], [GroupCall])
+validCalls g = (validDirectCalls, validGroupCalls)
+  where
+    validDirectCalls :: [Call]
+    validDirectCalls = [ f ☎ t | f@(i, _) <- labNodes g, t@(j, _) <- labNodes g, i /= j, hasLEdge g (i, j, Number)]
+    
+    validGroupCalls :: [GroupCall]
+    validGroupCalls = [(f, tos f) | f@(i, _) <- labNodes g]
+
+    tos :: Agent -> [Agent]
+    tos f@(i, _) = [t | t@(j, _) <- labNodes g, f /= t, hasLEdge g (i,j,Number)]
+
+executeCalls :: [Call] -> State -> IO State
+executeCalls [] s = return s
+executeCalls (c:cs) s = do
+  printMakeCall c
+  let newState = makeCall c s
+  printState newState True
+  executeCalls cs newState
 
 makeCall :: Call -> State -> State
 makeCall c s@(State g k cs) =
@@ -68,29 +85,29 @@ makeCall c s@(State g k cs) =
       [(b, x, Secret) | (x, _) <- labNodes g, hasLEdge g (a, x, Secret)]
 
     newState :: State -> [Relation] -> State
-    newState (State g k cs) newEdges = State 
-      (insEdges newEdges g) 
-      (synchronousUpdate k (length cs + 1) c) 
+    newState (State g k cs) newEdges = State
+      (insEdges newEdges g)
+      (updateWithCall k (length cs + 1) c)
       (cs ++ [c])
 
--- | Evaluate a gossip atom (N(x,y), S(x,y) or C(x,y)), given the current state
+-- | Evaluates a gossip atom (N(x,y), S(x,y) or C(x,y)), given the current state
 evaluateGossipAtom :: State -> GossipAtom -> Bool
 evaluateGossipAtom (State g _ _) (GAt N x y) = hasRelationWith g x Number y
 evaluateGossipAtom (State g _ _) (GAt S x y) = hasRelationWith g x Secret y
 evaluateGossipAtom (State _ _ s) (GAt C x y) = (x, y) `elem` s
 
--- | Evaluate a Bdd variable as Int, given the current state
+-- | Evaluates a Bdd variable as Int, given the current state
 evaluateBddVar :: State -> Int -> Bool
-evaluateBddVar s@(State g _ _) = evaluateGossipAtom s . varToGAt (noAgents g)
+evaluateBddVar s@(State g _ _) = evaluateGossipAtom s . intToGAt (noAgents g)
 
--- | Evaluate an epistemic formula, given the current state
-evaluate :: State -> Form -> Bool 
+-- | Evaluates an epistemic formula, given the current state
+evaluate :: State -> Form -> Bool
 evaluate state@(State _ k _) ϕ = evaluateFun (k <|> ϕ) (evaluateBddVar state)
 
--- | Evaluate a formula, given the current state
+-- | An infix operator of the `evaluate` function. 
 (|=) :: State -> Form -> Bool
 state |= form = evaluate state form
-infix 9 |= 
+infix 9 |=
 
 -- | Legacy method, evalute a GossipFormula (note, without knowledge) by naive recursion
 evaluate' :: State -> GossipForm -> Bool
@@ -102,3 +119,11 @@ evaluate' s (Neg form)                     = not $ evaluate' s form
 evaluate' s (Conj (form:rest))             = evaluate' s form && evaluate' s (Conj rest)
 evaluate' s (Disj (form:rest))             = evaluate' s form || evaluate' s (Disj rest)
 evaluate' s (Impl prem conc)               = not $ evaluate' s prem || evaluate' s conc
+
+
+tester :: Int -> Bool
+tester n =
+  let g = defaultGraph n
+      s = State g (fromGossipGraph g) []
+      f = K (0, 'a') $ Fact $ var 0 `imp` var 0
+   in s |= f
