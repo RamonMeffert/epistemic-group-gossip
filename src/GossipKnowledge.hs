@@ -253,18 +253,18 @@ fromGossipGraph graph =
 
       -- state law
       stateLaw = conSet (foldr (\ x -> (++) [gvar (GAt N x x), gvar (GAt S x x)]) [] agents)
-        `con` conSet 
-          [gvar (GAt C x y) `imp` conSet              --  if x has called y;
+        `con` conSet (
+          [ gvar (GAt C x y) `imp` conSet             --  if x has called y;
             [ gvar (GAt N x y)                        --  then x knows y's number;
             , gvar (GAt N y x)                        --  and y knows x's number;
             , gvar (GAt S x y)                        --  and x knows y's secret;
             , gvar (GAt S y x)                        --  and y knows x's secret;
-            , gvar (GAt N x z) `imp` gvar (GAt N y z) --  and if x knows the number of z, then y also knows the number of z;
-            , gvar (GAt N y z) `imp` gvar (GAt N x z) --  and if y knows the number of z, then x also knows the number of z;
-            , gvar (GAt S x z) `imp` gvar (GAt S y z) --  and if x knows the secret of z, then y also knows the secret of z;
-            , gvar (GAt S y z) `imp` gvar (GAt S x z) --  and if y knows the secret of z, then x also knows the secret of z.
-            ]
-          | x <- agents, y <- agents, x /= y, z <- agents, y /= z, x /= z] -- for all distinct x,y,z in A
+            ] | x <- agents, y <- agents, x /= y] ++ 
+          [ gvar (GAt C x y) `imp` conSet         
+            [ gvar (GAt N x z) `equ` gvar (GAt N y z) -- and if x knows the number of some z, then y does so as well (and vice versa);
+            , gvar (GAt S x z) `equ` gvar (GAt S y z) -- and if x knows the secret of some z, then y does so as well (and vice versa).
+            ] | x <- agents, y <- agents, x /= y, z <- agents, x /= z, y /= z
+          ])
 
       -- observables
       initials = foldr (\ x -> (++) [GAt N x x, GAt S x x]) [] agents
