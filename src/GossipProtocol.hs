@@ -20,25 +20,6 @@ callAny n _ c = Fact top
 learnNewSecrets :: GossipProtocol
 learnNewSecrets n _ (x, y) = Fact $ neg $ gAtToBdd n $ GAt S x y
 
--- | φ(x, y) := K̂_x ⋁_{z \in A}( S(x, z) ↔︎ ¬S(y, z) )
--- possibleInformationGrowth :: GossipProtocol
--- possibleInformationGrowth g k@(GKS v t o) (x, y) = Fact kCond
---     where
---         allAgents = keys o
---         n = length allAgents
---         -- | V \ O_x
---         relevantAtoms = v \\ (o ! x)
---         -- | S(x, z)
---         c1 z = gAtToBdd n $ GAt S x z
---         -- | ¬S(y, z)
---         c2 z = neg $ gAtToBdd n $ GAt S y z
---         -- | S(x, z) ↔︎ ¬S(y, z)
---         cond z = c1 z `equ` c2 z
---         -- | θ → ⋁_{z \in A}( S(x, z) ↔︎ ¬S(y, z) )
---         fullCond = imp t $ disSet $ map cond allAgents
---         -- | Bdd equivalent to K̂_x ⋁_{z \in A}( S(x, z) ↔︎ ¬S(y, z) )
---         kCond = neg $ conSet $ map (\a -> restrict fullCond (a, True) `con` restrict fullCond (a, False)) (toList relevantAtoms)
-
 possibleInformationGrowth :: GossipProtocol
 possibleInformationGrowth n (GKS v t o) (x, y) = M x (Fact fullCond)
     where
