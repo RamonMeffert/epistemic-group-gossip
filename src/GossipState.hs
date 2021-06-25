@@ -12,10 +12,10 @@ import System.Console.ANSI
 import Data.Graph.Inductive
 import Data.Graph.Inductive.Graph
 
-import PrintableBdd hiding ( evaluate )
-import GossipTypes
 import GossipGraph
 import GossipKnowledge
+import GossipTypes
+import PrintableBdd hiding ( evaluate )
 
 data State = State {
   stateGraph :: GossipGraph,
@@ -51,7 +51,7 @@ validCalls g = (validDirectCalls, validGroupCalls)
   where
     validDirectCalls :: [Call]
     validDirectCalls = [ f ☎ t | f@(i, _) <- labNodes g, t@(j, _) <- labNodes g, i /= j, hasLEdge g (i, j, Number)]
-    
+
     validGroupCalls :: [GroupCall]
     validGroupCalls = [(f, tos f) | f@(i, _) <- labNodes g]
 
@@ -119,7 +119,6 @@ evaluate' s (Neg form)                     = not $ evaluate' s form
 evaluate' s (Conj (form:rest))             = evaluate' s form && evaluate' s (Conj rest)
 evaluate' s (Disj (form:rest))             = evaluate' s form || evaluate' s (Disj rest)
 evaluate' s (Impl prem conc)               = not $ evaluate' s prem || evaluate' s conc
-
 
 tester :: Int -> Bool
 tester n =

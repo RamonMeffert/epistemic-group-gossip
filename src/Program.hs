@@ -10,18 +10,10 @@ import Control.Monad (when)
 import System.Console.ANSI
 import Data.Char ( isAlpha, toLower )
 import Data.Graph.Inductive.Graph (hasLEdge, edges)
-import Data.List.Split (splitOn)
-import Text.Read (readMaybe)
-import System.Directory (getCurrentDirectory)
 
 import GossipTypes
 import GossipGraph
 import GossipState
-    ( State(State, stateGraph),
-      printState,
-      validCalls,
-      executeCalls,
-      makeCall )
 import GossipProtocol
 import GossipKnowledge
 import Util
@@ -44,14 +36,15 @@ actionColor = Blue
 -- Parses the gossipgraph and allows user to select what 
 runProgram :: IO ()
 runProgram = do
-  g <- obtainInitialGraph
-  let initState = State g (fromGossipGraph g) []
-  putStrLnFgc Green "State initialized..."
-  printState initState False
+  -- parse GossipGraph from input (cli or txt)
+  -- during testing, uncomment line below:
+  tg <- obtainTestGraph
+  let initState = State tg (fromGossipGraph tg) []
+  putStrLn "State initialized..."
   runAction initState
   where
-    obtainPredefinedGraph :: IO GossipGraph
-    obtainPredefinedGraph = do
+    obtainTestGraph :: IO GossipGraph
+    obtainTestGraph = do
       putStrLn "testGraph(1), testGraph(2) or biggerGraph(3)?"
       g <- getLine
       case toLower $ head g of
@@ -60,78 +53,7 @@ runProgram = do
         '3' -> return biggerGraph
         other -> do
           printInvalidAction other
-          obtainPredefinedGraph
-
-    printInitGraphOptions :: IO ()
-    printInitGraphOptions = do
-      putStr "\nLoad ("
-      putStrFgc actionColor "p"
-      putStr ")redefined graph, load graph from ("
-      putStrFgc actionColor "t"
-      putStr ")ext file, ("
-      putStrFgc actionColor "c"
-      putStr ")ustom input or view input ("
-      putStrFgc actionColor "f"
-      putStrLn ")ormat?"
-
-    printParseGraphRequirements :: IO ()
-    printParseGraphRequirements = do
-      putStrLn "\nThe input should be of the form:"
-      putStrFgc Green "n"
-      putStr "[('[a1]',['[na1]','[na2]','...'])], where "
-      putStrFgc Green "[a1]"
-      putStr " is the name of agent as a char, and "
-      putStrFgc Green "['[na1]','[na2]','...']"
-      putStr " a list of all the agents, knows number is known by "
-      putStrFgc Green "'[a1]'"
-      putStrLn "."
-      putStr "The input should contain "
-      putStrFgc Red "NO"
-      putStr " spaces, except for after "
-      putStrFgc Green "n"
-      putStrLn "!"
-
-    readGraphText :: IO String
-    readGraphText = do
-      putStrLn "Input filename below:"
-      f <- getLine
-      readFile f
-
-    obtainGraphText :: IO String
-    obtainGraphText = do
-      putStrLn "Input graph structure below:"
-      getLine
-
-    parseTextGraph :: String -> IO GossipGraph
-    parseTextGraph str = do
-      let [ns,rest] = splitOn " " str
-      let n = read ns :: Int
-      let numbers = readMaybe rest :: Maybe [(Char, [Char])]
-      case numbers of 
-        Just numbers -> return $ initialGraph n numbers
-        Nothing -> do
-          putStrFgc Red "Error: "
-          putStrLn "Invalid graph architecture input, using first predefined graph instead."
-          return testGraph
-
-    obtainInitialGraph :: IO GossipGraph
-    obtainInitialGraph = do
-      printInitGraphOptions
-      a <- getLine 
-      case toLower $ head a of
-        'p' -> obtainPredefinedGraph
-        't' -> do
-          str <- readGraphText
-          parseTextGraph  str
-        'c' -> do
-          str <- obtainGraphText
-          parseTextGraph str
-        'f' -> do
-          printParseGraphRequirements
-          obtainInitialGraph
-        other -> do
-          printInvalidAction other
-          obtainInitialGraph
+          obtainTestGraph
 
     printProtocols :: IO ()
     printProtocols = do
@@ -176,9 +98,13 @@ runProgram = do
         'u' -> userActions s
         'p' -> do
           p <- obtainProtocol
+          putStrFgc Yellow "Selected protocol defined as: "
+          putStrLn $ showProtocol s p
           protocolActions p s
         'h' -> do
           p <- obtainProtocol
+          putStrFgc Yellow "Selected protocol defined as: "
+          putStrLn $ showProtocol s p
           hybridActions p s
         other -> do
           printInvalidAction other

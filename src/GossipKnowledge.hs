@@ -28,6 +28,7 @@ module GossipKnowledge
   , vocabulary
   , stateLaw
   , observables
+  , nag
   -- ** Generation and validation
   , fromGossipGraph
   , validKS
