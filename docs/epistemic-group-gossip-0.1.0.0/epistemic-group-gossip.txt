@@ -294,38 +294,82 @@ instance GHC.Read.Read PrintableBdd.Bdd
 instance GHC.Classes.Eq PrintableBdd.Bdd
 instance GHC.Show.Show PrintableBdd.Bdd
 
-module ToDo
-getToDo :: IO ()
 
 module Util
-printInvalidActionStr :: String -> IO ()
-printInvalidAction :: Char -> IO ()
-printGraphComplete :: IO ()
+
+-- | Prints the given message in a given colour.
 putStrFgc :: Color -> String -> IO ()
+
+-- | Prints the given mesage with a new line in a given colour.
 putStrLnFgc :: Color -> String -> IO ()
-writeGraph :: String -> Bdd -> IO ()
+
+-- | Prints a message that an action is invalid for the current context.
+printInvalidAction :: Char -> IO ()
+
+-- | Prints a message that the current graph is complete, i.e. every agent
+--   is an expert.
+printGraphComplete :: IO ()
+
+-- | Save a Bdd in its graph structure as an SVG file. Uses the dot
+--   language, for which Graphviz needs to be installed.
+writeToSvgGraph :: String -> Bdd -> IO ()
 
 module GossipTypes
+
+-- | The type of an agent. Agents are always defined in terms of a
+--   character and a corresponding (unique) identifying integer.
 type Agent = LNode Char
+
+-- | The agent identifier.
 type AgentId = Int
+
+-- | The agent name.
 type AgentName = Char
 
--- | (from, to). Call is considered to be bidirectional, Optionally we
---   could add a direction component to allow singe directional
---   broadcasting calls.
+-- | A call between two agents, defined as (from<i>caller, to</i>callee). A
+--   call is considered to be bidirectional, i.e. information flows from
+--   the caller to the callee and vice versa.
 type Call = (Agent, Agent)
+
+-- | A call between a group of agents. The first item in the tuple is the
+--   caller, they need to have the phone number of all callees in the list.
+--   A group call is also omnidirectional, i.e. the all agent information
+--   is pooled and distributed to all agents in the call.
 type GroupCall = (Agent, [Agent])
+
+-- | Generates a call between two agents.
 (☎) :: Agent -> Agent -> Call
 infix 0 ☎
+
+-- | Converts a group call to a list of direct calls. This results in an
+--   identical flow of information.
 toCalls :: GroupCall -> [Call]
+
+-- | Converts an agent to a print-friendly string.
 showAgent :: Agent -> String
-printNoCalls :: IO ()
+
+-- | Prints a call.
 printCall :: Call -> IO ()
-printMakeCall :: Call -> IO ()
+
+-- | Prints a list of calls.
 printCalls :: [Call] -> IO ()
+
+-- | Prints a message that a call is made between two agents.
+printMakeCall :: Call -> IO ()
+
+-- | Prints a group call.
 printGroupCall :: GroupCall -> IO ()
-printMakeGroupCall :: GroupCall -> IO ()
+
+-- | Prints a list of group calls.
 printGroupCalls :: [GroupCall] -> IO ()
+
+-- | Prints a message that a group call is made.
+printMakeGroupCall :: GroupCall -> IO ()
+
+-- | Prints a message that no calls are available.
+printNoCalls :: IO ()
+
+-- | Prints all calls, given a list of direct calls and group calls.
 printAllCalls :: ([Call], [GroupCall]) -> IO ()
 
 
@@ -579,6 +623,9 @@ stateLaw :: GossipKnowledgeStructure -> Bdd
 --   agent, then they are certain as to whether this atom is true or false.
 observables :: GossipKnowledgeStructure -> Map Agent (Set Int)
 
+-- | Extracts the number of agents from the Knowledge Structure.
+nag :: GossipKnowledgeStructure -> Int
+
 -- | Converts a gossip graph to its corresponding knowledge structure. Note
 --   that this doesn't convert a gossip state, i.e. no call sequence is
 --   encoded. This is meant for the conversion of the _initial_ gossip
@@ -646,18 +693,33 @@ instance GHC.Show.Show GossipKnowledge.Form
 instance GHC.Show.Show GossipKnowledge.GossipAtom
 
 module GossipState
+
+-- | The gossip state.
 data State
 State :: GossipGraph -> GossipKnowledgeStructure -> [Call] -> State
+
+-- | The gossip graph of the current state.
 [stateGraph] :: State -> GossipGraph
+
+-- | The knowledge structure of the current state.
 [stateKnowledgeStruct] :: State -> GossipKnowledgeStructure
+
+-- | The call sequence of the current state.
 [stateCallSeq] :: State -> [Call]
+
+-- | Prints the current state.
 printState :: State -> Bool -> IO ()
 
 -- | Determines based on the current GossipGraph state which calls are
---   actually allowed to be made.
+--   actually allowed to be made. Note that no protocols are used for this,
+--   a call between a and b is valid iff a knows the number of b.
 validCalls :: GossipGraph -> ([Call], [GroupCall])
-executeCalls :: [Call] -> State -> IO State
+
+-- | Makes a call and update the state.
 makeCall :: Call -> State -> State
+
+-- | Makes multiple calls by repeatedly invoking <a>makeCall</a>.
+executeCalls :: [Call] -> State -> IO State
 
 -- | Evaluates a gossip atom (N(x,y), S(x,y) or C(x,y)), given the current
 --   state
@@ -676,22 +738,43 @@ infix 9 |=
 -- | Legacy method, evalute a GossipFormula (note, without knowledge) by
 --   naive recursion
 evaluate' :: State -> GossipForm -> Bool
-tester :: Int -> Bool
+
 
 module GossipProtocol
 
--- | Placeholder (definitely needs updating!)
+-- | A protocol for dynamic gossip. Following (van Ditmarsch et al., 2017),
+--   a gossip protocol is defined as an epistemic formula using two agents.
+--   If this formula resolves to true, a call between these agents is
+--   allowed. If the formula resolves to false, such a call is not allowed.
+--   The first argument denotes the amount of agents, the second argument
+--   is the current knowledge structure, whereas the third argument denotes
+--   the call in question.
 type GossipProtocol = Int -> GossipKnowledgeStructure -> Call -> Form
+
+-- | Converts a protocol to a string notation, as used in (van Ditmarsch et
+--   al., 2017).
+showProtocol :: State -> GossipProtocol -> String
+
+-- | The most simple and naive protocol, it allows any call to be made.
+--   φ(a,b) = ⊤
 callAny :: GossipProtocol
+
+-- | This protocol only allows a call if it leads to new secrets to be
+--   learned. φ(a,b) = ¬S(a,b)
 learnNewSecrets :: GossipProtocol
+
+-- | Introduced by (van Ditmarsch et al., 2017): "Call xy can be made if x
+--   knows y's number and if x considers it possible that there is a secret
+--   known by one of x,y but not the other." φ(a,b) = ⋁_{z ∈ A}( S(x, z) ↔︎
+--   ¬S(y, z) )
 possibleInformationGrowth :: GossipProtocol
 
--- | Chooses the <tt>best</tt> call using the rules stated in the protocol
---   and the allowed calls. This might also be no call, hence Maybe.
+-- | Selects all calls that are allowed by the given gossip protocol. Note
+--   that there could also be no calls allowed.
 selectedCalls :: GossipProtocol -> State -> ([Call], [GroupCall])
+
 
 module Program
 
--- | Main entry point to the program. Parses the gossipgraph and allows
---   user to select what
+-- | Main entry point to the program.
 runProgram :: IO ()
