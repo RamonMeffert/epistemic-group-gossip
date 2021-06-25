@@ -67,13 +67,11 @@ $$
 
 For both of the scenarios above, the call-induced gossip graph is written as
 $$G^{x \mid y_1 \dots y_k \mid}$$, e.g., when agent $$a$$ calls agents b, c, and
-d, we write $$G^{a \mid bcd \mid}$$
+d, we write $$G^{a \mid bcd \mid}$$.
+
+For this project, we have chosen to implement the **true group calls**.
 
 ## Modelling epistemic relations
-
-### Why Kripke models are a bit awkward
-
-(An explanation showing that Kripke models for dynamic gossip get huge)
 
 ### Knowledge structures
 
@@ -105,13 +103,7 @@ Where we take our definition of $$\texttt{C}(x,y)$$ from Ramezanian et al.
 (2021)^[ram21], replacing the definition given in van Ditmarsch et al.
 (2017)^[dit17]. Note that, as we intend to update this structure as specified
 below, it isn't necessary to define a conversion from an _arbitrary_ (i.e. not
-initial) gossip state to a corresponding knowledge structure. 
-
-### Updating knowledge
-
-We intend to use action models[^dit08] to update our
-knowledge structures when a group call occurs. At this point, we have not yet
-defined how this will work.
+initial) gossip state to a corresponding knowledge structure.
 
 ## References
 

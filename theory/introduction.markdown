@@ -82,19 +82,29 @@ structures is called a [_knowledge transformer_][k-transformers].
 
 ### Kripke models for gossip graphs
 
+In a Kripke model, we model the indistinguishability relations for agent
+knowledge. For gossip, this means that we need to represent agent knowledge and
+model which agents can know what. For example, in a three-agent gossip graph
+with agents A, B, and C, we need to model the _secret_ (S) relation, the
+_number_ (N) relation and the _has called_ (C) relation. This means we need to
+model _a lot_ of knowledge! Even when taking into account that knowing a secret
+always means knowing a number, we have an incredibly large number of possible
+relations.
+
 ### Reducing model size
+
+A solution to make the model (a bit) smaller is to use Knowledge Structures.
+This allows us to model the Kripke model in a format that (at least in theory)
+allows more efficient computation. However, since the knowledge structure needs
+to contain all possible atoms (being all combinations of the number, secret and
+has called relations) and also needs to represent this in the state law, this
+still gets quite big.
 
 ### Transforming knowledge
 
-## References
-
-## Footnotes
-
-[^1]: Note that this requires the assumption that all gossip graphs start from
-    an initial model where all agents _only_ know their own secret. In practice,
-    it is possible that the initial model _does_ contain secrets. This does not
-    matter for our definition: we simply say that this initial model is actually
-    a state of another, “true” initial model in which our assumption holds.
+Where we can use action models to succinctly represent knowledge change in
+Kripke models, we can use Knowledge Transformers to do the same for Knowledge
+Structures.
 
 [aws-gossip]:      https://status.aws.amazon.com/s3-20080720.html
 [scuttle]:         https://scuttlebutt.nz/

@@ -6,12 +6,12 @@ permalink: /theory/
 
 ## [Introduction]({{ site.baseurl }}{% link theory/introduction.markdown %})
 
-_short explanation about what is on the introduction page_
+A global overview of the theory behind the project.
 
 ## [Theoretical background]({{ site.baseurl }}{% link theory/background.markdown %})
 
-_short explanation about what is on the background page_
+A summary of the theoretical background needed for the project.
 
 ## [This project]({{ site.baseurl }}{% link theory/this-project.markdown %})
 
-_short explanation about what is on the this project page_
+Information about the new ideas introduced in this project.
