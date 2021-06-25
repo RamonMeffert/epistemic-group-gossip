@@ -1,4 +1,4 @@
-{-
+{-|
 Module      : GossipTypes
 Description : Implements different utilitarian types used for dynamic epistemic gossip, together with some operations thereon.
 Copyright   : (c) Jesper Kuiper, 2021

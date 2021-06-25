@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wno-overlapping-patterns #-}
-{-
+{-|
 Module      : GossipState
 Description : Implements the Gossip state, a slice in time denoting the state of a gossip graph and knowledge structure.
 Copyright   : (c) Jesper Kuiper, 2021
