@@ -1,7 +1,11 @@
 module GossipTypes where
 
+import Data.List
+import Control.Monad
 import System.Console.ANSI
 import Data.Graph.Inductive (Gr, LEdge, LNode, prettyPrint, Graph (noNodes))
+
+import Util
 
 type Agent = LNode Char
 type AgentId = Int
@@ -12,8 +16,23 @@ type AgentName = Char
 -- Optionally we could add a direction component to allow singe directional broadcasting calls.
 type Call = (Agent, Agent)
 
-showAgent :: Agent -> String 
+type GroupCall = (Agent, [Agent])
+
+(☎) :: Agent -> Agent -> Call
+(☎) f t = (f,t)
+infix 0 ☎
+
+toCalls :: GroupCall -> [Call]
+toCalls g@(f, to) = [(f,t) | t <- to] ++ [(t1,t2) | t1 <- to, t2 <- to, t1 /= t2]
+
+showAgent :: Agent -> String
 showAgent (_, lab) = [lab]
+
+printNoCalls :: IO ()
+printNoCalls = do
+  putStr "["
+  putStrFgc Red "No calls to display"
+  putStrLn "]"
 
 printCall :: Call -> IO ()
 printCall ((_, i), (_, j)) = do
@@ -22,18 +41,33 @@ printCall ((_, i), (_, j)) = do
 printMakeCall :: Call -> IO ()
 printMakeCall ((_,m), (_,n)) = do
     putStr "\nMaking call between "
-    setSGR [SetColor Foreground Vivid Green]
-    putStr $ show m
-    setSGR [Reset]
+    putStrFgc Green $ show m
     putStr " and "
-    setSGR [SetColor Foreground Vivid Green]
-    putStr $ show n
+    putStrLnFgc Green $ show n
 
 printCalls :: [Call] -> IO ()
-printCalls [] = do
-  putStr "["
-  setSGR [SetColor Foreground Vivid Red]
-  putStr "No calls to display" 
-  setSGR [Reset]
-  putStrLn "]"
+printCalls [] = printNoCalls
 printCalls c = mapM_ printCall c
+
+printGroupCall :: GroupCall -> IO ()
+printGroupCall g = do
+  putStrFgc Green "Groupcall with calls: "
+  mapM_ printCall (toCalls g)
+
+printMakeGroupCall :: GroupCall -> IO ()
+printMakeGroupCall ((_,f), to) = do
+  putStr "\nMaking group call initialised by "
+  putStrFgc Green [f]
+  putStr " to: "
+  putStrLnFgc Green $ intersperse ' ' $ map snd to
+
+printGroupCalls :: [GroupCall] -> IO ()
+printGroupCalls [] = printNoCalls
+printGroupCalls g = mapM_ printGroupCall g
+
+printAllCalls :: ([Call], [GroupCall]) -> IO ()
+printAllCalls (c, g) = do
+  putStrLnFgc Yellow "Direct calls:"
+  printCalls c
+  putStrLnFgc Yellow "Group calls:"
+  printGroupCalls g

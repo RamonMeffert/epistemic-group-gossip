@@ -12,17 +12,35 @@ import PrintableBdd
 import Data.Maybe
 
 -- | Placeholder (definitely needs updating!)
-type GossipProtocol = GossipGraph -> GossipKnowledgeStructure -> Call -> Bool
+type GossipProtocol = Int -> GossipKnowledgeStructure -> Call -> Form
 
 callAny :: GossipProtocol
-callAny _ k c = True
+callAny n _ c = Fact top
 
 learnNewSecrets :: GossipProtocol
-learnNewSecrets _ k c = False
+learnNewSecrets n _ (x, y) = Fact $ neg $ gAtToBdd n $ GAt S x y
 
 -- | φ(x, y) := K̂_x ⋁_{z \in A}( S(x, z) ↔︎ ¬S(y, z) )
+-- possibleInformationGrowth :: GossipProtocol
+-- possibleInformationGrowth g k@(GKS v t o) (x, y) = Fact kCond
+--     where
+--         allAgents = keys o
+--         n = length allAgents
+--         -- | V \ O_x
+--         relevantAtoms = v \\ (o ! x)
+--         -- | S(x, z)
+--         c1 z = gAtToBdd n $ GAt S x z
+--         -- | ¬S(y, z)
+--         c2 z = neg $ gAtToBdd n $ GAt S y z
+--         -- | S(x, z) ↔︎ ¬S(y, z)
+--         cond z = c1 z `equ` c2 z
+--         -- | θ → ⋁_{z \in A}( S(x, z) ↔︎ ¬S(y, z) )
+--         fullCond = imp t $ disSet $ map cond allAgents
+--         -- | Bdd equivalent to K̂_x ⋁_{z \in A}( S(x, z) ↔︎ ¬S(y, z) )
+--         kCond = neg $ conSet $ map (\a -> restrict fullCond (a, True) `con` restrict fullCond (a, False)) (toList relevantAtoms)
+
 possibleInformationGrowth :: GossipProtocol
-possibleInformationGrowth g k@(GKS v t o) (x, y) = fromMaybe False $ PrintableBdd.evaluate kCond assignments
+possibleInformationGrowth n (GKS v t o) (x, y) = M x (Fact fullCond)
     where
         allAgents = keys o
         n = length allAgents
@@ -35,22 +53,19 @@ possibleInformationGrowth g k@(GKS v t o) (x, y) = fromMaybe False $ PrintableBd
         -- | S(x, z) ↔︎ ¬S(y, z)
         cond z = c1 z `equ` c2 z
         -- | θ → ⋁_{z \in A}( S(x, z) ↔︎ ¬S(y, z) )
-        fullCond = imp t $ disSet $ map cond allAgents
-        -- | Bdd equivalent to K̂_x ⋁_{z \in A}( S(x, z) ↔︎ ¬S(y, z) )
-        kCond = neg $ conSet $ map (\a -> restrict fullCond (a, True) `con` restrict fullCond (a, False)) (toList relevantAtoms)
-        -- | All assignments of S(x, y) for x, y in A
-        assignments = [ (gAtToInt n (GAt S a b), hasRelationWith g a Secret b) | a <- allAgents, b <- allAgents]
-
-
--- | Perform call according to protocol:
--- Determine what calls are accepted
--- -> Choose the most appropriate call
--- -> Execute call against the graph
--- -> Return updated graph.
-performProtocolTick :: GossipProtocol -> State -> State
-performProtocolTick prot state = flip makeCall state $ head $ selectedCalls prot state
+        fullCond = disSet $ map cond allAgents
 
 -- | Chooses the 'best' call using the rules stated in the protocol and the allowed calls.
 -- This might also be no call, hence Maybe.
-selectedCalls :: GossipProtocol -> State -> [Call]
-selectedCalls prot (State g k c) = filter (prot g k) (validCalls g)
+selectedCalls :: GossipProtocol -> State -> ([Call], [GroupCall])
+selectedCalls prot s@(State g k c) =
+  let valid = validCalls g
+      direct = filter isSelected $ fst valid
+      group = filter isGroupCallSelected $ snd valid
+  in (direct, group)
+  where
+    isSelected :: Call -> Bool
+    isSelected c = s |= prot (noAgents g) k c
+
+    isGroupCallSelected :: GroupCall -> Bool
+    isGroupCallSelected g = all isSelected $ toCalls g
