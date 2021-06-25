@@ -41,7 +41,7 @@ selectedCalls :: GossipProtocol -> State -> ([Call], [GroupCall])
 selectedCalls prot s@(State g k c) =
   let valid = validCalls g
       direct = filter isSelected $ fst valid
-      group = filter isGroupCallSelected $ snd valid
+      group = filter (\ g -> isGroupCallSelected g && isActualGroup g) (snd valid)
   in (direct, group)
   where
     isSelected :: Call -> Bool
@@ -49,3 +49,7 @@ selectedCalls prot s@(State g k c) =
 
     isGroupCallSelected :: GroupCall -> Bool
     isGroupCallSelected g = all isSelected $ toCalls g
+
+    isActualGroup :: GroupCall -> Bool
+    isActualGroup (_, []) = False
+    isActualGroup (_, h:t) = not $ null t

@@ -62,7 +62,7 @@ runProgram = do
       putStrFgc actionColor "a"
       putStr ")ny, ("
       putStrFgc actionColor "l"
-      putStrLn ")earn-new-secrets or"
+      putStrLn ")earn-new-secrets or ("
       putStrFgc actionColor "p"
       putStrLn ")ossible-information-growth?"
 
