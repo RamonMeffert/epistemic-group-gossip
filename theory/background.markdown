@@ -84,11 +84,11 @@ agents $$\Delta$$. (Example taken directly from [^gat18], Ex. 2.5.2)
     [10/ghrv4s](https://doi.org/10/ghrv4s)
 
 [^dit08]:
-    Ditmarsch, H. van, Hoek, W. van der, & Kooi, B. (2008). Action Models. In
+    Van Ditmarsch, H., van der Hoek, W., & Kooi, B. (2008). Action Models. In
     _Dynamic epistemic logic_. Springer. DOI: [10/c6zcqh](https://doi.org/c6zcqh)
 
 [^dit17]:
-    van Ditmarsch, H., van Eijck, J., Pardo, P., Ramezanian, R., & 
+    Van Ditmarsch, H., van Eijck, J., Pardo, P., Ramezanian, R., & 
     Schwarzentruber, F. (2017). Epistemic protocols for dynamic gossip. _Journal
     of Applied Logic_, _20_, 1–31. DOI: [10/f9p6c3](https://doi.org/10/f9p6c3)
 
@@ -97,7 +97,7 @@ agents $$\Delta$$. (Example taken directly from [^gat18], Ex. 2.5.2)
     Communications_, _30_(1), 1–17. DOI: [10/f94qxh](https://doi.org/10/f94qxh)
 
 [^dit18]:
-    van Ditmarsch, H., van Eijck, J., Pardo, P., Ramezanian, R., & Schwarzentruber,
+    Van Ditmarsch, H., van Eijck, J., Pardo, P., Ramezanian, R., & Schwarzentruber,
     F. (2018). Dynamic Gossip. _Bulletin of the Iranian Mathematical Society_,
     _45_(3), 701–728. DOI: [10/cvpm](https://doi.org/10/cvpm)
 

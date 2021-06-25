@@ -8,9 +8,9 @@ permalink: /theory/this-project/
 
 ## Dynamic epistemic gossip with group calls
 
-We extend previous definitions of dynamic epistemic gossip (e.g. Herzig &
-Maffre, 2017; Ramezanian et al., 2021; van Ditmarsch et al., 2017) with the
-notion of group calls. We base our notation off of van Ditmarsch et al. (2017):
+We extend previous definitions of dynamic epistemic
+gossip[^her17][^ram21][^dit17] with the notion of group calls. We base our
+notation off of Van Ditmarsch et al.[^dit17]:
 
 > Given a finite set of agents (or nodes) $$A = \{a,b,\dots\}$$, we represent a
 > gossip graph $$G$$ with telephone numbers and secrets as a triple $$(A, N, S)$$
@@ -65,11 +65,9 @@ $$
     (\text{Similar for }S^{x \mid y_1 \dots y_k \mid}_z)
 $$
 
-For both of the scenarios above, the call-induced gossip graph is written as $$G^{x \mid y_1 \dots y_k \mid}$$, e.g., when agent $$a$$ calls agents b, c, and d, we write $$G^{a \mid bcd \mid}$$
-
-### Synchronicity
-
-(WIP)
+For both of the scenarios above, the call-induced gossip graph is written as
+$$G^{x \mid y_1 \dots y_k \mid}$$, e.g., when agent $$a$$ calls agents b, c, and
+d, we write $$G^{a \mid bcd \mid}$$
 
 ## Modelling epistemic relations
 
@@ -80,16 +78,19 @@ For both of the scenarios above, the call-induced gossip graph is written as $$G
 ### Knowledge structures
 
 Instead of the Kripke-like gossip model that is used to model agents' knowledge
-about a gossip process such as i.a. (van Ditmarsch et al., 2017), we model this
-using Knowledge Structures. As introducted by (Gattinger, 2018), a knowledge
-structure is represented by $$\mathcal{F}=(V,\theta,O_a,O_b,\ldots)$$, where
-$$V$$ is the vocabulary set of atoms, $$\theta$$ is the state law, a binary
-formula that every state (i.e. a valuation of the atoms in $$V$$) needs to
-satisfy. The sets $$(O_x)_{x\in A}$$ are the observable atoms of agent $$x$$. An
-atom is observable for agent $$x$$ if they are certain of whether this atom is
-true or false. 
+about a gossip process such as i.a. Van Ditmarsch et al. (2017)[^dit17], we
+model this using Knowledge Structures. As introducted by Gattinger
+(2018)[^gat18], a knowledge structure is represented by
+$$\mathcal{F}=(V,\theta,O_a,O_b,\ldots)$$, where $$V$$ is the vocabulary set of
+atoms, $$\theta$$ is the state law, a binary formula that every state (i.e. a
+valuation of the atoms in $$V$$) needs to satisfy. The sets $$(O_x)_{x\in A}$$
+are the observable atoms of agent $$x$$. An atom is observable for agent $$x$$
+if they are certain of whether this atom is true or false.
 
-In this context, a knowledge structure should reflect the knowledge of all agents given a gossip state $$(G,\sigma)$$. For an _initial_ gossip state $$(G=(A,N,S),\ \varepsilon)$$ where $$S=I_A\subseteq N$$, We define these sets as follows:
+In this context, a knowledge structure should reflect the knowledge of all
+agents given a gossip state $$(G,\sigma)$$. For an _initial_ gossip state
+$$(G=(A,N,S),\ \varepsilon)$$ where $$S=I_A\subseteq N$$, We define these sets
+as follows:
 
 \begin{align\*}
     V &= \\{ \texttt{N}(x, y) \mid x, y \in A \\} \cup  
@@ -100,32 +101,54 @@ In this context, a knowledge structure should reflect the knowledge of all agent
     O_{x \in A} &= \\{ \texttt{S}(x,x) \\} \cup \\{ \texttt{N}(x, y) \mid y \in N_x^{\varepsilon} \\}
 \end{align\*}
 
-Where we take our definition of $$\texttt{C}(x,y)$$ from Ramezanian et al. (2021),
-replacing the definition given in van Ditmarsch et al. (2017). Note that, as we intend to update this structure as specified below, it isn't necessary to define a conversion from an _arbitrary_ (i.e. not initial) gossip state to a corresponding knowledge structure. 
+Where we take our definition of $$\texttt{C}(x,y)$$ from Ramezanian et al.
+(2021)^[ram21], replacing the definition given in van Ditmarsch et al.
+(2017)^[dit17]. Note that, as we intend to update this structure as specified
+below, it isn't necessary to define a conversion from an _arbitrary_ (i.e. not
+initial) gossip state to a corresponding knowledge structure. 
 
 ### Updating knowledge
 
-We intend to use action models (van Ditmarsch et al., 2008) to update our
+We intend to use action models[^dit08] to update our
 knowledge structures when a group call occurs. At this point, we have not yet
 defined how this will work.
 
 ## References
 
-van Ditmarsch, H., Kooi, B., & van der Hoek, W. (2008). 6. Action Models. In
-Dynamic epistemic logic. Springer.
+[^tij71]:
+    Tijdeman, R. (1971). On a telephone problem. _Nieuw Archief Voor Wiskunde_,
+    _3_(19), 188–192.
 
-van Ditmarsch, H., van Eijck, J., Pardo, P., Ramezanian, R., & Schwarzentruber,
-F. (2017). Epistemic protocols for dynamic gossip. _Journal of Applied Logic_, _20_,
-1–31. DOI: [10/f9p6c3](https://doi.org/10/f9p6c3)
+[^leb73]:
+    Lebensold, K. (1973). Efficient Communication by Phone Calls. _Studies in
+    Applied Mathematics_, _52_(4), 345–358. DOI:
+    [10/ghrv4s](https://doi.org/10/ghrv4s)
 
-Herzig, A., & Maffre, F. (2017). How to share knowledge by gossiping. _AI
-Communications_, _30_(1), 1–17. DOI: [10/f94qxh](https://doi.org/10/f94qxh)
+[^dit08]:
+    Van Ditmarsch, H., van der Hoek, W., & Kooi, B. (2008). Action Models. In
+    _Dynamic epistemic logic_. Springer. DOI: [10/c6zcqh](https://doi.org/c6zcqh)
 
-Gattinger, M. (2018). New Directions in Model Checking Dynamic Epistemic Logic
-[PhD Thesis]. Universiteit van Amsterdam.
+[^dit17]:
+    Van Ditmarsch, H., van Eijck, J., Pardo, P., Ramezanian, R., & 
+    Schwarzentruber, F. (2017). Epistemic protocols for dynamic gossip. _Journal
+    of Applied Logic_, _20_, 1–31. DOI: [10/f9p6c3](https://doi.org/10/f9p6c3)
 
-Ramezanian, R., Ramezanian, R., van Ditmarsch, H., & Gattinger, M. (2021).
-Everyone Knows that Everyone Knows. In M. Mojtahedi, S. Rahman, & M. S. Zarepour
-(Eds.), _Mathematics, Logic, and their Philosophies: Essays in Honour of Mohammad
-Ardeshir_ (pp. 117–133). Springer International Publishing.
-DOI: [ggf6](https://doi.org/ggf6)
+[^her17]:
+    Herzig, A., & Maffre, F. (2017). How to share knowledge by gossiping. _AI
+    Communications_, _30_(1), 1–17. DOI: [10/f94qxh](https://doi.org/10/f94qxh)
+
+[^dit18]:
+    Van Ditmarsch, H., van Eijck, J., Pardo, P., Ramezanian, R., & Schwarzentruber,
+    F. (2018). Dynamic Gossip. _Bulletin of the Iranian Mathematical Society_,
+    _45_(3), 701–728. DOI: [10/cvpm](https://doi.org/10/cvpm)
+
+[^gat18]:
+    Gattinger, M. (2018). _New Directions in Model Checking Dynamic Epistemic Logic_
+    [PhD Thesis]. Universiteit van Amsterdam. URL: <https://malv.in/phdthesis/>
+
+[^ram21]:
+    Ramezanian, R., Ramezanian, R., van Ditmarsch, H., & Gattinger, M. (2021).
+    Everyone Knows that Everyone Knows. In M. Mojtahedi, S. Rahman, & M. S. Zarepour
+    (Eds.), _Mathematics, Logic, and their Philosophies: Essays in Honour of
+    Mohammad Ardeshir_ (pp. 117–133). Springer International Publishing. DOI:
+    [10/ggf6](https://doi.org/ggf6)
