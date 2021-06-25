@@ -94,8 +94,9 @@ as follows:
     V &= \\{ \texttt{N}(x, y) \mid x, y \in A \\} \cup  
         \\{ \texttt{S}(x, y) \mid x, y \in A \\} \cup  
         \\{ \texttt{C}(x, y) \mid x, y \in A \\},\\\\\
-    \theta &= \bigwedge_{x \in A} ( \texttt{S}(x, x) \land \texttt{N}(x, x) ) 
-             \land \bigwedge_{x, y \in A} \texttt{C}(x, y) \to ( \texttt{N}(x,y) \land \texttt{S}(x, y) \land \texttt{S}(y, x)),\\\\\
+    \theta &= \bigwedge_{x \in A} ( \texttt{S}(x, x) \land \texttt{N}(x, x) ) \\\\\
+            & \land \bigwedge_{x, y \in A} \texttt{C}(x, y) \to ( \texttt{N}(x,y) \land \texttt{N}(y, x) \land \texttt{S}(x, y) \land \texttt{S}(y, x)),\\\\\
+            & \land \bigwedge_{x,y,z\in A} (\texttt{C}(x,y) \to (( \texttt{N}(x,z) \leftrightarrow \texttt{N}(y,z))\land  (\texttt{S}(x,z) \leftrightarrow \texttt{S}(y, z))))\\\\\
     O_{x \in A} &= \\{ \texttt{S}(x,x) \\} \cup \\{ \texttt{N}(x, y) \mid y \in N_x^{\varepsilon} \\}
 \end{align\*}
 
