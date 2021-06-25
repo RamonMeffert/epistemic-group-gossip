@@ -60,9 +60,11 @@ runProgram = do
       putStrLn "\nWhat protocol would you like to use?"
       putStr "Call-("
       putStrFgc actionColor "a"
-      putStr ")ny or ("
+      putStr ")ny, ("
       putStrFgc actionColor "l"
-      putStrLn ")earn-new-secrets?"
+      putStrLn ")earn-new-secrets or"
+      putStrFgc actionColor "p"
+      putStrLn ")ossible-information-growth?"
 
     obtainProtocol :: IO GossipProtocol
     obtainProtocol = do
@@ -71,6 +73,7 @@ runProgram = do
       case toLower $ head prot of
         'a' -> return callAny
         'l' -> return learnNewSecrets
+        'p' -> return possibleInformationGrowth
         other -> do
           printInvalidAction other
           obtainProtocol

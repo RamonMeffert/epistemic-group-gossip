@@ -20,7 +20,7 @@ module GossipKnowledge
   , texifyGAt
   , texifyBddVar
   -- * Epistemic formulae for Dyamic Gossip
-  , Form ( Fact, K )
+  , Form ( Fact, K, M )
   , GossipForm (Top, Atom, Neg, Conj, Disj, Impl )
   -- * Knowledge Structures for Dynamic Gossip
   , GossipKnowledgeStructure ( GKS )
@@ -171,10 +171,12 @@ data GossipForm
 -- | An epistemic formula, defined in terms of BDDs. This data structure allows for propositional formulae, as well as (higher-order) agent knowledge.  
 data Form = Fact Bdd
           | K Agent Form
+          | M Agent Form
 
 instance Show Form where
   show (Fact bdd) = show bdd
   show (K ag form) = "K" ++ showAgent ag ++ show form
+  show (M ag form) = "K̂" ++ showAgent ag ++ show form
 
 
 {- 
@@ -275,17 +277,20 @@ fromGossipGraph graph =
 -- | Converts an epistemic formula to a boolean formula, given a knowledge structure
 --   in Gattinger (2018), `fromToBdd k ϕ` is denoted by ||ϕ||_k.
 formToBdd :: GossipKnowledgeStructure -> Form -> Bdd
-formToBdd _ (Fact bdd)  = bdd
-formToBdd k (K ag form) = knowledgeToBdd k ag form
+formToBdd k form =
+  case form of
+    Fact bdd -> bdd
+    K ag f -> knowledgeToBdd k ag f
+    M ag f -> neg $ knowledgeToBdd k ag f
   where
-    -- | Convert a knowledge formula (Ka ϕ) to a Bdd formula, given the current state.
-    knowledgeToBdd :: GossipKnowledgeStructure -> Agent -> Form -> Bdd
-    knowledgeToBdd k ag form =
+    knowledgeToBdd k ag f =
       let universe = Set.toList $ vocabulary k \\ (observables k ! ag)
-          formula = case form of
-            Fact bdd   -> stateLaw k `imp` bdd
-            K ag2 form -> stateLaw k `imp` knowledgeToBdd k ag2 form
+          formula = case f of
+            Fact bdd -> stateLaw k `imp` bdd
+            K a f -> stateLaw k `imp` knowledgeToBdd k a f
+            M a f -> neg $ stateLaw k `imp` neg (knowledgeToBdd k a f)
       in gforallSet k universe formula
+
 
 -- | An infix operator for the formToBdd function. 
 (<|>) :: GossipKnowledgeStructure -> Form -> Bdd
