@@ -51,8 +51,9 @@ printCalls c = mapM_ printCall c
 
 printGroupCall :: GroupCall -> IO ()
 printGroupCall g = do
-  putStrFgc Green "Groupcall with calls: "
+  putStrFgc Green "  Groupcall with calls: "
   mapM_ printCall (toCalls g)
+  putStr "\n"
 
 printMakeGroupCall :: GroupCall -> IO ()
 printMakeGroupCall ((_,f), to) = do
@@ -69,5 +70,6 @@ printAllCalls :: ([Call], [GroupCall]) -> IO ()
 printAllCalls (c, g) = do
   putStrLnFgc Yellow "Direct calls:"
   printCalls c
+  putStr "\n"
   putStrLnFgc Yellow "Group calls:"
   printGroupCalls g

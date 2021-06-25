@@ -62,7 +62,8 @@ runProgram = do
       putStrFgc actionColor "a"
       putStr ")ny, ("
       putStrFgc actionColor "l"
-      putStrLn ")earn-new-secrets or ("
+      putStrLn ")earn-new-secrets or"
+      putStr "("
       putStrFgc actionColor "p"
       putStrLn ")ossible-information-growth?"
 
@@ -121,7 +122,7 @@ hybridActions prot state = do
       putStrFgc actionColor "p"
       putStr ")rotocol actions or ("
       putStrFgc actionColor "b"
-      putStr ")oth?"
+      putStrLn ")oth?"
 
     executeAction :: IO State
     executeAction = do
