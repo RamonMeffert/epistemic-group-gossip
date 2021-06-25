@@ -1,4 +1,12 @@
 {-# OPTIONS_GHC -Wno-overlapping-patterns #-}
+{-|
+Module      : Program
+Description : The main entry point of the implementation. 
+Copyright   : (c) Jesper Kuiper, 2021
+                  Leander van Boven, 2021
+                  Ramon Meffert, 2021
+License     : BSD3
+-}
 module Program
 
 ( runProgram,
@@ -17,9 +25,9 @@ import GossipState
 import GossipProtocol
 import GossipKnowledge
 import Util
-import ToDo
 
 -- | Determines which color the (a) text is when requesting input from the user.  
+--
 -- Possible colors:  
 -- - Black  
 -- - Red  
@@ -33,7 +41,6 @@ actionColor :: Color
 actionColor = Blue
 
 -- | Main entry point to the program.
--- Parses the gossipgraph and allows user to select what 
 runProgram :: IO ()
 runProgram = do
   -- parse GossipGraph from input (cli or txt)
@@ -164,9 +171,12 @@ userActions state = do
       return $ toLower (head a) == 'y'
 
 -- | Execute action against GossipGraph:
-  -- Update GossipGraph
-  -- -> Present user with new state (i.e. valuation of observables, current knowledge)
-  -- -> Display implications of the performed action (i.e. what would be rational actions by the agents).
+--
+-- Update GossipGraph
+--
+-- -> Present user with new state (i.e. valuation of observables, current knowledge)
+--
+-- -> Display implications of the performed action (i.e. what would be rational actions by the agents).
 performUserAction :: State -> IO State
 performUserAction = executeUserAction
   where
@@ -258,9 +268,12 @@ protocolActions prot state = do
       return $ toLower (head a) == 'y'
 
 -- | Perform protocol tick:
-  -- Explain the to be performed actions
-  -- -> performProtocolTick
-  -- -> Present user with new state (i.e. valuation of observables, current knowledge).
+--
+-- Explain the to be performed actions
+--
+-- -> performProtocolTick
+--
+-- -> Present user with new state (i.e. valuation of observables, current knowledge).
 performProtocolAction :: GossipProtocol -> State -> IO State
 performProtocolAction prot state = do
   let calls = selectedCalls prot state

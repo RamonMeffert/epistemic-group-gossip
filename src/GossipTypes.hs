@@ -36,10 +36,10 @@ module GossipTypes
 
 where
 
-import Data.List
 import Control.Monad
-import System.Console.ANSI
 import Data.Graph.Inductive (Gr, LEdge, LNode, prettyPrint, Graph (noNodes))
+import Data.List
+import System.Console.ANSI
 
 import Util
 

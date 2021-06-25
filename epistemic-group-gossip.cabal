@@ -32,7 +32,6 @@ library
       GossipTypes
       PrintableBdd
       Program
-      ToDo
       Util
   other-modules:
       Paths_epistemic_group_gossip
