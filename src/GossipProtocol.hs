@@ -37,7 +37,7 @@ type GossipProtocol = Int -> GossipKnowledgeStructure -> Call -> Form
 
 -- | Converts a protocol to a string notation, as used in (van Ditmarsch et al., 2017). 
 showProtocol :: State -> GossipProtocol -> String
-showProtocol (State g k s) prot = "φ(a,b) = " ++ show (prot (nag k) k (agentFromLab 'a',  agentFromLab 'b')) ++ "  ∀ a,b"
+showProtocol (State g k s) prot = "φ(x,y) = " ++ show (prot (nag k) k (agentFromLab 'x',  agentFromLab 'y')) ++ " ∀x,y"
 
 -- | The most simple and naive protocol, it allows any call to be made. φ(a,b) = ⊤
 callAny :: GossipProtocol
