@@ -38,19 +38,19 @@ License     : BSD3
 </span><span id="line-38"></span><span class="hs-comment">-- | Converts a protocol to a string notation, as used in (van Ditmarsch et al., 2017). </span><span>
 </span><span id="line-39"></span><span class="annot"><a href="GossipProtocol.html#showProtocol"><span class="hs-identifier hs-type">showProtocol</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipProtocol.html#GossipProtocol"><span class="hs-identifier hs-type">GossipProtocol</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
 </span><span id="line-40"></span><span id="showProtocol"><span class="annot"><span class="annottext">showProtocol :: State -&gt; GossipProtocol -&gt; String
-</span><a href="GossipProtocol.html#showProtocol"><span class="hs-identifier hs-var hs-var">showProtocol</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679059020"><span class="annot"><span class="annottext">GossipGraph
-</span><a href="#local-6989586621679059020"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span id="local-6989586621679059019"><span class="annot"><span class="annottext">GossipKnowledgeStructure
-</span><a href="#local-6989586621679059019"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679059018"><span class="annot"><span class="annottext">[Call]
-</span><a href="#local-6989586621679059018"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679059017"><span class="annot"><span class="annottext">GossipProtocol
-</span><a href="#local-6989586621679059017"><span class="hs-identifier hs-var">prot</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="GossipProtocol.html#showProtocol"><span class="hs-identifier hs-var hs-var">showProtocol</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679059821"><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679059821"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span id="local-6989586621679059820"><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><a href="#local-6989586621679059820"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679059819"><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679059819"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679059818"><span class="annot"><span class="annottext">GossipProtocol
+</span><a href="#local-6989586621679059818"><span class="hs-identifier hs-var">prot</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;&#966;(x,y) = &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Form -&gt; String
 forall a. Show a =&gt; a -&gt; String
 </span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GossipProtocol
-</span><a href="#local-6989586621679059017"><span class="hs-identifier hs-var">prot</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679059818"><span class="hs-identifier hs-var">prot</span></a></span><span> </span><span class="annot"><span class="annottext">Int
 </span><span class="hs-number">26</span></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
-</span><a href="#local-6989586621679059019"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Agent
+</span><a href="#local-6989586621679059820"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Agent
 </span><a href="GossipGraph.html#agentFromLab"><span class="hs-identifier hs-var">agentFromLab</span></a></span><span> </span><span class="annot"><span class="annottext">Char
 </span><span class="hs-char">'x'</span></span><span class="hs-special">,</span><span>  </span><span class="annot"><span class="annottext">Char -&gt; Agent
 </span><a href="GossipGraph.html#agentFromLab"><span class="hs-identifier hs-var">agentFromLab</span></a></span><span> </span><span class="annot"><span class="annottext">Char
@@ -72,11 +72,11 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span id="line-46"></span><span class="hs-comment">-- | This protocol only allows a call if it leads to new secrets to be learned. &#966;(a,b) = &#172;S(a,b)</span><span>
 </span><span id="line-47"></span><span class="annot"><a href="GossipProtocol.html#learnNewSecrets"><span class="hs-identifier hs-type">learnNewSecrets</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipProtocol.html#GossipProtocol"><span class="hs-identifier hs-type">GossipProtocol</span></a></span><span>
 </span><span id="line-48"></span><span id="learnNewSecrets"><span class="annot"><span class="annottext">learnNewSecrets :: GossipProtocol
-</span><a href="GossipProtocol.html#learnNewSecrets"><span class="hs-identifier hs-var hs-var">learnNewSecrets</span></a></span></span><span> </span><span id="local-6989586621679059012"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679059012"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
-</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679059011"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679059011"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679059010"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679059010"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; Form
+</span><a href="GossipProtocol.html#learnNewSecrets"><span class="hs-identifier hs-var hs-var">learnNewSecrets</span></a></span></span><span> </span><span id="local-6989586621679059813"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679059813"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679059812"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059812"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679059811"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059811"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; Form
 </span><a href="GossipKnowledge.html#Fact"><span class="hs-identifier hs-var">Fact</span></a></span><span> </span><span class="annot"><span class="annottext">(Bdd -&gt; Form) -&gt; Bdd -&gt; Form
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
@@ -84,158 +84,158 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; GossipAtom -&gt; Bdd
 </span><a href="GossipKnowledge.html#gAtToBdd"><span class="hs-identifier hs-var">gAtToBdd</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679059012"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">(GossipAtom -&gt; Bdd) -&gt; GossipAtom -&gt; Bdd
+</span><a href="#local-6989586621679059813"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">(GossipAtom -&gt; Bdd) -&gt; GossipAtom -&gt; Bdd
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Rel -&gt; Agent -&gt; Agent -&gt; GossipAtom
 </span><a href="GossipKnowledge.html#GAt"><span class="hs-identifier hs-var">GAt</span></a></span><span> </span><span class="annot"><span class="annottext">Rel
 </span><a href="GossipKnowledge.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679059011"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679059010"><span class="hs-identifier hs-var">y</span></a></span><span>
+</span><a href="#local-6989586621679059812"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059811"><span class="hs-identifier hs-var">y</span></a></span><span>
 </span><span id="line-49"></span><span>
 </span><span id="line-50"></span><span class="hs-comment">-- | Introduced by (van Ditmarsch et al., 2017): &quot;Call xy can be made if x knows y's number and if x considers it possible that there is a secret known by one of x,y but not the other.&quot; &#966;(a,b) = &#8897;_{z &#8712; A}( S(x, z) &#8596;&#65038; &#172;S(y, z) )</span><span>
 </span><span id="line-51"></span><span class="annot"><a href="GossipProtocol.html#possibleInformationGrowth"><span class="hs-identifier hs-type">possibleInformationGrowth</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipProtocol.html#GossipProtocol"><span class="hs-identifier hs-type">GossipProtocol</span></a></span><span>
 </span><span id="line-52"></span><span id="possibleInformationGrowth"><span class="annot"><span class="annottext">possibleInformationGrowth :: GossipProtocol
-</span><a href="GossipProtocol.html#possibleInformationGrowth"><span class="hs-identifier hs-var hs-var">possibleInformationGrowth</span></a></span></span><span> </span><span id="local-6989586621679059005"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679059005"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#GKS"><span class="hs-identifier hs-type">GKS</span></a></span><span> </span><span id="local-6989586621679059003"><span class="annot"><span class="annottext">Set Int
-</span><a href="#local-6989586621679059003"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span id="local-6989586621679059002"><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679059002"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679059001"><span class="annot"><span class="annottext">Map Agent (Set Int)
-</span><a href="#local-6989586621679059001"><span class="hs-identifier hs-var">o</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679059000"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679059000"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058999"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679058999"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Agent -&gt; Form -&gt; Form
+</span><a href="GossipProtocol.html#possibleInformationGrowth"><span class="hs-identifier hs-var hs-var">possibleInformationGrowth</span></a></span></span><span> </span><span id="local-6989586621679059806"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679059806"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GossipKnowledge.html#GKS"><span class="hs-identifier hs-type">GKS</span></a></span><span> </span><span id="local-6989586621679059804"><span class="annot"><span class="annottext">Set Int
+</span><a href="#local-6989586621679059804"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span id="local-6989586621679059803"><span class="annot"><span class="annottext">Bdd
+</span><a href="#local-6989586621679059803"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679059802"><span class="annot"><span class="annottext">Map Agent (Set Int)
+</span><a href="#local-6989586621679059802"><span class="hs-identifier hs-var">o</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679059801"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059801"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679059800"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059800"><span class="hs-identifier hs-var">y</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Agent -&gt; Form -&gt; Form
 </span><a href="GossipKnowledge.html#M"><span class="hs-identifier hs-var">M</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679059000"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Form
+</span><a href="#local-6989586621679059801"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Form
 </span><a href="GossipKnowledge.html#Fact"><span class="hs-identifier hs-var">Fact</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679058997"><span class="hs-identifier hs-var">fullCond</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679059798"><span class="hs-identifier hs-var">fullCond</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-53"></span><span>    </span><span class="hs-keyword">where</span><span>
-</span><span id="line-54"></span><span>        </span><span id="local-6989586621679058996"><span class="annot"><span class="annottext">allAgents :: [Agent]
-</span><a href="#local-6989586621679058996"><span class="hs-identifier hs-var hs-var">allAgents</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map Agent (Set Int) -&gt; [Agent]
+</span><span id="line-54"></span><span>        </span><span id="local-6989586621679059797"><span class="annot"><span class="annottext">allAgents :: [Agent]
+</span><a href="#local-6989586621679059797"><span class="hs-identifier hs-var hs-var">allAgents</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map Agent (Set Int) -&gt; [Agent]
 forall k a. Map k a -&gt; [k]
 </span><span class="hs-identifier hs-var">keys</span></span><span> </span><span class="annot"><span class="annottext">Map Agent (Set Int)
-</span><a href="#local-6989586621679059001"><span class="hs-identifier hs-var">o</span></a></span><span>
+</span><a href="#local-6989586621679059802"><span class="hs-identifier hs-var">o</span></a></span><span>
 </span><span id="line-55"></span><span>        </span><span class="hs-comment">-- | S(x, z)</span><span>
-</span><span id="line-56"></span><span>        </span><span id="local-6989586621679058995"><span class="annot"><span class="annottext">c1 :: Agent -&gt; Bdd
-</span><a href="#local-6989586621679058995"><span class="hs-identifier hs-var hs-var">c1</span></a></span></span><span> </span><span id="local-6989586621679058994"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679058994"><span class="hs-identifier hs-var">z</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; GossipAtom -&gt; Bdd
+</span><span id="line-56"></span><span>        </span><span id="local-6989586621679059796"><span class="annot"><span class="annottext">c1 :: Agent -&gt; Bdd
+</span><a href="#local-6989586621679059796"><span class="hs-identifier hs-var hs-var">c1</span></a></span></span><span> </span><span id="local-6989586621679059795"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059795"><span class="hs-identifier hs-var">z</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; GossipAtom -&gt; Bdd
 </span><a href="GossipKnowledge.html#gAtToBdd"><span class="hs-identifier hs-var">gAtToBdd</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679059005"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">(GossipAtom -&gt; Bdd) -&gt; GossipAtom -&gt; Bdd
+</span><a href="#local-6989586621679059806"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">(GossipAtom -&gt; Bdd) -&gt; GossipAtom -&gt; Bdd
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Rel -&gt; Agent -&gt; Agent -&gt; GossipAtom
 </span><a href="GossipKnowledge.html#GAt"><span class="hs-identifier hs-var">GAt</span></a></span><span> </span><span class="annot"><span class="annottext">Rel
 </span><a href="GossipKnowledge.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679059000"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679058994"><span class="hs-identifier hs-var">z</span></a></span><span>
+</span><a href="#local-6989586621679059801"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059795"><span class="hs-identifier hs-var">z</span></a></span><span>
 </span><span id="line-57"></span><span>        </span><span class="hs-comment">-- | &#172;S(y, z)</span><span>
-</span><span id="line-58"></span><span>        </span><span id="local-6989586621679058993"><span class="annot"><span class="annottext">c2 :: Agent -&gt; Bdd
-</span><a href="#local-6989586621679058993"><span class="hs-identifier hs-var hs-var">c2</span></a></span></span><span> </span><span id="local-6989586621679058992"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679058992"><span class="hs-identifier hs-var">z</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
+</span><span id="line-58"></span><span>        </span><span id="local-6989586621679059794"><span class="annot"><span class="annottext">c2 :: Agent -&gt; Bdd
+</span><a href="#local-6989586621679059794"><span class="hs-identifier hs-var hs-var">c2</span></a></span></span><span> </span><span id="local-6989586621679059793"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059793"><span class="hs-identifier hs-var">z</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#neg"><span class="hs-identifier hs-var">neg</span></a></span><span> </span><span class="annot"><span class="annottext">(Bdd -&gt; Bdd) -&gt; Bdd -&gt; Bdd
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; GossipAtom -&gt; Bdd
 </span><a href="GossipKnowledge.html#gAtToBdd"><span class="hs-identifier hs-var">gAtToBdd</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679059005"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">(GossipAtom -&gt; Bdd) -&gt; GossipAtom -&gt; Bdd
+</span><a href="#local-6989586621679059806"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">(GossipAtom -&gt; Bdd) -&gt; GossipAtom -&gt; Bdd
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Rel -&gt; Agent -&gt; Agent -&gt; GossipAtom
 </span><a href="GossipKnowledge.html#GAt"><span class="hs-identifier hs-var">GAt</span></a></span><span> </span><span class="annot"><span class="annottext">Rel
 </span><a href="GossipKnowledge.html#S"><span class="hs-identifier hs-var">S</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679058999"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679058992"><span class="hs-identifier hs-var">z</span></a></span><span>
+</span><a href="#local-6989586621679059800"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059793"><span class="hs-identifier hs-var">z</span></a></span><span>
 </span><span id="line-59"></span><span>        </span><span class="hs-comment">-- | S(x, z) &#8596;&#65038; &#172;S(y, z)</span><span>
-</span><span id="line-60"></span><span>        </span><span id="local-6989586621679058991"><span class="annot"><span class="annottext">cond :: Agent -&gt; Bdd
-</span><a href="#local-6989586621679058991"><span class="hs-identifier hs-var hs-var">cond</span></a></span></span><span> </span><span id="local-6989586621679058990"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679058990"><span class="hs-identifier hs-var">z</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Agent -&gt; Bdd
-</span><a href="#local-6989586621679058995"><span class="hs-identifier hs-var">c1</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679058990"><span class="hs-identifier hs-var">z</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; Bdd -&gt; Bdd
+</span><span id="line-60"></span><span>        </span><span id="local-6989586621679059792"><span class="annot"><span class="annottext">cond :: Agent -&gt; Bdd
+</span><a href="#local-6989586621679059792"><span class="hs-identifier hs-var hs-var">cond</span></a></span></span><span> </span><span id="local-6989586621679059791"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059791"><span class="hs-identifier hs-var">z</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Agent -&gt; Bdd
+</span><a href="#local-6989586621679059796"><span class="hs-identifier hs-var">c1</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059791"><span class="hs-identifier hs-var">z</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#equ"><span class="hs-operator hs-var">`equ`</span></a></span><span> </span><span class="annot"><span class="annottext">Agent -&gt; Bdd
-</span><a href="#local-6989586621679058993"><span class="hs-identifier hs-var">c2</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679058990"><span class="hs-identifier hs-var">z</span></a></span><span>
+</span><a href="#local-6989586621679059794"><span class="hs-identifier hs-var">c2</span></a></span><span> </span><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059791"><span class="hs-identifier hs-var">z</span></a></span><span>
 </span><span id="line-61"></span><span>        </span><span class="hs-comment">-- | &#952; &#8594; &#8897;_{z \in A}( S(x, z) &#8596;&#65038; &#172;S(y, z) )</span><span>
-</span><span id="line-62"></span><span>        </span><span id="local-6989586621679058997"><span class="annot"><span class="annottext">fullCond :: Bdd
-</span><a href="#local-6989586621679058997"><span class="hs-identifier hs-var hs-var">fullCond</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Bdd] -&gt; Bdd
+</span><span id="line-62"></span><span>        </span><span id="local-6989586621679059798"><span class="annot"><span class="annottext">fullCond :: Bdd
+</span><a href="#local-6989586621679059798"><span class="hs-identifier hs-var hs-var">fullCond</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Bdd] -&gt; Bdd
 </span><a href="PrintableBdd.html#disSet"><span class="hs-identifier hs-var">disSet</span></a></span><span> </span><span class="annot"><span class="annottext">([Bdd] -&gt; Bdd) -&gt; [Bdd] -&gt; Bdd
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(Agent -&gt; Bdd) -&gt; [Agent] -&gt; [Bdd]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Agent -&gt; Bdd
-</span><a href="#local-6989586621679058991"><span class="hs-identifier hs-var">cond</span></a></span><span> </span><span class="annot"><span class="annottext">[Agent]
-</span><a href="#local-6989586621679058996"><span class="hs-identifier hs-var">allAgents</span></a></span><span>
+</span><a href="#local-6989586621679059792"><span class="hs-identifier hs-var">cond</span></a></span><span> </span><span class="annot"><span class="annottext">[Agent]
+</span><a href="#local-6989586621679059797"><span class="hs-identifier hs-var">allAgents</span></a></span><span>
 </span><span id="line-63"></span><span>
 </span><span id="line-64"></span><span class="hs-comment">-- | Selects all calls that are allowed by the given gossip protocol. Note that there could also be no calls allowed. </span><span>
 </span><span id="line-65"></span><span class="annot"><a href="GossipProtocol.html#selectedCalls"><span class="hs-identifier hs-type">selectedCalls</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipProtocol.html#GossipProtocol"><span class="hs-identifier hs-type">GossipProtocol</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
 </span><span id="line-66"></span><span id="selectedCalls"><span class="annot"><span class="annottext">selectedCalls :: GossipProtocol -&gt; State -&gt; ([Call], [GroupCall])
-</span><a href="GossipProtocol.html#selectedCalls"><span class="hs-identifier hs-var hs-var">selectedCalls</span></a></span></span><span> </span><span id="local-6989586621679058987"><span class="annot"><span class="annottext">GossipProtocol
-</span><a href="#local-6989586621679058987"><span class="hs-identifier hs-var">prot</span></a></span></span><span> </span><span id="local-6989586621679058986"><span class="annot"><span class="annottext">s :: State
-</span><a href="#local-6989586621679058986"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679058985"><span class="annot"><span class="annottext">GossipGraph
-</span><a href="#local-6989586621679058985"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span id="local-6989586621679058984"><span class="annot"><span class="annottext">GossipKnowledgeStructure
-</span><a href="#local-6989586621679058984"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679058983"><span class="annot"><span class="annottext">[Call]
-</span><a href="#local-6989586621679058983"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
-</span><span id="line-67"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679058982"><span class="annot"><span class="annottext">valid :: ([Call], [GroupCall])
-</span><a href="#local-6989586621679058982"><span class="hs-identifier hs-var hs-var">valid</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; ([Call], [GroupCall])
+</span><a href="GossipProtocol.html#selectedCalls"><span class="hs-identifier hs-var hs-var">selectedCalls</span></a></span></span><span> </span><span id="local-6989586621679059788"><span class="annot"><span class="annottext">GossipProtocol
+</span><a href="#local-6989586621679059788"><span class="hs-identifier hs-var">prot</span></a></span></span><span> </span><span id="local-6989586621679059787"><span class="annot"><span class="annottext">s :: State
+</span><a href="#local-6989586621679059787"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><a href="GossipState.html#State"><span class="hs-identifier hs-type">State</span></a></span><span> </span><span id="local-6989586621679059786"><span class="annot"><span class="annottext">GossipGraph
+</span><a href="#local-6989586621679059786"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span id="local-6989586621679059785"><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><a href="#local-6989586621679059785"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679059784"><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679059784"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-67"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679059783"><span class="annot"><span class="annottext">valid :: ([Call], [GroupCall])
+</span><a href="#local-6989586621679059783"><span class="hs-identifier hs-var hs-var">valid</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">GossipGraph -&gt; ([Call], [GroupCall])
 </span><a href="GossipState.html#validCalls"><span class="hs-identifier hs-var">validCalls</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
-</span><a href="#local-6989586621679058985"><span class="hs-identifier hs-var">g</span></a></span><span>
-</span><span id="line-68"></span><span>      </span><span id="local-6989586621679058980"><span class="annot"><span class="annottext">direct :: [Call]
-</span><a href="#local-6989586621679058980"><span class="hs-identifier hs-var hs-var">direct</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Call -&gt; Bool) -&gt; [Call] -&gt; [Call]
+</span><a href="#local-6989586621679059786"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><span id="line-68"></span><span>      </span><span id="local-6989586621679059781"><span class="annot"><span class="annottext">direct :: [Call]
+</span><a href="#local-6989586621679059781"><span class="hs-identifier hs-var hs-var">direct</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Call -&gt; Bool) -&gt; [Call] -&gt; [Call]
 forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="annot"><span class="annottext">Call -&gt; Bool
-</span><a href="#local-6989586621679058979"><span class="hs-identifier hs-var">isSelected</span></a></span><span> </span><span class="annot"><span class="annottext">([Call] -&gt; [Call]) -&gt; [Call] -&gt; [Call]
+</span><a href="#local-6989586621679059780"><span class="hs-identifier hs-var">isSelected</span></a></span><span> </span><span class="annot"><span class="annottext">([Call] -&gt; [Call]) -&gt; [Call] -&gt; [Call]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">([Call], [GroupCall]) -&gt; [Call]
 forall a b. (a, b) -&gt; a
 </span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">([Call], [GroupCall])
-</span><a href="#local-6989586621679058982"><span class="hs-identifier hs-var">valid</span></a></span><span>
-</span><span id="line-69"></span><span>      </span><span id="local-6989586621679058978"><span class="annot"><span class="annottext">group :: [GroupCall]
-</span><a href="#local-6989586621679058978"><span class="hs-identifier hs-var hs-var">group</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(GroupCall -&gt; Bool) -&gt; [GroupCall] -&gt; [GroupCall]
+</span><a href="#local-6989586621679059783"><span class="hs-identifier hs-var">valid</span></a></span><span>
+</span><span id="line-69"></span><span>      </span><span id="local-6989586621679059779"><span class="annot"><span class="annottext">group :: [GroupCall]
+</span><a href="#local-6989586621679059779"><span class="hs-identifier hs-var hs-var">group</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(GroupCall -&gt; Bool) -&gt; [GroupCall] -&gt; [GroupCall]
 forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
-</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679058977"><span class="annot"><span class="annottext">GroupCall
-</span><a href="#local-6989586621679058977"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">GroupCall -&gt; Bool
-</span><a href="#local-6989586621679058976"><span class="hs-identifier hs-var">isGroupCallSelected</span></a></span><span> </span><span class="annot"><span class="annottext">GroupCall
-</span><a href="#local-6989586621679058977"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679059778"><span class="annot"><span class="annottext">GroupCall
+</span><a href="#local-6989586621679059778"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">GroupCall -&gt; Bool
+</span><a href="#local-6989586621679059777"><span class="hs-identifier hs-var">isGroupCallSelected</span></a></span><span> </span><span class="annot"><span class="annottext">GroupCall
+</span><a href="#local-6989586621679059778"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
 </span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">GroupCall -&gt; Bool
-</span><a href="#local-6989586621679058974"><span class="hs-identifier hs-var">isActualGroup</span></a></span><span> </span><span class="annot"><span class="annottext">GroupCall
-</span><a href="#local-6989586621679058977"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">([Call], [GroupCall]) -&gt; [GroupCall]
+</span><a href="#local-6989586621679059775"><span class="hs-identifier hs-var">isActualGroup</span></a></span><span> </span><span class="annot"><span class="annottext">GroupCall
+</span><a href="#local-6989586621679059778"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">([Call], [GroupCall]) -&gt; [GroupCall]
 forall a b. (a, b) -&gt; b
 </span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">([Call], [GroupCall])
-</span><a href="#local-6989586621679058982"><span class="hs-identifier hs-var">valid</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679059783"><span class="hs-identifier hs-var">valid</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-70"></span><span>  </span><span class="hs-keyword">in</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Call]
-</span><a href="#local-6989586621679058980"><span class="hs-identifier hs-var">direct</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[GroupCall]
-</span><a href="#local-6989586621679058978"><span class="hs-identifier hs-var">group</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679059781"><span class="hs-identifier hs-var">direct</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[GroupCall]
+</span><a href="#local-6989586621679059779"><span class="hs-identifier hs-var">group</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-71"></span><span>  </span><span class="hs-keyword">where</span><span>
-</span><span id="line-72"></span><span>    </span><span class="annot"><a href="#local-6989586621679058979"><span class="hs-identifier hs-type">isSelected</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
-</span><span id="line-73"></span><span>    </span><span id="local-6989586621679058979"><span class="annot"><span class="annottext">isSelected :: Call -&gt; Bool
-</span><a href="#local-6989586621679058979"><span class="hs-identifier hs-var hs-var">isSelected</span></a></span></span><span> </span><span id="local-6989586621679058973"><span class="annot"><span class="annottext">Call
-</span><a href="#local-6989586621679058973"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State
-</span><a href="#local-6989586621679058986"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; Form -&gt; Bool
+</span><span id="line-72"></span><span>    </span><span class="annot"><a href="#local-6989586621679059780"><span class="hs-identifier hs-type">isSelected</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-73"></span><span>    </span><span id="local-6989586621679059780"><span class="annot"><span class="annottext">isSelected :: Call -&gt; Bool
+</span><a href="#local-6989586621679059780"><span class="hs-identifier hs-var hs-var">isSelected</span></a></span></span><span> </span><span id="local-6989586621679059774"><span class="annot"><span class="annottext">Call
+</span><a href="#local-6989586621679059774"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">State
+</span><a href="#local-6989586621679059787"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">State -&gt; Form -&gt; Bool
 </span><a href="GossipState.html#%7C%3D"><span class="hs-operator hs-var">|=</span></a></span><span> </span><span class="annot"><span class="annottext">GossipProtocol
-</span><a href="#local-6989586621679058987"><span class="hs-identifier hs-var">prot</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GossipGraph -&gt; Int
+</span><a href="#local-6989586621679059788"><span class="hs-identifier hs-var">prot</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GossipGraph -&gt; Int
 </span><a href="GossipGraph.html#noAgents"><span class="hs-identifier hs-var">noAgents</span></a></span><span> </span><span class="annot"><span class="annottext">GossipGraph
-</span><a href="#local-6989586621679058985"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
-</span><a href="#local-6989586621679058984"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Call
-</span><a href="#local-6989586621679058973"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><a href="#local-6989586621679059786"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">GossipKnowledgeStructure
+</span><a href="#local-6989586621679059785"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Call
+</span><a href="#local-6989586621679059774"><span class="hs-identifier hs-var">c</span></a></span><span>
 </span><span id="line-74"></span><span>
-</span><span id="line-75"></span><span>    </span><span class="annot"><a href="#local-6989586621679058976"><span class="hs-identifier hs-type">isGroupCallSelected</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
-</span><span id="line-76"></span><span>    </span><span id="local-6989586621679058976"><span class="annot"><span class="annottext">isGroupCallSelected :: GroupCall -&gt; Bool
-</span><a href="#local-6989586621679058976"><span class="hs-identifier hs-var hs-var">isGroupCallSelected</span></a></span></span><span> </span><span id="local-6989586621679058970"><span class="annot"><span class="annottext">GroupCall
-</span><a href="#local-6989586621679058970"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Call -&gt; Bool) -&gt; [Call] -&gt; Bool
+</span><span id="line-75"></span><span>    </span><span class="annot"><a href="#local-6989586621679059777"><span class="hs-identifier hs-type">isGroupCallSelected</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-76"></span><span>    </span><span id="local-6989586621679059777"><span class="annot"><span class="annottext">isGroupCallSelected :: GroupCall -&gt; Bool
+</span><a href="#local-6989586621679059777"><span class="hs-identifier hs-var hs-var">isGroupCallSelected</span></a></span></span><span> </span><span id="local-6989586621679059771"><span class="annot"><span class="annottext">GroupCall
+</span><a href="#local-6989586621679059771"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Call -&gt; Bool) -&gt; [Call] -&gt; Bool
 forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Bool
 </span><span class="hs-identifier hs-var">all</span></span><span> </span><span class="annot"><span class="annottext">Call -&gt; Bool
-</span><a href="#local-6989586621679058979"><span class="hs-identifier hs-var">isSelected</span></a></span><span> </span><span class="annot"><span class="annottext">([Call] -&gt; Bool) -&gt; [Call] -&gt; Bool
+</span><a href="#local-6989586621679059780"><span class="hs-identifier hs-var">isSelected</span></a></span><span> </span><span class="annot"><span class="annottext">([Call] -&gt; Bool) -&gt; [Call] -&gt; Bool
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">GroupCall -&gt; [Call]
 </span><a href="GossipTypes.html#toCalls"><span class="hs-identifier hs-var">toCalls</span></a></span><span> </span><span class="annot"><span class="annottext">GroupCall
-</span><a href="#local-6989586621679058970"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><a href="#local-6989586621679059771"><span class="hs-identifier hs-var">g</span></a></span><span>
 </span><span id="line-77"></span><span>
-</span><span id="line-78"></span><span>    </span><span class="annot"><a href="#local-6989586621679058974"><span class="hs-identifier hs-type">isActualGroup</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
-</span><span id="line-79"></span><span>    </span><span id="local-6989586621679058974"><span class="annot"><span class="annottext">isActualGroup :: GroupCall -&gt; Bool
-</span><a href="#local-6989586621679058974"><span class="hs-identifier hs-var hs-var">isActualGroup</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Agent
+</span><span id="line-78"></span><span>    </span><span class="annot"><a href="#local-6989586621679059775"><span class="hs-identifier hs-type">isActualGroup</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-79"></span><span>    </span><span id="local-6989586621679059775"><span class="annot"><span class="annottext">isActualGroup :: GroupCall -&gt; Bool
+</span><a href="#local-6989586621679059775"><span class="hs-identifier hs-var hs-var">isActualGroup</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Agent
 </span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">False</span></span><span>
-</span><span id="line-80"></span><span>    </span><span class="annot"><a href="#local-6989586621679058974"><span class="hs-identifier hs-var">isActualGroup</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Agent
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058967"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679058967"><span class="hs-identifier hs-var">h</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679058966"><span class="annot"><span class="annottext">[Agent]
-</span><a href="#local-6989586621679058966"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool
+</span><span id="line-80"></span><span>    </span><span class="annot"><a href="#local-6989586621679059775"><span class="hs-identifier hs-var">isActualGroup</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Agent
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679059768"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679059768"><span class="hs-identifier hs-var">h</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679059767"><span class="annot"><span class="annottext">[Agent]
+</span><a href="#local-6989586621679059767"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool
 </span><span class="hs-identifier hs-var">not</span></span><span> </span><span class="annot"><span class="annottext">(Bool -&gt; Bool) -&gt; Bool -&gt; Bool
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Agent] -&gt; Bool
 forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Bool
 </span><span class="hs-identifier hs-var">null</span></span><span> </span><span class="annot"><span class="annottext">[Agent]
-</span><a href="#local-6989586621679058966"><span class="hs-identifier hs-var">t</span></a></span><span>
+</span><a href="#local-6989586621679059767"><span class="hs-identifier hs-var">t</span></a></span><span>
 </span><span id="line-81"></span></pre></body></html>

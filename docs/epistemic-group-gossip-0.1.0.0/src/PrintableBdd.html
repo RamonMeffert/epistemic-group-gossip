@@ -75,14 +75,14 @@ License     : BSD3
 </span><span id="line-73"></span><span>    </span><span class="hs-comment">-- | The binary decision diagram, as a `Data.HasCacBDD.Bdd` type. </span><span>
 </span><span id="line-74"></span><span>  </span><span class="hs-special">,</span><span> </span><span id="bdd"><span class="annot"><span class="annottext">Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#bdd"><span class="hs-identifier hs-var hs-var">bdd</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span>
-</span><span id="line-75"></span><span>  </span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span> </span><span id="local-6989586621679057931"><span id="local-6989586621679057933"><span class="annot"><span class="annottext">Bdd -&gt; Bdd -&gt; Bool
+</span><span id="line-75"></span><span>  </span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span> </span><span id="local-6989586621679058732"><span id="local-6989586621679058734"><span class="annot"><span class="annottext">Bdd -&gt; Bdd -&gt; Bool
 (Bdd -&gt; Bdd -&gt; Bool) -&gt; (Bdd -&gt; Bdd -&gt; Bool) -&gt; Eq Bdd
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
 /= :: Bdd -&gt; Bdd -&gt; Bool
 $c/= :: Bdd -&gt; Bdd -&gt; Bool
 == :: Bdd -&gt; Bdd -&gt; Bool
 $c== :: Bdd -&gt; Bdd -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679057922"><span id="local-6989586621679057924"><span id="local-6989586621679057926"><span id="local-6989586621679057928"><span class="annot"><span class="annottext">ReadPrec [Bdd]
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058723"><span id="local-6989586621679058725"><span id="local-6989586621679058727"><span id="local-6989586621679058729"><span class="annot"><span class="annottext">ReadPrec [Bdd]
 ReadPrec Bdd
 Int -&gt; ReadS Bdd
 ReadS [Bdd]
@@ -101,8 +101,8 @@ readsPrec :: Int -&gt; ReadS Bdd
 $creadsPrec :: Int -&gt; ReadS Bdd
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Read</span></span></span></span></span></span><span> </span><span class="hs-special">)</span><span>
 </span><span id="line-76"></span><span>
-</span><span id="line-77"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679057916"><span id="local-6989586621679057919"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-78"></span><span>  </span><span id="local-6989586621679057914"><span class="annot"><span class="annottext">show :: Bdd -&gt; String
+</span><span id="line-77"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679058717"><span id="local-6989586621679058720"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-78"></span><span>  </span><span id="local-6989586621679058715"><span class="annot"><span class="annottext">show :: Bdd -&gt; String
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#str"><span class="hs-identifier hs-var hs-var">str</span></a></span><span>
 </span><span id="line-79"></span><span>
@@ -114,7 +114,7 @@ $creadsPrec :: Int -&gt; ReadS Bdd
 </span><span id="line-85"></span><span class="hs-keyword">type</span><span> </span><span id="VarLabeller"><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-var">VarLabeller</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span>
 </span><span id="line-86"></span><span>
 </span><span id="line-87"></span><span class="hs-comment">-- | Encodes an arbitrary function that takes a single `Data.HasCacBDD.Bdd` argument to its printable counterpart.</span><span>
-</span><span id="line-88"></span><span id="local-6989586621679057970"><span class="annot"><a href="PrintableBdd.html#directly"><span class="hs-identifier hs-type">directly</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679057970"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679057970"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span><span>
+</span><span id="line-88"></span><span id="local-6989586621679058771"><span class="annot"><a href="PrintableBdd.html#directly"><span class="hs-identifier hs-type">directly</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679058771"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679058771"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span><span>
 </span><span id="line-89"></span><span id="directly"><span class="annot"><span class="annottext">directly :: (Bdd -&gt; a) -&gt; Bdd -&gt; a
 </span><a href="PrintableBdd.html#directly"><span class="hs-identifier hs-var hs-var">directly</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((Bdd -&gt; a) -&gt; (Bdd -&gt; Bdd) -&gt; Bdd -&gt; a)
 -&gt; (Bdd -&gt; Bdd) -&gt; (Bdd -&gt; a) -&gt; Bdd -&gt; a
@@ -133,80 +133,80 @@ forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span id="line-95"></span><span class="hs-comment">-- | Encodes a unary function (taking one `Data.HasCacBDD.Bdd` argument) of `Data.HasCacBDD` to its printable counterpart.</span><span>
 </span><span id="line-96"></span><span class="annot"><a href="PrintableBdd.html#unary"><span class="hs-identifier hs-type">unary</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-97"></span><span id="unary"><span class="annot"><span class="annottext">unary :: String -&gt; String -&gt; (Bdd -&gt; Bdd) -&gt; Bdd -&gt; Bdd
-</span><a href="PrintableBdd.html#unary"><span class="hs-identifier hs-var hs-var">unary</span></a></span></span><span> </span><span id="local-6989586621679057907"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057907"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679057906"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057906"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679057905"><span class="annot"><span class="annottext">Bdd -&gt; Bdd
-</span><a href="#local-6989586621679057905"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679057904"><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057904"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
+</span><a href="PrintableBdd.html#unary"><span class="hs-identifier hs-var hs-var">unary</span></a></span></span><span> </span><span id="local-6989586621679058708"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058708"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679058707"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058707"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679058706"><span class="annot"><span class="annottext">Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058706"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679058705"><span class="annot"><span class="annottext">Bdd
+</span><a href="#local-6989586621679058705"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-var">Bdd</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057907"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><a href="#local-6989586621679058708"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#str"><span class="hs-identifier hs-var hs-var">str</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057904"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058705"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057906"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><a href="#local-6989586621679058707"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#tex"><span class="hs-identifier hs-var hs-var">tex</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057904"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
-</span><a href="#local-6989586621679057905"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">(Bdd -&gt; Bdd) -&gt; Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058705"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058706"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">(Bdd -&gt; Bdd) -&gt; Bdd -&gt; Bdd
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#bdd"><span class="hs-identifier hs-var hs-var">bdd</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057904"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679058705"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-98"></span><span>
 </span><span id="line-99"></span><span class="hs-comment">-- | Encodes a binary function (taking two `Data.HasCacBDD.Bdd` arguments) of `Data.HasCacBDD` to its printable counterpart.</span><span>
 </span><span id="line-100"></span><span class="annot"><a href="PrintableBdd.html#binary"><span class="hs-identifier hs-type">binary</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-101"></span><span id="binary"><span class="annot"><span class="annottext">binary :: String -&gt; String -&gt; (Bdd -&gt; Bdd -&gt; Bdd) -&gt; Bdd -&gt; Bdd -&gt; Bdd
-</span><a href="PrintableBdd.html#binary"><span class="hs-identifier hs-var hs-var">binary</span></a></span></span><span> </span><span id="local-6989586621679057902"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057902"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679057901"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057901"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679057900"><span class="annot"><span class="annottext">Bdd -&gt; Bdd -&gt; Bdd
-</span><a href="#local-6989586621679057900"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679057899"><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057899"><span class="hs-identifier hs-var">b1</span></a></span></span><span> </span><span id="local-6989586621679057898"><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057898"><span class="hs-identifier hs-var">b2</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
+</span><a href="PrintableBdd.html#binary"><span class="hs-identifier hs-var hs-var">binary</span></a></span></span><span> </span><span id="local-6989586621679058703"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058703"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679058702"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058702"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679058701"><span class="annot"><span class="annottext">Bdd -&gt; Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058701"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679058700"><span class="annot"><span class="annottext">Bdd
+</span><a href="#local-6989586621679058700"><span class="hs-identifier hs-var">b1</span></a></span></span><span> </span><span id="local-6989586621679058699"><span class="annot"><span class="annottext">Bdd
+</span><a href="#local-6989586621679058699"><span class="hs-identifier hs-var">b2</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-var">Bdd</span></a></span><span>
 </span><span id="line-102"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; String
 forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;(&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#str"><span class="hs-identifier hs-var hs-var">str</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057899"><span class="hs-identifier hs-var">b1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058700"><span class="hs-identifier hs-var">b1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; &quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057902"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058703"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; &quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#str"><span class="hs-identifier hs-var hs-var">str</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057898"><span class="hs-identifier hs-var">b2</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058699"><span class="hs-identifier hs-var">b2</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;)&quot;</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
 </span><span id="line-103"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; String
 </span><span class="hs-identifier hs-var">unwords</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;(&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#tex"><span class="hs-identifier hs-var hs-var">tex</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057899"><span class="hs-identifier hs-var">b1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057901"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
+</span><a href="#local-6989586621679058700"><span class="hs-identifier hs-var">b1</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058702"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#tex"><span class="hs-identifier hs-var hs-var">tex</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057898"><span class="hs-identifier hs-var">b2</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058699"><span class="hs-identifier hs-var">b2</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;)&quot;</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
 </span><span id="line-104"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd -&gt; Bdd
-</span><a href="#local-6989586621679057900"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058701"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#bdd"><span class="hs-identifier hs-var hs-var">bdd</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057899"><span class="hs-identifier hs-var">b1</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058700"><span class="hs-identifier hs-var">b1</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#bdd"><span class="hs-identifier hs-var hs-var">bdd</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057898"><span class="hs-identifier hs-var">b2</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679058699"><span class="hs-identifier hs-var">b2</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-105"></span><span>
 </span><span id="line-106"></span><span class="hs-comment">-- | Encodes an n-ary function of `Data.HasCacBDD` to its printable counterpart.</span><span>
 </span><span id="line-107"></span><span class="annot"><a href="PrintableBdd.html#nary"><span class="hs-identifier hs-type">nary</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-108"></span><span id="nary"><span class="annot"><span class="annottext">nary :: String -&gt; String -&gt; ([Bdd] -&gt; Bdd) -&gt; [Bdd] -&gt; Bdd
-</span><a href="PrintableBdd.html#nary"><span class="hs-identifier hs-var hs-var">nary</span></a></span></span><span> </span><span id="local-6989586621679057894"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057894"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679057893"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057893"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679057892"><span class="annot"><span class="annottext">[Bdd] -&gt; Bdd
-</span><a href="#local-6989586621679057892"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679057891"><span class="annot"><span class="annottext">[Bdd]
-</span><a href="#local-6989586621679057891"><span class="hs-identifier hs-var">list</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
+</span><a href="PrintableBdd.html#nary"><span class="hs-identifier hs-var hs-var">nary</span></a></span></span><span> </span><span id="local-6989586621679058695"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058695"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679058694"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058694"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679058693"><span class="annot"><span class="annottext">[Bdd] -&gt; Bdd
+</span><a href="#local-6989586621679058693"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679058692"><span class="annot"><span class="annottext">[Bdd]
+</span><a href="#local-6989586621679058692"><span class="hs-identifier hs-var">list</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-var">Bdd</span></a></span><span>
 </span><span id="line-109"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;(&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
@@ -217,14 +217,14 @@ forall a. [a] -&gt; [[a]] -&gt; [a]
 </span><span class="hs-string">&quot; &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057894"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><a href="#local-6989586621679058695"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; &quot;</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Bdd -&gt; String) -&gt; [Bdd] -&gt; [String]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#str"><span class="hs-identifier hs-var hs-var">str</span></a></span><span> </span><span class="annot"><span class="annottext">[Bdd]
-</span><a href="#local-6989586621679057891"><span class="hs-identifier hs-var">list</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><a href="#local-6989586621679058692"><span class="hs-identifier hs-var">list</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;)&quot;</span></span><span class="hs-special">)</span><span>
@@ -237,25 +237,25 @@ forall a. [a] -&gt; [[a]] -&gt; [a]
 </span><span class="hs-string">&quot; &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057893"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><a href="#local-6989586621679058694"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; &quot;</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Bdd -&gt; String) -&gt; [Bdd] -&gt; [String]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#tex"><span class="hs-identifier hs-var hs-var">tex</span></a></span><span> </span><span class="annot"><span class="annottext">[Bdd]
-</span><a href="#local-6989586621679057891"><span class="hs-identifier hs-var">list</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><a href="#local-6989586621679058692"><span class="hs-identifier hs-var">list</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;) &quot;</span></span><span class="hs-special">)</span><span>
 </span><span id="line-111"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Bdd] -&gt; Bdd
-</span><a href="#local-6989586621679057892"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">([Bdd] -&gt; Bdd) -&gt; [Bdd] -&gt; Bdd
+</span><a href="#local-6989586621679058693"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">([Bdd] -&gt; Bdd) -&gt; [Bdd] -&gt; Bdd
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(Bdd -&gt; Bdd) -&gt; [Bdd] -&gt; [Bdd]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#bdd"><span class="hs-identifier hs-var hs-var">bdd</span></a></span><span> </span><span class="annot"><span class="annottext">[Bdd]
-</span><a href="#local-6989586621679057891"><span class="hs-identifier hs-var">list</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679058692"><span class="hs-identifier hs-var">list</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-112"></span><span>
 </span><span id="line-113"></span><span class="hs-comment">-- | Encodes a binary quantification function of Data.HasCacBDD to its printable counterpart.</span><span>
 </span><span id="line-114"></span><span class="annot"><a href="PrintableBdd.html#quant"><span class="hs-identifier hs-type">quant</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span class="hs-special">)</span><span>
@@ -267,39 +267,39 @@ forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 -&gt; Int
 -&gt; Bdd
 -&gt; Bdd
-</span><a href="PrintableBdd.html#quant"><span class="hs-identifier hs-var hs-var">quant</span></a></span></span><span> </span><span id="local-6989586621679057889"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057889"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679057888"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057888"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span id="local-6989586621679057887"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057887"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679057886"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057886"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679057885"><span class="annot"><span class="annottext">Int -&gt; Bdd -&gt; Bdd
-</span><a href="#local-6989586621679057885"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679057884"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057884"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span id="local-6989586621679057883"><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057883"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
+</span><a href="PrintableBdd.html#quant"><span class="hs-identifier hs-var hs-var">quant</span></a></span></span><span> </span><span id="local-6989586621679058690"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058690"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679058689"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058689"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span id="local-6989586621679058688"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058688"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679058687"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058687"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679058686"><span class="annot"><span class="annottext">Int -&gt; Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058686"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679058685"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058685"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span id="local-6989586621679058684"><span class="annot"><span class="annottext">Bdd
+</span><a href="#local-6989586621679058684"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-var">Bdd</span></a></span><span>
 </span><span id="line-116"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; String
 forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057887"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057889"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057884"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058688"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058690"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058685"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;(&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#str"><span class="hs-identifier hs-var hs-var">str</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057883"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058684"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;)&quot;</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
 </span><span id="line-117"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; String
 </span><span class="hs-identifier hs-var">unwords</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057886"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057888"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057884"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058687"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058689"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058685"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\\left( &quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#tex"><span class="hs-identifier hs-var hs-var">tex</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057883"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058684"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\\right)&quot;</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
 </span><span id="line-118"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Bdd -&gt; Bdd
-</span><a href="#local-6989586621679057885"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057884"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058686"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058685"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#bdd"><span class="hs-identifier hs-var hs-var">bdd</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057883"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679058684"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-119"></span><span>
 </span><span id="line-120"></span><span class="hs-comment">-- | Encodes an n-ary binary quantification function of Data.HasCacBDD to its printable counterpart.</span><span>
 </span><span id="line-121"></span><span class="annot"><a href="PrintableBdd.html#quantSet"><span class="hs-identifier hs-type">quantSet</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">B.Bdd</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span class="hs-special">)</span><span>
@@ -311,53 +311,53 @@ forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
 -&gt; [Int]
 -&gt; Bdd
 -&gt; Bdd
-</span><a href="PrintableBdd.html#quantSet"><span class="hs-identifier hs-var hs-var">quantSet</span></a></span></span><span> </span><span id="local-6989586621679057881"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057881"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679057880"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057880"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span id="local-6989586621679057879"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057879"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679057878"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057878"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679057877"><span class="annot"><span class="annottext">[Int] -&gt; Bdd -&gt; Bdd
-</span><a href="#local-6989586621679057877"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679057876"><span class="annot"><span class="annottext">[Int]
-</span><a href="#local-6989586621679057876"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span id="local-6989586621679057875"><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057875"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
+</span><a href="PrintableBdd.html#quantSet"><span class="hs-identifier hs-var hs-var">quantSet</span></a></span></span><span> </span><span id="local-6989586621679058682"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058682"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679058681"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058681"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span id="local-6989586621679058680"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058680"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679058679"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058679"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679058678"><span class="annot"><span class="annottext">[Int] -&gt; Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058678"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679058677"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058677"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span id="local-6989586621679058676"><span class="annot"><span class="annottext">Bdd
+</span><a href="#local-6989586621679058676"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-var">Bdd</span></a></span><span>
 </span><span id="line-123"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; String
 forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057879"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058680"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;{&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; String
 forall a. [a] -&gt; [[a]] -&gt; [a]
 </span><span class="hs-identifier hs-var">intercalate</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;, &quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">VarLabeller -&gt; [Int] -&gt; [String]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057881"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
-</span><a href="#local-6989586621679057876"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058682"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058677"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;}&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;(&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#str"><span class="hs-identifier hs-var hs-var">str</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057875"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058676"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;)&quot;</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
 </span><span id="line-124"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; String
 </span><span class="hs-identifier hs-var">unwords</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679057878"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058679"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\\left{&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; String
 forall a. [a] -&gt; [[a]] -&gt; [a]
 </span><span class="hs-identifier hs-var">intercalate</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; , &quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">VarLabeller -&gt; [Int] -&gt; [String]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057880"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
-</span><a href="#local-6989586621679057876"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058681"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058677"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\\right}&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;(&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#str"><span class="hs-identifier hs-var hs-var">str</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057875"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058676"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;)&quot;</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span>
 </span><span id="line-125"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Int] -&gt; Bdd -&gt; Bdd
-</span><a href="#local-6989586621679057877"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
-</span><a href="#local-6989586621679057876"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058678"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058677"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#bdd"><span class="hs-identifier hs-var hs-var">bdd</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057875"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679058676"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-126"></span><span>
 </span><span id="line-127"></span><span class="hs-comment">{-
       Nullary operators
@@ -374,17 +374,17 @@ forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span id="line-139"></span><span class="hs-comment">-- p_0</span><span>
 </span><span id="line-140"></span><span class="annot"><a href="PrintableBdd.html#varl"><span class="hs-identifier hs-type">varl</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span>
 </span><span id="line-141"></span><span id="varl"><span class="annot"><span class="annottext">varl :: VarLabeller -&gt; VarLabeller -&gt; Int -&gt; Bdd
-</span><a href="PrintableBdd.html#varl"><span class="hs-identifier hs-var hs-var">varl</span></a></span></span><span> </span><span id="local-6989586621679057874"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057874"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679057873"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057873"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span id="local-6989586621679057872"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057872"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
+</span><a href="PrintableBdd.html#varl"><span class="hs-identifier hs-var hs-var">varl</span></a></span></span><span> </span><span id="local-6989586621679058675"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058675"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679058674"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058674"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span id="local-6989586621679058673"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058673"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#nullary"><span class="hs-identifier hs-var">nullary</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057874"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057872"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057873"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057872"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Bdd
+</span><a href="#local-6989586621679058675"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058673"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058674"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058673"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Bdd
 </span><span class="hs-identifier hs-var">B.var</span></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057872"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679058673"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-142"></span><span>
 </span><span id="line-143"></span><span class="hs-comment">-- | Encode an unlabelled integer as a BDD variable. The variable is indexed by any integer from 0 to 1.000.000.</span><span>
 </span><span id="line-144"></span><span class="annot"><a href="PrintableBdd.html#var"><span class="hs-identifier hs-type">var</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span>
@@ -520,9 +520,9 @@ Negation.
 </span><span id="line-228"></span><span class="hs-comment">-- \\forall p_0 (p_0 \\rightarrow p_1)</span><span>
 </span><span id="line-229"></span><span class="annot"><a href="PrintableBdd.html#foralll"><span class="hs-identifier hs-type">foralll</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span>
 </span><span id="line-230"></span><span id="foralll"><span class="annot"><span class="annottext">foralll :: VarLabeller -&gt; VarLabeller -&gt; Int -&gt; Bdd -&gt; Bdd
-</span><a href="PrintableBdd.html#foralll"><span class="hs-identifier hs-var hs-var">foralll</span></a></span></span><span> </span><span id="local-6989586621679057862"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057862"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679057861"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057861"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">VarLabeller
+</span><a href="PrintableBdd.html#foralll"><span class="hs-identifier hs-var hs-var">foralll</span></a></span></span><span> </span><span id="local-6989586621679058663"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058663"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679058662"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058662"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">VarLabeller
 -&gt; VarLabeller
 -&gt; String
 -&gt; String
@@ -531,8 +531,8 @@ Negation.
 -&gt; Bdd
 -&gt; Bdd
 </span><a href="PrintableBdd.html#quant"><span class="hs-identifier hs-var">quant</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057862"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057861"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058663"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058662"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;&#8704;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\\forall&quot;</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Bdd -&gt; Bdd
 </span><span class="hs-identifier hs-var">B.forall</span></span><span>
@@ -561,9 +561,9 @@ forall a. Show a =&gt; a -&gt; String
 </span><span id="line-247"></span><span class="hs-comment">-- \\exists (p_0 \\rightarrow p_1) </span><span>
 </span><span id="line-248"></span><span class="annot"><a href="PrintableBdd.html#existsl"><span class="hs-identifier hs-type">existsl</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span>
 </span><span id="line-249"></span><span id="existsl"><span class="annot"><span class="annottext">existsl :: VarLabeller -&gt; VarLabeller -&gt; Int -&gt; Bdd -&gt; Bdd
-</span><a href="PrintableBdd.html#existsl"><span class="hs-identifier hs-var hs-var">existsl</span></a></span></span><span> </span><span id="local-6989586621679057859"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057859"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679057858"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057858"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">VarLabeller
+</span><a href="PrintableBdd.html#existsl"><span class="hs-identifier hs-var hs-var">existsl</span></a></span></span><span> </span><span id="local-6989586621679058660"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058660"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679058659"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058659"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">VarLabeller
 -&gt; VarLabeller
 -&gt; String
 -&gt; String
@@ -572,8 +572,8 @@ forall a. Show a =&gt; a -&gt; String
 -&gt; Bdd
 -&gt; Bdd
 </span><a href="PrintableBdd.html#quant"><span class="hs-identifier hs-var">quant</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057859"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057858"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058660"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058659"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;&#8707;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\\exists&quot;</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Bdd -&gt; Bdd
 </span><span class="hs-identifier hs-var">B.exists</span></span><span>
@@ -602,9 +602,9 @@ forall a. Show a =&gt; a -&gt; String
 </span><span id="line-266"></span><span class="hs-comment">-- \\forall \\left{ p_0, p_1 \\right} (p_0 \\rightarrow p_1)</span><span>
 </span><span id="line-267"></span><span class="annot"><a href="PrintableBdd.html#forallSetl"><span class="hs-identifier hs-type">forallSetl</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span>
 </span><span id="line-268"></span><span id="forallSetl"><span class="annot"><span class="annottext">forallSetl :: VarLabeller -&gt; VarLabeller -&gt; [Int] -&gt; Bdd -&gt; Bdd
-</span><a href="PrintableBdd.html#forallSetl"><span class="hs-identifier hs-var hs-var">forallSetl</span></a></span></span><span> </span><span id="local-6989586621679057856"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057856"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679057855"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057855"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">VarLabeller
+</span><a href="PrintableBdd.html#forallSetl"><span class="hs-identifier hs-var hs-var">forallSetl</span></a></span></span><span> </span><span id="local-6989586621679058657"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058657"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679058656"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058656"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">VarLabeller
 -&gt; VarLabeller
 -&gt; String
 -&gt; String
@@ -613,8 +613,8 @@ forall a. Show a =&gt; a -&gt; String
 -&gt; Bdd
 -&gt; Bdd
 </span><a href="PrintableBdd.html#quantSet"><span class="hs-identifier hs-var">quantSet</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057856"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057855"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058657"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058656"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;&#8704;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\\forall&quot;</span></span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Bdd -&gt; Bdd
 </span><span class="hs-identifier hs-var">B.forallSet</span></span><span>
@@ -643,9 +643,9 @@ forall a. Show a =&gt; a -&gt; String
 </span><span id="line-285"></span><span class="hs-comment">-- \\exists \\left{ p_0, p_1 \\right} (p_0 \\rightarrow p_1)</span><span>
 </span><span id="line-286"></span><span class="annot"><a href="PrintableBdd.html#existsSetl"><span class="hs-identifier hs-type">existsSetl</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span>
 </span><span id="line-287"></span><span id="existsSetl"><span class="annot"><span class="annottext">existsSetl :: VarLabeller -&gt; VarLabeller -&gt; [Int] -&gt; Bdd -&gt; Bdd
-</span><a href="PrintableBdd.html#existsSetl"><span class="hs-identifier hs-var hs-var">existsSetl</span></a></span></span><span> </span><span id="local-6989586621679057853"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057853"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679057852"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057852"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">VarLabeller
+</span><a href="PrintableBdd.html#existsSetl"><span class="hs-identifier hs-var hs-var">existsSetl</span></a></span></span><span> </span><span id="local-6989586621679058654"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058654"><span class="hs-identifier hs-var">ls</span></a></span></span><span> </span><span id="local-6989586621679058653"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058653"><span class="hs-identifier hs-var">lt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">VarLabeller
 -&gt; VarLabeller
 -&gt; String
 -&gt; String
@@ -654,8 +654,8 @@ forall a. Show a =&gt; a -&gt; String
 -&gt; Bdd
 -&gt; Bdd
 </span><a href="PrintableBdd.html#quantSet"><span class="hs-identifier hs-var">quantSet</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057853"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057852"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058654"><span class="hs-identifier hs-var">ls</span></a></span><span> </span><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058653"><span class="hs-identifier hs-var">lt</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;&#8707;&quot;</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\\exists&quot;</span></span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Bdd -&gt; Bdd
 </span><span class="hs-identifier hs-var">B.existsSet</span></span><span>
@@ -721,45 +721,45 @@ forall a. Show a =&gt; a -&gt; String
 </span><span id="line-326"></span><span class="hs-comment">-- [var0\&#8868;](foo)</span><span>
 </span><span id="line-327"></span><span class="annot"><a href="PrintableBdd.html#substitl"><span class="hs-identifier hs-type">substitl</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="PrintableBdd.html#VarLabeller"><span class="hs-identifier hs-type">VarLabeller</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-type">Bdd</span></a></span><span>
 </span><span id="line-328"></span><span id="substitl"><span class="annot"><span class="annottext">substitl :: VarLabeller -&gt; Int -&gt; Bdd -&gt; Bdd -&gt; Bdd
-</span><a href="PrintableBdd.html#substitl"><span class="hs-identifier hs-var hs-var">substitl</span></a></span></span><span> </span><span id="local-6989586621679057847"><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057847"><span class="hs-identifier hs-var">l</span></a></span></span><span> </span><span id="local-6989586621679057846"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057846"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span id="local-6989586621679057845"><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057845"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679057844"><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057844"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
+</span><a href="PrintableBdd.html#substitl"><span class="hs-identifier hs-var hs-var">substitl</span></a></span></span><span> </span><span id="local-6989586621679058648"><span class="annot"><span class="annottext">VarLabeller
+</span><a href="#local-6989586621679058648"><span class="hs-identifier hs-var">l</span></a></span></span><span> </span><span id="local-6989586621679058647"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058647"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span id="local-6989586621679058646"><span class="annot"><span class="annottext">Bdd
+</span><a href="#local-6989586621679058646"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679058645"><span class="annot"><span class="annottext">Bdd
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#Bdd"><span class="hs-identifier hs-var">Bdd</span></a></span><span>
 </span><span id="line-329"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; String
 forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;[&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057847"><span class="hs-identifier hs-var">l</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057846"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058648"><span class="hs-identifier hs-var">l</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058647"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\\&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#str"><span class="hs-identifier hs-var hs-var">str</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057845"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058646"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;](&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#str"><span class="hs-identifier hs-var hs-var">str</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057844"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;)&quot;</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
 </span><span id="line-330"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[String] -&gt; String
 forall (t :: * -&gt; *) a. Foldable t =&gt; t [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">concat</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\\left[ &quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">VarLabeller
-</span><a href="#local-6989586621679057847"><span class="hs-identifier hs-var">l</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057846"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058648"><span class="hs-identifier hs-var">l</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058647"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; \\setminus &quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#tex"><span class="hs-identifier hs-var hs-var">tex</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057845"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058646"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\\right]\\left( &quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bdd -&gt; String
 </span><a href="PrintableBdd.html#tex"><span class="hs-identifier hs-var hs-var">tex</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057844"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; )&quot;</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
 </span><span id="line-331"></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Bdd -&gt; Bdd -&gt; Bdd
 </span><span class="hs-identifier hs-var">B.substit</span></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679057846"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058647"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#bdd"><span class="hs-identifier hs-var hs-var">bdd</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057845"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
+</span><a href="#local-6989586621679058646"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bdd -&gt; Bdd
 </span><a href="PrintableBdd.html#bdd"><span class="hs-identifier hs-var hs-var">bdd</span></a></span><span> </span><span class="annot"><span class="annottext">Bdd
-</span><a href="#local-6989586621679057844"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679058645"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-332"></span><span>
 </span><span id="line-333"></span><span class="hs-comment">-- | Unlabelled substitution.</span><span>
 </span><span id="line-334"></span><span class="hs-comment">--</span><span>
