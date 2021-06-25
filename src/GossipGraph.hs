@@ -75,11 +75,11 @@ printGraph = prettyPrint
 
 -- | Simple graph to be used for testing
 testGraph :: GossipGraph
-testGraph = initialGraph 3 [('a', ['a', 'b']), ('b', ['b', 'c']), ('c', ['c'])]
+testGraph = initialGraph 3 [('a',['a','b']),('b',['b','c']),('c',['c'])]
 
 -- | Another simple graph with slightly different number relations. 
 testGraph2 :: GossipGraph
-testGraph2 = initialGraph 3 [('a',['a','b','c']), ('b',['b']), ('c',['c'])]
+testGraph2 = initialGraph 3 [('a',['a','b','c']),('b',['b']),('c',['c'])]
 
 -- | A slightly bigger graph, with five instead of three agents. 
 biggerGraph :: GossipGraph
