@@ -540,6 +540,7 @@ texifyBddVar :: Int -> Int -> String
 data Form
 Fact :: Bdd -> Form
 K :: Agent -> Form -> Form
+M :: Agent -> Form -> Form
 
 -- | A recursively defined propositional formula build out of GossipAtoms.
 data GossipForm
@@ -680,9 +681,10 @@ tester :: Int -> Bool
 module GossipProtocol
 
 -- | Placeholder (definitely needs updating!)
-type GossipProtocol = Int -> Call -> Form
+type GossipProtocol = Int -> GossipKnowledgeStructure -> Call -> Form
 callAny :: GossipProtocol
 learnNewSecrets :: GossipProtocol
+possibleInformationGrowth :: GossipProtocol
 
 -- | Chooses the <tt>best</tt> call using the rules stated in the protocol
 --   and the allowed calls. This might also be no call, hence Maybe.

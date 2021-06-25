@@ -20,42 +20,42 @@
 </span><span id="line-20"></span><span>
 </span><span id="line-21"></span><span class="annot"><a href="GossipTypes.html#%260E"><span class="hs-operator hs-type">(&#9742;)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#Agent"><span class="hs-identifier hs-type">Agent</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipTypes.html#Agent"><span class="hs-identifier hs-type">Agent</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span>
 </span><span id="line-22"></span><span id="%260E"><span class="annot"><span class="annottext">&#9742; :: Agent -&gt; Agent -&gt; Call
-</span><a href="GossipTypes.html#%260E"><span class="hs-operator hs-var hs-var">(&#9742;)</span></a></span></span><span> </span><span id="local-6989586621679057856"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057856"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679057855"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057855"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057856"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057855"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span>
+</span><a href="GossipTypes.html#%260E"><span class="hs-operator hs-var hs-var">(&#9742;)</span></a></span></span><span> </span><span id="local-6989586621679058072"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058072"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679058071"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058071"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058072"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058071"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-23"></span><span class="hs-keyword">infix</span><span> </span><span class="hs-number">0</span><span> </span><span class="annot"><a href="GossipTypes.html#%260E"><span class="hs-operator hs-type">&#9742;</span></a></span><span>
 </span><span id="line-24"></span><span>
 </span><span id="line-25"></span><span class="annot"><a href="GossipTypes.html#toCalls"><span class="hs-identifier hs-type">toCalls</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-26"></span><span id="toCalls"><span class="annot"><span class="annottext">toCalls :: GroupCall -&gt; [Call]
-</span><a href="GossipTypes.html#toCalls"><span class="hs-identifier hs-var hs-var">toCalls</span></a></span></span><span> </span><span id="local-6989586621679057853"><span class="annot"><span class="annottext">g :: GroupCall
-</span><a href="#local-6989586621679057853"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679057852"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057852"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679057851"><span class="annot"><span class="annottext">[Agent]
-</span><a href="#local-6989586621679057851"><span class="hs-identifier hs-var">to</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057852"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057850"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679057850"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057850"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[Agent]
-</span><a href="#local-6989586621679057851"><span class="hs-identifier hs-var">to</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[Call] -&gt; [Call] -&gt; [Call]
+</span><a href="GossipTypes.html#toCalls"><span class="hs-identifier hs-var hs-var">toCalls</span></a></span></span><span> </span><span id="local-6989586621679058069"><span class="annot"><span class="annottext">g :: GroupCall
+</span><a href="#local-6989586621679058069"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679058068"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058068"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058067"><span class="annot"><span class="annottext">[Agent]
+</span><a href="#local-6989586621679058067"><span class="hs-identifier hs-var">to</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058068"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058066"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679058066"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058066"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[Agent]
+</span><a href="#local-6989586621679058067"><span class="hs-identifier hs-var">to</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[Call] -&gt; [Call] -&gt; [Call]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057849"><span class="hs-identifier hs-var">t1</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057848"><span class="hs-identifier hs-var">t2</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679057849"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057849"><span class="hs-identifier hs-var">t1</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[Agent]
-</span><a href="#local-6989586621679057851"><span class="hs-identifier hs-var">to</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679057848"><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057848"><span class="hs-identifier hs-var">t2</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[Agent]
-</span><a href="#local-6989586621679057851"><span class="hs-identifier hs-var">to</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057849"><span class="hs-identifier hs-var">t1</span></a></span><span> </span><span class="annot"><span class="annottext">Agent -&gt; Agent -&gt; Bool
+</span><a href="#local-6989586621679058065"><span class="hs-identifier hs-var">t1</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058064"><span class="hs-identifier hs-var">t2</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span id="local-6989586621679058065"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058065"><span class="hs-identifier hs-var">t1</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[Agent]
+</span><a href="#local-6989586621679058067"><span class="hs-identifier hs-var">to</span></a></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058064"><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058064"><span class="hs-identifier hs-var">t2</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">[Agent]
+</span><a href="#local-6989586621679058067"><span class="hs-identifier hs-var">to</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Agent
+</span><a href="#local-6989586621679058065"><span class="hs-identifier hs-var">t1</span></a></span><span> </span><span class="annot"><span class="annottext">Agent -&gt; Agent -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">/=</span></span><span> </span><span class="annot"><span class="annottext">Agent
-</span><a href="#local-6989586621679057848"><span class="hs-identifier hs-var">t2</span></a></span><span class="hs-special">]</span><span>
+</span><a href="#local-6989586621679058064"><span class="hs-identifier hs-var">t2</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-27"></span><span>
 </span><span id="line-28"></span><span class="annot"><a href="GossipTypes.html#showAgent"><span class="hs-identifier hs-type">showAgent</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#Agent"><span class="hs-identifier hs-type">Agent</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
 </span><span id="line-29"></span><span id="showAgent"><span class="annot"><span class="annottext">showAgent :: Agent -&gt; String
 </span><a href="GossipTypes.html#showAgent"><span class="hs-identifier hs-var hs-var">showAgent</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679057845"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057845"><span class="hs-identifier hs-var">lab</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057845"><span class="hs-identifier hs-var">lab</span></a></span><span class="hs-special">]</span><span>
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058061"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679058061"><span class="hs-identifier hs-var">lab</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679058061"><span class="hs-identifier hs-var">lab</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-30"></span><span>
 </span><span id="line-31"></span><span class="annot"><a href="GossipTypes.html#printNoCalls"><span class="hs-identifier hs-type">printNoCalls</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-32"></span><span id="printNoCalls"><span class="annot"><span class="annottext">printNoCalls :: IO ()
@@ -74,10 +74,10 @@ forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span id="line-37"></span><span class="annot"><a href="GossipTypes.html#printCall"><span class="hs-identifier hs-type">printCall</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-38"></span><span id="printCall"><span class="annot"><span class="annottext">printCall :: Call -&gt; IO ()
 </span><a href="GossipTypes.html#printCall"><span class="hs-identifier hs-var hs-var">printCall</span></a></span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679057838"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057838"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679057837"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057837"><span class="hs-identifier hs-var">j</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058054"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679058054"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058053"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679058053"><span class="hs-identifier hs-var">j</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-39"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; IO ()
 </span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; IO ()) -&gt; String -&gt; IO ()
 forall a b. (a -&gt; b) -&gt; a -&gt; b
@@ -87,7 +87,7 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String
 forall a. Show a =&gt; a -&gt; String
 </span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057838"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679058054"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;,&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
@@ -95,7 +95,7 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String
 forall a. Show a =&gt; a -&gt; String
 </span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057837"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679058053"><span class="hs-identifier hs-var">j</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;) &quot;</span></span><span>
@@ -103,10 +103,10 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span id="line-41"></span><span class="annot"><a href="GossipTypes.html#printMakeCall"><span class="hs-identifier hs-type">printMakeCall</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-42"></span><span id="printMakeCall"><span class="annot"><span class="annottext">printMakeCall :: Call -&gt; IO ()
 </span><a href="GossipTypes.html#printMakeCall"><span class="hs-identifier hs-var hs-var">printMakeCall</span></a></span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span id="local-6989586621679057834"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057834"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span id="local-6989586621679057833"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057833"><span class="hs-identifier hs-var">n</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span id="local-6989586621679058050"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679058050"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span id="local-6989586621679058049"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679058049"><span class="hs-identifier hs-var">n</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-43"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; IO ()
 </span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\nMaking call between &quot;</span></span><span>
@@ -117,7 +117,7 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String
 forall a. Show a =&gt; a -&gt; String
 </span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057834"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><a href="#local-6989586621679058050"><span class="hs-identifier hs-var">m</span></a></span><span>
 </span><span id="line-45"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; IO ()
 </span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; and &quot;</span></span><span>
@@ -128,25 +128,25 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String
 forall a. Show a =&gt; a -&gt; String
 </span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057833"><span class="hs-identifier hs-var">n</span></a></span><span>
+</span><a href="#local-6989586621679058049"><span class="hs-identifier hs-var">n</span></a></span><span>
 </span><span id="line-47"></span><span>
 </span><span id="line-48"></span><span class="annot"><a href="GossipTypes.html#printCalls"><span class="hs-identifier hs-type">printCalls</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-49"></span><span id="printCalls"><span class="annot"><span class="annottext">printCalls :: [Call] -&gt; IO ()
 </span><a href="GossipTypes.html#printCalls"><span class="hs-identifier hs-var hs-var">printCalls</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">IO ()
 </span><a href="GossipTypes.html#printNoCalls"><span class="hs-identifier hs-var">printNoCalls</span></a></span><span>
-</span><span id="line-50"></span><span class="annot"><a href="GossipTypes.html#printCalls"><span class="hs-identifier hs-var">printCalls</span></a></span><span> </span><span id="local-6989586621679057829"><span class="annot"><span class="annottext">[Call]
-</span><a href="#local-6989586621679057829"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Call -&gt; IO ()) -&gt; [Call] -&gt; IO ()
+</span><span id="line-50"></span><span class="annot"><a href="GossipTypes.html#printCalls"><span class="hs-identifier hs-var">printCalls</span></a></span><span> </span><span id="local-6989586621679058045"><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058045"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Call -&gt; IO ()) -&gt; [Call] -&gt; IO ()
 forall (t :: * -&gt; *) (m :: * -&gt; *) a b.
 (Foldable t, Monad m) =&gt;
 (a -&gt; m b) -&gt; t a -&gt; m ()
 </span><span class="hs-identifier hs-var">mapM_</span></span><span> </span><span class="annot"><span class="annottext">Call -&gt; IO ()
 </span><a href="GossipTypes.html#printCall"><span class="hs-identifier hs-var">printCall</span></a></span><span> </span><span class="annot"><span class="annottext">[Call]
-</span><a href="#local-6989586621679057829"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><a href="#local-6989586621679058045"><span class="hs-identifier hs-var">c</span></a></span><span>
 </span><span id="line-51"></span><span>
 </span><span id="line-52"></span><span class="annot"><a href="GossipTypes.html#printGroupCall"><span class="hs-identifier hs-type">printGroupCall</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-53"></span><span id="printGroupCall"><span class="annot"><span class="annottext">printGroupCall :: GroupCall -&gt; IO ()
-</span><a href="GossipTypes.html#printGroupCall"><span class="hs-identifier hs-var hs-var">printGroupCall</span></a></span></span><span> </span><span id="local-6989586621679057826"><span class="annot"><span class="annottext">GroupCall
-</span><a href="#local-6989586621679057826"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><a href="GossipTypes.html#printGroupCall"><span class="hs-identifier hs-var hs-var">printGroupCall</span></a></span></span><span> </span><span id="local-6989586621679058042"><span class="annot"><span class="annottext">GroupCall
+</span><a href="#local-6989586621679058042"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-54"></span><span>  </span><span class="annot"><span class="annottext">Color -&gt; String -&gt; IO ()
 </span><a href="Util.html#putStrFgc"><span class="hs-identifier hs-var">putStrFgc</span></a></span><span> </span><span class="annot"><span class="annottext">Color
 </span><span class="hs-identifier hs-var">Green</span></span><span> </span><span class="annot"><span class="annottext">String
@@ -158,21 +158,21 @@ forall (t :: * -&gt; *) (m :: * -&gt; *) a b.
 </span><span class="hs-identifier hs-var">mapM_</span></span><span> </span><span class="annot"><span class="annottext">Call -&gt; IO ()
 </span><a href="GossipTypes.html#printCall"><span class="hs-identifier hs-var">printCall</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">GroupCall -&gt; [Call]
 </span><a href="GossipTypes.html#toCalls"><span class="hs-identifier hs-var">toCalls</span></a></span><span> </span><span class="annot"><span class="annottext">GroupCall
-</span><a href="#local-6989586621679057826"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679058042"><span class="hs-identifier hs-var">g</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-56"></span><span>
 </span><span id="line-57"></span><span class="annot"><a href="GossipTypes.html#printMakeGroupCall"><span class="hs-identifier hs-type">printMakeGroupCall</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-58"></span><span id="printMakeGroupCall"><span class="annot"><span class="annottext">printMakeGroupCall :: GroupCall -&gt; IO ()
 </span><a href="GossipTypes.html#printMakeGroupCall"><span class="hs-identifier hs-var hs-var">printMakeGroupCall</span></a></span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Node
-</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span id="local-6989586621679057824"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057824"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span id="local-6989586621679057823"><span class="annot"><span class="annottext">[Agent]
-</span><a href="#local-6989586621679057823"><span class="hs-identifier hs-var">to</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span id="local-6989586621679058040"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679058040"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058039"><span class="annot"><span class="annottext">[Agent]
+</span><a href="#local-6989586621679058039"><span class="hs-identifier hs-var">to</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-59"></span><span>  </span><span class="annot"><span class="annottext">String -&gt; IO ()
 </span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;\nMaking group call initialised by &quot;</span></span><span>
 </span><span id="line-60"></span><span>  </span><span class="annot"><span class="annottext">Color -&gt; String -&gt; IO ()
 </span><a href="Util.html#putStrFgc"><span class="hs-identifier hs-var">putStrFgc</span></a></span><span> </span><span class="annot"><span class="annottext">Color
 </span><span class="hs-identifier hs-var">Green</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679057824"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">]</span><span>
+</span><a href="#local-6989586621679058040"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-61"></span><span>  </span><span class="annot"><span class="annottext">String -&gt; IO ()
 </span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; to: &quot;</span></span><span>
@@ -190,38 +190,38 @@ forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Agent -&gt; Char
 forall a b. (a, b) -&gt; b
 </span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">[Agent]
-</span><a href="#local-6989586621679057823"><span class="hs-identifier hs-var">to</span></a></span><span>
+</span><a href="#local-6989586621679058039"><span class="hs-identifier hs-var">to</span></a></span><span>
 </span><span id="line-63"></span><span>
 </span><span id="line-64"></span><span class="annot"><a href="GossipTypes.html#printGroupCalls"><span class="hs-identifier hs-type">printGroupCalls</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-65"></span><span id="printGroupCalls"><span class="annot"><span class="annottext">printGroupCalls :: [GroupCall] -&gt; IO ()
 </span><a href="GossipTypes.html#printGroupCalls"><span class="hs-identifier hs-var hs-var">printGroupCalls</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">IO ()
 </span><a href="GossipTypes.html#printNoCalls"><span class="hs-identifier hs-var">printNoCalls</span></a></span><span>
-</span><span id="line-66"></span><span class="annot"><a href="GossipTypes.html#printGroupCalls"><span class="hs-identifier hs-var">printGroupCalls</span></a></span><span> </span><span id="local-6989586621679057820"><span class="annot"><span class="annottext">[GroupCall]
-</span><a href="#local-6989586621679057820"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(GroupCall -&gt; IO ()) -&gt; [GroupCall] -&gt; IO ()
+</span><span id="line-66"></span><span class="annot"><a href="GossipTypes.html#printGroupCalls"><span class="hs-identifier hs-var">printGroupCalls</span></a></span><span> </span><span id="local-6989586621679058036"><span class="annot"><span class="annottext">[GroupCall]
+</span><a href="#local-6989586621679058036"><span class="hs-identifier hs-var">g</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(GroupCall -&gt; IO ()) -&gt; [GroupCall] -&gt; IO ()
 forall (t :: * -&gt; *) (m :: * -&gt; *) a b.
 (Foldable t, Monad m) =&gt;
 (a -&gt; m b) -&gt; t a -&gt; m ()
 </span><span class="hs-identifier hs-var">mapM_</span></span><span> </span><span class="annot"><span class="annottext">GroupCall -&gt; IO ()
 </span><a href="GossipTypes.html#printGroupCall"><span class="hs-identifier hs-var">printGroupCall</span></a></span><span> </span><span class="annot"><span class="annottext">[GroupCall]
-</span><a href="#local-6989586621679057820"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><a href="#local-6989586621679058036"><span class="hs-identifier hs-var">g</span></a></span><span>
 </span><span id="line-67"></span><span>
 </span><span id="line-68"></span><span class="annot"><a href="GossipTypes.html#printAllCalls"><span class="hs-identifier hs-type">printAllCalls</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#Call"><span class="hs-identifier hs-type">Call</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GossipTypes.html#GroupCall"><span class="hs-identifier hs-type">GroupCall</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><span id="line-69"></span><span id="printAllCalls"><span class="annot"><span class="annottext">printAllCalls :: ([Call], [GroupCall]) -&gt; IO ()
-</span><a href="GossipTypes.html#printAllCalls"><span class="hs-identifier hs-var hs-var">printAllCalls</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679057818"><span class="annot"><span class="annottext">[Call]
-</span><a href="#local-6989586621679057818"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679057817"><span class="annot"><span class="annottext">[GroupCall]
-</span><a href="#local-6989586621679057817"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><a href="GossipTypes.html#printAllCalls"><span class="hs-identifier hs-var hs-var">printAllCalls</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058034"><span class="annot"><span class="annottext">[Call]
+</span><a href="#local-6989586621679058034"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058033"><span class="annot"><span class="annottext">[GroupCall]
+</span><a href="#local-6989586621679058033"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-70"></span><span>  </span><span class="annot"><span class="annottext">Color -&gt; String -&gt; IO ()
 </span><a href="Util.html#putStrLnFgc"><span class="hs-identifier hs-var">putStrLnFgc</span></a></span><span> </span><span class="annot"><span class="annottext">Color
 </span><span class="hs-identifier hs-var">Yellow</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;Direct calls:&quot;</span></span><span>
 </span><span id="line-71"></span><span>  </span><span class="annot"><span class="annottext">[Call] -&gt; IO ()
 </span><a href="GossipTypes.html#printCalls"><span class="hs-identifier hs-var">printCalls</span></a></span><span> </span><span class="annot"><span class="annottext">[Call]
-</span><a href="#local-6989586621679057818"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><a href="#local-6989586621679058034"><span class="hs-identifier hs-var">c</span></a></span><span>
 </span><span id="line-72"></span><span>  </span><span class="annot"><span class="annottext">Color -&gt; String -&gt; IO ()
 </span><a href="Util.html#putStrLnFgc"><span class="hs-identifier hs-var">putStrLnFgc</span></a></span><span> </span><span class="annot"><span class="annottext">Color
 </span><span class="hs-identifier hs-var">Yellow</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;Group calls:&quot;</span></span><span>
 </span><span id="line-73"></span><span>  </span><span class="annot"><span class="annottext">[GroupCall] -&gt; IO ()
 </span><a href="GossipTypes.html#printGroupCalls"><span class="hs-identifier hs-var">printGroupCalls</span></a></span><span> </span><span class="annot"><span class="annottext">[GroupCall]
-</span><a href="#local-6989586621679057817"><span class="hs-identifier hs-var">g</span></a></span><span>
+</span><a href="#local-6989586621679058033"><span class="hs-identifier hs-var">g</span></a></span><span>
 </span><span id="line-74"></span></pre></body></html>
