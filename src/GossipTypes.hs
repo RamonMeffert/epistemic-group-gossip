@@ -25,7 +25,7 @@ module GossipTypes
   , printCall
   , printCalls
   , printMakeCall
-    -- * Group
+    -- * Group calls
   , printGroupCall
   , printGroupCalls
   , printMakeGroupCall
