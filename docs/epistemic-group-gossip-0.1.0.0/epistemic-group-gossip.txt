@@ -314,6 +314,7 @@ printGraphComplete :: IO ()
 --   language, for which Graphviz needs to be installed.
 writeToSvgGraph :: String -> Bdd -> IO ()
 
+
 module GossipTypes
 
 -- | The type of an agent. Agents are always defined in terms of a
@@ -691,6 +692,7 @@ instance GHC.Classes.Eq GossipKnowledge.GossipKnowledgeStructure
 instance GHC.Show.Show GossipKnowledge.GossipKnowledgeStructure
 instance GHC.Show.Show GossipKnowledge.Form
 instance GHC.Show.Show GossipKnowledge.GossipAtom
+
 
 module GossipState
 
