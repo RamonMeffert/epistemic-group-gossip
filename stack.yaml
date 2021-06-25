@@ -2,7 +2,6 @@ resolver: lts-17.12
 
 packages:
 - .
-- cudd
 
 extra-deps:
 - HasCacBDD-0.1.0.3
