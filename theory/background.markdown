@@ -39,6 +39,27 @@ gossip graph before every agent knows all secret to say that $$\frac{n - 2}{k -
 group calls between $$k$$ agents, and $$1 \leq n \leq k^2$$, and
 $$2(\frac{n-2}{k -1})$$ for $$n > k^2$$.
 
+### Gossip protocols
+
+To determine which calls are allowed on a gossip graph, the notion of _Gossip
+Protocols_ is used. These exist in both epistemic and "regular" variants. A
+protocol is a combination of a protocol condition and a deterministic algorithm:
+
+```
+repeat forever
+    select agent v ∈ A such that condition φ(u, v) is satisfied 
+    execute call uv
+```
+
+(Source: Van Ditmarsch (2017)[^dit17])
+
+Currently, the project contains the following
+protocols:
+
+- ANY:  $$\varphi(x, y) := \top$$
+- Learn New Secrets:  $$\varphi(x, y) := \neg S(x, y)$$
+- Possible Information Growth: $$\varphi(x, y) := \hat{K}_x \bigvee_{z \in A} (S(x, z) \leftrightarrow \neg S(y, z)) $$
+
 ### Modelling
 
 #### Knowledge Structures
