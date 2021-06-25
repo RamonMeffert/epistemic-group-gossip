@@ -85,7 +85,7 @@ Once the graph is initialized, the user can choose the model operation mode; *us
 ### Actions
 As for the *user actions*, the user can choose between multiple actions. First action is to perform a *call*. Secondly, the user can view the possible calls. Finally there is the possibility of viewing the current state of the model.
 
-During a *protocol action*, the model will first determine all the calls that are allowed. This includes all the single calls (i.e. all pairs of $xy$ such that $Nxy$), and group calls (i.e. all $xY$ such that $x\in N$ and $Y\subseteq (N\setminus x)$ such that $\forall y\in Y\ :\ Nxy$). Then, the protocol is used to filter those calls that can be made using the rule defined in the protocol (e.g. for the learn-new-secrets (LNS) protocol this are all the calls $(x,y)$ such that $Nxy\wedge\neg Sxy$). Once there are both direct- and group calls left, the user may choose which type of call is actually executed, otherwise the one type is chosen. Then, the first call of this type is performed. 
+During a *protocol action*, the model will first determine all the calls that are allowed. This includes all the single calls (i.e. all pairs of $$xy$$ such that $$Nxy$$), and group calls (i.e. all $$xY$$ such that $$x\in N$$ and $$Y\subseteq (N\setminus x)$$ and $$\forall y\in Y\ :\ Nxy$$). Then, the protocol is used to filter those calls that can be made using the rule defined in the protocol (e.g. for the learn-new-secrets (LNS) protocol this are all the calls $$(x,y)$$ such that $$Nxy\wedge\neg Sxy$$). Once there are both direct- and group calls left, the user may choose which type of call is actually executed, otherwise the one type is chosen. Then, the first call of this type is performed. 
 
 ### Making a call
 
