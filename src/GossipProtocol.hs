@@ -24,7 +24,6 @@ possibleInformationGrowth :: GossipProtocol
 possibleInformationGrowth n (GKS v t o) (x, y) = M x (Fact fullCond)
     where
         allAgents = keys o
-        n = length allAgents
         -- | V \ O_x
         relevantAtoms = v \\ (o ! x)
         -- | S(x, z)
