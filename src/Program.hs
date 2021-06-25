@@ -60,11 +60,15 @@ runProgram = do
       setSGR [SetColor Foreground Vivid actionColor]
       putStr "a"
       setSGR [Reset]
-      putStr ")ny or ("
+      putStr ")ny, ("
       setSGR [SetColor Foreground Vivid actionColor]
       putStr "l"
       setSGR [Reset]
-      putStr ")earn-new-secrets?"
+      putStr ")earn-new-secrets or ("
+      setSGR [SetColor Foreground Vivid actionColor]
+      putStr "p"
+      setSGR [Reset]
+      putStrLn ")ossible-information-growth?"
 
     obtainProtocol :: IO GossipProtocol
     obtainProtocol = do
@@ -73,6 +77,7 @@ runProgram = do
       case prot of
         "a" -> return callAny
         "l" -> return learnNewSecrets
+        "p" -> return possibleInformationGrowth
         other -> do
           printInvalidAction other
           obtainProtocol
