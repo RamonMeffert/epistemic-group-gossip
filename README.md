@@ -5,7 +5,7 @@
 
 ### Precompiled executable
 
-An executable is available for Linux and macOS. These are available under [Releases](./releases). Before running, you have to allow executing the file using `chmod +x egg-{os}` where `{os}` is `macOS` or `Linux`. When running on macOS, you might get a warning that the file is not signed (’“egg-macOS” cannot be executed because the developer cannot be verified’). To get around this, open System Preferences » Security & Privacy » General and click “Allow anyway”. Then, you can run the app using `./egg-{os}` (where `{os}` is `macOS` or `Linux` again) from the directory it is in.
+An executable is available for Linux and macOS. These are available under [Releases](https://github.com/RamonMeffert/epistemic-group-gossip/releases). Before running, you have to allow executing the file using `chmod +x egg-{os}` where `{os}` is `macOS` or `Linux`. When running on macOS, you might get a warning that the file is not signed (’“egg-macOS” cannot be executed because the developer cannot be verified’). To get around this, open System Preferences » Security & Privacy » General and click “Allow anyway”. Then, you can run the app using `./egg-{os}` (where `{os}` is `macOS` or `Linux` again) from the directory it is in.
 
 ### Building and running manually
 
