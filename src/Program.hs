@@ -64,7 +64,6 @@ runProgram = do
           printInvalidAction other
           obtainPredefinedGraph
 
-
     printInitGraphOptions :: IO ()
     printInitGraphOptions = do
       putStr "\nLoad ("
@@ -81,11 +80,11 @@ runProgram = do
     printParseGraphRequirements = do
       putStrLn "\nThe input should be of the form:"
       putStrFgc Green "n"
-      putStr "[('[a1]',['[na1]','[na2]','...'])], where "
+      putStr " [('[a1]',['[na1]','[na2]','...'])], where "
       putStrFgc Green "[a1]"
       putStr " is the name of agent as a char, and "
       putStrFgc Green "['[na1]','[na2]','...']"
-      putStr " a list of all the agents, knows number is known by "
+      putStr " a list of all the agents, whos number is known by "
       putStrFgc Green "'[a1]'"
       putStrLn "."
       putStr "The input should contain "
